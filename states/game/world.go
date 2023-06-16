@@ -8,9 +8,9 @@ import (
 )
 
 type World struct {
-	players     []Player
-	tick        int // tick represents the current processed game tick. This is used to lockstep the players.
-	ebitenTicks int // Elapsed ebiten ticks.
+	Players     []Player // Exposed so singleplayer/multiplayer can set it.
+	tick        int      // tick represents the current processed game tick. This is used to lockstep the players.
+	ebitenTicks int      // Elapsed ebiten ticks.
 }
 
 func (s *World) Init(ctx states.Context) error {
@@ -20,13 +20,13 @@ func (s *World) Init(ctx states.Context) error {
 func (s *World) Update(ctx states.Context) error {
 	s.ebitenTicks++
 	readyCount := 0
-	for _, player := range s.players {
+	for _, player := range s.Players {
 		if player.Ready(s.tick + 1) {
 			readyCount++
 		}
 	}
 	if s.ebitenTicks >= 3 { // Basically tick every 3 ebiten ticks.
-		if readyCount == len(s.players) {
+		if readyCount == len(s.Players) {
 			s.tick++
 			// Process the world!!!
 			fmt.Println(s.tick)
