@@ -4,4 +4,6 @@ package game
 type Player interface {
 	// ???
 	Ready(nextTick int) bool
+	SetActor(actor Actor)
+	Actor() Actor
 }
