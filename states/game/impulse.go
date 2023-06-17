@@ -6,6 +6,7 @@ type ImpulseSet struct {
 }
 
 type Impulse interface {
+	Cost() int
 }
 
 type ImpulseMove struct {

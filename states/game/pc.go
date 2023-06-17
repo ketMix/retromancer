@@ -45,13 +45,13 @@ func (p *PC) Update() error {
 	if p.impulses.Interaction != nil {
 		switch imp := p.impulses.Interaction.(type) {
 		case ImpulseReflect:
-			if p.Energy-imp.Cost() >= 0 {
+			if p.HasEnergyFor(imp) {
 				p.Energy -= imp.Cost()
 			}
 			p.TicksSinceLastInteraction = 0
 			// TODO: Process reflection within the world.
 		case ImpulseDeflect:
-			if p.Energy-imp.Cost() >= 0 {
+			if p.HasEnergyFor(imp) {
 				p.Energy -= imp.Cost()
 			}
 			p.TicksSinceLastInteraction = 0
@@ -64,6 +64,10 @@ func (p *PC) Update() error {
 	}
 
 	return nil
+}
+
+func (p *PC) HasEnergyFor(imp Impulse) bool {
+	return p.Energy-imp.Cost() >= 0
 }
 
 func (p *PC) SetImpulses(impulses ImpulseSet) {
