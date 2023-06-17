@@ -36,8 +36,14 @@ func main() {
 		panic(err)
 	}
 
+	// Initialize game fields as necessary.
+	if err := game.Init(); err != nil {
+		panic(err)
+	}
+
 	ebiten.SetWindowSize(1280, 720)
 	ebiten.SetWindowTitle("ebijam23")
+	ebiten.SetCursorMode(ebiten.CursorModeHidden)
 
 	// Push the state.
 	game.PushState(&menu.Menu{})
