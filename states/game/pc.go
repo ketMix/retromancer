@@ -51,20 +51,20 @@ func (p *PC) Update() (actions []Action) {
 		case ImpulseReflect:
 			if p.HasEnergyFor(imp) {
 				p.Energy -= imp.Cost()
+				p.TicksSinceLastInteraction = 0
+				actions = append(actions, ActionReflect{
+					X: imp.X,
+					Y: imp.Y,
+				})
 			}
-			p.TicksSinceLastInteraction = 0
-			actions = append(actions, ActionReflect{
-				X: imp.X,
-				Y: imp.Y,
-			})
 		case ImpulseDeflect:
 			if p.HasEnergyFor(imp) {
 				p.Energy -= imp.Cost()
+				p.TicksSinceLastInteraction = 0
+				actions = append(actions, ActionDeflect{
+					Direction: math.Atan2(imp.Y-p.Shape.Y, imp.X-p.Shape.X),
+				})
 			}
-			p.TicksSinceLastInteraction = 0
-			actions = append(actions, ActionDeflect{
-				Direction: math.Atan2(imp.Y-p.Shape.Y, imp.X-p.Shape.X),
-			})
 		default:
 			// Do nothing.
 		}
