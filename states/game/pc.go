@@ -16,6 +16,7 @@ type PC struct {
 	TicksSinceLastInteraction int
 	Energy                    int
 	MaxEnergy                 int
+	EnergyRestoreRate         int
 	//
 	impulses ImpulseSet
 }
@@ -31,7 +32,9 @@ func (p *PC) Player() Player {
 func (p *PC) Update() error {
 	p.TicksSinceLastInteraction++
 	if p.TicksSinceLastInteraction > 20 {
-		p.Energy++
+		if p.Energy+p.EnergyRestoreRate <= p.MaxEnergy {
+			p.Energy += p.EnergyRestoreRate
+		}
 	}
 	if p.impulses.Move != nil {
 		x := 5 * math.Cos((*p.impulses.Move).Direction)

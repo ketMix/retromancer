@@ -23,10 +23,12 @@ func (s *World) Init(ctx states.Context) error {
 
 	// Create actors for our players.
 	for _, p := range s.Players {
+		// TODO: Move to a NewPC ctor
 		pc := &PC{
-			Sprite:    resources.NewSprite(ctx.Manager.GetAs("images", "player", (*ebiten.Image)(nil)).(*ebiten.Image)),
-			Energy:    0,
-			MaxEnergy: 100,
+			Sprite:            resources.NewSprite(ctx.Manager.GetAs("images", "player", (*ebiten.Image)(nil)).(*ebiten.Image)),
+			Energy:            0,
+			MaxEnergy:         100,
+			EnergyRestoreRate: 1,
 		}
 		pc.Sprite.Interpolate = true
 		pc.Hand.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
