@@ -59,10 +59,28 @@ func (s *World) Update(ctx states.Context) error {
 			}
 
 			// Process the world!!!
+			var actorActions []ActorActions
 			for _, actor := range s.actors {
-				actor.Update()
+				actorActions = append(actorActions, ActorActions{
+					Actor:   actor,
+					Actions: actor.Update(),
+				})
 			}
-			fmt.Println(s.tick)
+
+			// Okay, this is very likely overkill to process actions entirely separately, but whatever.
+			for _, actorAction := range actorActions {
+				actor := actorAction.Actor
+				for _, action := range actorAction.Actions {
+					switch action := action.(type) {
+					case ActionMove:
+						actor.SetXY(action.X, action.Y)
+					case ActionReflect:
+						fmt.Println("TODO: reflect projectiles in radius around", action.X, action.Y)
+					case ActionDeflect:
+						fmt.Println("TODO: deflect projectiles in a radius from the player in dir", action.Direction)
+					}
+				}
+			}
 
 			// Queue up the local player's impulses for the next tick!
 			for _, player := range s.Players {

@@ -8,7 +8,7 @@ type Actor interface {
 	Player() Player
 	SetPlayer(p Player)
 	SetImpulses(impulses ImpulseSet)
-	Update() error
+	Update() []Action
 	Draw(screen *ebiten.Image)
 	Bounds() (x, y, w, h float64)
 	SetXY(x, y float64)

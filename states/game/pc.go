@@ -29,7 +29,7 @@ func (p *PC) Player() Player {
 	return p.player
 }
 
-func (p *PC) Update() error {
+func (p *PC) Update() (actions []Action) {
 	p.TicksSinceLastInteraction++
 	if p.TicksSinceLastInteraction > 20 {
 		if p.Energy+p.EnergyRestoreRate <= p.MaxEnergy {
@@ -39,7 +39,10 @@ func (p *PC) Update() error {
 	if p.impulses.Move != nil {
 		x := 5 * math.Cos((*p.impulses.Move).Direction)
 		y := 5 * math.Sin((*p.impulses.Move).Direction)
-		p.SetXY(p.Shape.X+x, p.Shape.Y+y)
+		actions = append(actions, ActionMove{
+			X: p.Shape.X + x,
+			Y: p.Shape.Y + y,
+		})
 	}
 
 	if p.impulses.Interaction != nil {
@@ -49,21 +52,25 @@ func (p *PC) Update() error {
 				p.Energy -= imp.Cost()
 			}
 			p.TicksSinceLastInteraction = 0
-			// TODO: Process reflection within the world.
+			actions = append(actions, ActionReflect{
+				X: imp.X,
+				Y: imp.Y,
+			})
 		case ImpulseDeflect:
 			if p.HasEnergyFor(imp) {
 				p.Energy -= imp.Cost()
 			}
 			p.TicksSinceLastInteraction = 0
-			//r := math.Atan2(imp.Y-p.Shape.Y, imp.X-p.Shape.X)
-			// TODO: Process deflection within the world.
+			actions = append(actions, ActionDeflect{
+				Direction: math.Atan2(imp.Y-p.Shape.Y, imp.X-p.Shape.X),
+			})
 		default:
 			// Do nothing.
 		}
 		// TODO: Handle interactions.
 	}
 
-	return nil
+	return actions
 }
 
 func (p *PC) HasEnergyFor(imp Impulse) bool {
