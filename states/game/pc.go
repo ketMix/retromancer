@@ -10,6 +10,7 @@ import (
 type PC struct {
 	player Player
 	//
+	Arrow                     *resources.Sprite
 	Sprite                    *resources.Sprite
 	Shape                     Shape
 	Hand                      Hand
@@ -84,6 +85,20 @@ func (p *PC) SetImpulses(impulses ImpulseSet) {
 func (p *PC) Draw(screen *ebiten.Image) {
 	p.Sprite.Draw(screen)
 	p.Hand.Sprite.Draw(screen)
+
+	r := math.Atan2(p.Shape.Y-p.Hand.Shape.Y, p.Shape.X-p.Hand.Shape.X)
+
+	// TODO: The arrow image should change based on if we're reflecting or deflecting.
+	// Draw direction arrow
+	opts := &ebiten.DrawImageOptions{}
+	// Rotate about its center.
+	opts.GeoM.Translate(-p.Arrow.Width()/2, -p.Arrow.Height()/2)
+	opts.GeoM.Rotate(r)
+	// Position.
+	//opts.GeoM.Translate(p.Arrow.Width()/2, p.Arrow.Height()/2)
+	opts.GeoM.Translate(p.Shape.X, p.Shape.Y)
+	// Draw from center.
+	screen.DrawImage(p.Arrow.Image(), opts)
 }
 
 func (p *PC) Bounds() (x, y, w, h float64) {

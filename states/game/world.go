@@ -26,12 +26,15 @@ func (s *World) Init(ctx states.Context) error {
 		// TODO: Move to a NewPC ctor
 		pc := &PC{
 			Sprite:            resources.NewSprite(ctx.Manager.GetAs("images", "player", (*ebiten.Image)(nil)).(*ebiten.Image)),
+			Arrow:             resources.NewSprite(ctx.Manager.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
 			Energy:            0,
 			MaxEnergy:         100,
 			EnergyRestoreRate: 1,
 		}
 		pc.Sprite.Interpolate = true
+		pc.Sprite.Centered = true
 		pc.Hand.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
+		pc.Hand.Sprite.Centered = true
 		p.SetActor(pc)
 		// Add to the world. FIXME: This should be done in some sort of sub-game state.
 		s.actors = append(s.actors, p.Actor())
