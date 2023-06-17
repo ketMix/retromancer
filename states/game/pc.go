@@ -43,16 +43,16 @@ func (p *PC) Update() error {
 	}
 
 	if p.impulses.Interaction != nil {
-		switch p.impulses.Interaction.(type) {
+		switch imp := p.impulses.Interaction.(type) {
 		case ImpulseReflect:
-			// TODO: Process reflection within the world.
-			if p.Energy-1 >= 0 {
-				p.Energy--
+			if p.Energy-imp.Cost() >= 0 {
+				p.Energy -= imp.Cost()
 			}
 			p.TicksSinceLastInteraction = 0
+			// TODO: Process reflection within the world.
 		case ImpulseDeflect:
-			if p.Energy-4 >= 0 {
-				p.Energy -= 4
+			if p.Energy-imp.Cost() >= 0 {
+				p.Energy -= imp.Cost()
 			}
 			p.TicksSinceLastInteraction = 0
 			//r := math.Atan2(imp.Y-p.Shape.Y, imp.X-p.Shape.X)
