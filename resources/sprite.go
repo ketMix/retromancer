@@ -55,13 +55,17 @@ func (s *Sprite) Draw(screen *ebiten.Image) {
 		} else if s.interpX > s.X {
 			s.interpX--
 		}
-		s.interpX = math.Round(s.interpX)
+		if math.Abs(s.interpX-s.X) < 1 {
+			s.interpX = s.X
+		}
 		if s.interpY < s.Y {
 			s.interpY++
 		} else if s.interpY > s.Y {
 			s.interpY--
 		}
-		s.interpY = math.Round(s.interpY)
+		if math.Abs(s.interpY-s.Y) < 1 {
+			s.interpY = s.Y
+		}
 	} else {
 		s.interpX = s.X
 		s.interpY = s.Y
