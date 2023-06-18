@@ -9,17 +9,17 @@ import (
 )
 
 type Menu struct {
-	logo, sp, mp, quit *resources.Sprite
-	sprites            resources.Sprites
+	logo, sp, mp, quit, bulletbox *resources.Sprite
+	sprites                       resources.Sprites
 }
 
 func (m *Menu) Init(ctx states.Context) error {
 	x := 320.0
-	y := 0.0
+	y := 25.0
 	m.logo = resources.NewSprite(ctx.Manager.GetAs("images", "logo", (*ebiten.Image)(nil)).(*ebiten.Image))
 	m.logo.X = x - m.logo.Width()/2
 	m.logo.Y = y
-	y += m.logo.Height() + 16
+	y += m.logo.Height() + 100
 	m.sp = resources.NewSprite(ctx.Manager.GetAs("images", "sp", (*ebiten.Image)(nil)).(*ebiten.Image))
 	m.sp.X = x - m.sp.Width()/2
 	m.sp.Y = y
@@ -27,11 +27,15 @@ func (m *Menu) Init(ctx states.Context) error {
 	m.mp = resources.NewSprite(ctx.Manager.GetAs("images", "mp", (*ebiten.Image)(nil)).(*ebiten.Image))
 	m.mp.X = x - m.mp.Width()/2
 	m.mp.Y = y
-	y += m.sp.Height() + 16
+	y += m.mp.Height() + 16
 	m.quit = resources.NewSprite(ctx.Manager.GetAs("images", "quit", (*ebiten.Image)(nil)).(*ebiten.Image))
 	m.quit.X = x - m.quit.Width()/2
 	m.quit.Y = y
-	m.sprites = append(m.sprites, m.sp, m.mp, m.quit)
+	y += m.quit.Height() + 16
+	m.bulletbox = resources.NewSprite(ctx.Manager.GetAs("images", "bulletbox", (*ebiten.Image)(nil)).(*ebiten.Image))
+	m.bulletbox.X = x - m.quit.Width()/2
+	m.bulletbox.Y = y
+	m.sprites = append(m.sprites, m.sp, m.mp, m.quit, m.bulletbox)
 	return nil
 }
 
@@ -58,7 +62,10 @@ func (m *Menu) Update(ctx states.Context) error {
 			ctx.StateMachine.PushState(&MultiPlayer{})
 		} else if m.quit.Hit(float64(x), float64(y)) {
 			return states.ErrQuitGame
+		} else if m.bulletbox.Hit(float64(x), float64(y)) {
+			ctx.StateMachine.PushState(&BulletBox{})
 		}
+
 	}
 	return nil
 }
@@ -68,4 +75,5 @@ func (m *Menu) Draw(screen *ebiten.Image) {
 	m.sp.Draw(screen)
 	m.mp.Draw(screen)
 	m.quit.Draw(screen)
+	m.bulletbox.Draw(screen)
 }

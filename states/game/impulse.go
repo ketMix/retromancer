@@ -48,3 +48,7 @@ type ActionReflect struct {
 type ActionDeflect struct {
 	Direction float64
 }
+
+type ActionSpawnBullets struct {
+	Bullets []*Bullet
+}

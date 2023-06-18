@@ -15,6 +15,7 @@ type World struct {
 	tick        int      // tick represents the current processed game tick. This is used to lockstep the players.
 	ebitenTicks int      // Elapsed ebiten ticks.
 	actors      []Actor
+	bullets     []*Bullet
 }
 
 func (s *World) Init(ctx states.Context) error {
@@ -70,6 +71,12 @@ func (s *World) Update(ctx states.Context) error {
 				})
 			}
 
+			// Process bulleets
+
+			for _, b := range s.bullets {
+				b.Update(s.Players)
+			}
+
 			// Okay, this is very likely overkill to process actions entirely separately, but whatever.
 			for _, actorAction := range actorActions {
 				actor := actorAction.Actor
@@ -81,6 +88,10 @@ func (s *World) Update(ctx states.Context) error {
 						fmt.Println("TODO: reflect projectiles in radius around", action.X, action.Y)
 					case ActionDeflect:
 						fmt.Println("TODO: deflect projectiles in a radius from the player in dir", action.Direction)
+					case ActionSpawnBullets:
+						for _, b := range action.Bullets {
+							s.bullets = append(s.bullets, b)
+						}
 					}
 				}
 			}
@@ -94,6 +105,7 @@ func (s *World) Update(ctx states.Context) error {
 				}
 			}
 
+			s.HandleTrash()
 		}
 		s.ebitenTicks = 0
 	}
@@ -102,6 +114,10 @@ func (s *World) Update(ctx states.Context) error {
 }
 
 func (s *World) Draw(screen *ebiten.Image) {
+	// Draw bullets first.
+	for _, b := range s.bullets {
+		b.Draw(screen)
+	}
 	for _, a := range s.actors {
 		a.Draw(screen)
 	}
@@ -121,4 +137,19 @@ func (s *World) Draw(screen *ebiten.Image) {
 			y += h + 5
 		}
 	}
+}
+
+// TODO: This should be handled by map loading.
+func (s *World) AddActor(a Actor) {
+	s.actors = append(s.actors, a)
+}
+
+func (s *World) HandleTrash() {
+	newBullets := make([]*Bullet, 0)
+	for _, b := range s.bullets {
+		if !b.OutOfBounds() {
+			newBullets = append(newBullets, b)
+		}
+	}
+	s.bullets = newBullets
 }
