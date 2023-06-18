@@ -2,8 +2,10 @@ package main
 
 import (
 	"ebijam23/states"
+	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type Game struct {
@@ -60,6 +62,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		opts.GeoM.Translate(float64(x), float64(y))
 		screen.DrawImage(g.Cursor.image, opts)
 	}
+	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %0.2f TPS: %0.2f", ebiten.ActualFPS(), ebiten.ActualTPS()))
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {
