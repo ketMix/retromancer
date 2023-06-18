@@ -21,6 +21,7 @@ const (
 type Bullet struct {
 	Shape           Shape
 	Type            BulletType
+	TargetActor     Actor   // Target actor to head towards
 	Speed           float64 // How fastum the bullet goes
 	Angle           float64 // What angle the bullet has
 	Acceleration    float64 // How fast the bullet accelerates
@@ -70,9 +71,7 @@ func BulletFromExisting(b *Bullet) *Bullet {
 }
 
 // Update the bullet's position and speed
-// Pass in a slice of players to find the closest player to aim at
-// Maybe do this differently
-func (b *Bullet) Update(p []Player) {
+func (b *Bullet) Update() (actions []Action) {
 	if b.Speed < b.MinSpeed {
 		b.Speed = b.MinSpeed
 	}
@@ -89,24 +88,17 @@ func (b *Bullet) Update(p []Player) {
 	if !b.aimed {
 		b.Angle += b.AngularVelocity
 	} else {
-		// Find closest player
-		var closestPlayer *Player
-		var closestDistance float64
-		var playerX, playerY float64
-		for _, player := range p {
-			x, y, _, _ := player.Actor().Bounds()
-			distance := math.Sqrt(math.Pow(b.Shape.X-x, 2) + math.Pow(b.Shape.Y-y, 2))
-			if closestPlayer == nil || distance < closestDistance {
-				closestPlayer = &player
-				closestDistance = distance
-				playerX = x
-				playerY = y
-			}
+		// Request closest player actor for next tick.
+		if b.TargetActor == nil {
+			actions = append(actions, ActionFindNearestActor{Actor: (*PC)(nil)})
+		} else {
+			// Aim at closest actor.
+			// Need to add some momentum so it doesn't just follow the target.
+			x, y, _, _ := b.TargetActor.Bounds()
+			b.Angle = math.Atan2(y-b.Shape.Y, x-b.Shape.X)
 		}
-		// Aim at closest player
-		// Need to add some momentum so it doesn't just follow the player
-		b.Angle = math.Atan2(playerY-b.Shape.Y, playerX-b.Shape.X)
 	}
+	return actions
 }
 
 // Draw the bullet

@@ -5,6 +5,11 @@ type ActorActions struct {
 	Actions []Action
 }
 
+type BulletActions struct {
+	Bullet  *Bullet
+	Actions []Action
+}
+
 type Action interface {
 }
 
@@ -22,4 +27,8 @@ type ActionDeflect struct {
 
 type ActionSpawnBullets struct {
 	Bullets []*Bullet
+}
+
+type ActionFindNearestActor struct {
+	Actor Actor
 }

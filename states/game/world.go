@@ -5,6 +5,8 @@ import (
 	"ebijam23/states"
 	"fmt"
 	"image/color"
+	"math"
+	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
@@ -72,9 +74,12 @@ func (s *World) Update(ctx states.Context) error {
 			}
 
 			// Process bulleets
-
+			var bulletActions []BulletActions
 			for _, b := range s.bullets {
-				b.Update(s.Players)
+				bulletActions = append(bulletActions, BulletActions{
+					Bullet:  b,
+					Actions: b.Update(),
+				})
 			}
 
 			// Okay, this is very likely overkill to process actions entirely separately, but whatever.
@@ -90,6 +95,29 @@ func (s *World) Update(ctx states.Context) error {
 						fmt.Println("TODO: deflect projectiles in a radius from the player in dir", action.Direction)
 					case ActionSpawnBullets:
 						s.bullets = append(s.bullets, action.Bullets...)
+					}
+				}
+			}
+			// Even more overkill for the bullets.
+			for _, bulletAction := range bulletActions {
+				bullet := bulletAction.Bullet
+				for _, action := range bulletAction.Actions {
+					switch action := action.(type) {
+					case ActionFindNearestActor:
+						var closestActor Actor
+						var closestDistance float64
+						for _, actor := range s.actors {
+							// Reflect isn't great to use here, but it beats nested type switches.
+							if reflect.TypeOf(actor) == reflect.TypeOf(action.Actor) {
+								x, y, _, _ := actor.Bounds()
+								distance := math.Sqrt(math.Pow(bullet.Shape.X-x, 2) + math.Pow(bullet.Shape.Y-y, 2))
+								if closestActor == nil || distance < closestDistance {
+									closestActor = actor
+									closestDistance = distance
+								}
+							}
+						}
+						bullet.TargetActor = closestActor
 					}
 				}
 			}
