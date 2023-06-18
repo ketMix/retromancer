@@ -42,6 +42,10 @@ func (s *Sprite) Image() *ebiten.Image {
 }
 
 func (s *Sprite) Draw(screen *ebiten.Image) {
+	s.DrawWithOptions(screen, &ebiten.DrawImageOptions{})
+}
+
+func (s *Sprite) DrawWithOptions(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
 	// hmmmmm
 	/*lx := (s.X * (1.0 - 0.1)) + (s.interpX * 0.1)
 	ly := (s.Y * (1.0 - 0.1)) + (s.interpY * 0.1)
@@ -71,12 +75,19 @@ func (s *Sprite) Draw(screen *ebiten.Image) {
 		s.interpX = s.X
 		s.interpY = s.Y
 	}
+
 	s.Options.GeoM.Reset()
 	if s.Centered {
 		s.Options.GeoM.Translate(s.interpX-s.Width()/2, s.interpY-s.Height()/2)
 	} else {
 		s.Options.GeoM.Translate(s.interpX, s.interpY)
 	}
+	s.Options.GeoM.Concat(opts.GeoM)
+
+	if opts.ColorScale.A() != 1 || opts.ColorScale.R() != 1 || opts.ColorScale.G() != 1 || opts.ColorScale.B() != 1 {
+		s.Options.ColorScale = opts.ColorScale
+	}
+
 	screen.DrawImage(s.image, &s.Options)
 }
 
