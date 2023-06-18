@@ -3,14 +3,15 @@ package menu
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"ebijam23/states/tests"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type Menu struct {
-	logo, sp, mp, quit, bulletbox *resources.Sprite
-	sprites                       resources.Sprites
+	logo, sp, mp, quit, bulletbox, maptest *resources.Sprite
+	sprites                                resources.Sprites
 }
 
 func (m *Menu) Init(ctx states.Context) error {
@@ -35,7 +36,11 @@ func (m *Menu) Init(ctx states.Context) error {
 	m.bulletbox = resources.NewSprite(ctx.Manager.GetAs("images", "bulletbox", (*ebiten.Image)(nil)).(*ebiten.Image))
 	m.bulletbox.X = x - m.quit.Width()/2
 	m.bulletbox.Y = y
-	m.sprites = append(m.sprites, m.sp, m.mp, m.quit, m.bulletbox)
+	y += m.bulletbox.Height() + 16
+	m.maptest = resources.NewSprite(ctx.Manager.GetAs("images", "maptest", (*ebiten.Image)(nil)).(*ebiten.Image))
+	m.maptest.X = x - m.maptest.Width()/2
+	m.maptest.Y = y
+	m.sprites = append(m.sprites, m.sp, m.mp, m.quit, m.bulletbox, m.maptest)
 	return nil
 }
 
@@ -64,6 +69,8 @@ func (m *Menu) Update(ctx states.Context) error {
 			return states.ErrQuitGame
 		} else if m.bulletbox.Hit(float64(x), float64(y)) {
 			ctx.StateMachine.PushState(&BulletBox{})
+		} else if m.maptest.Hit(float64(x), float64(y)) {
+			ctx.StateMachine.PushState(&tests.MapLayer{})
 		}
 
 	}
@@ -72,8 +79,7 @@ func (m *Menu) Update(ctx states.Context) error {
 
 func (m *Menu) Draw(screen *ebiten.Image) {
 	m.logo.Draw(screen)
-	m.sp.Draw(screen)
-	m.mp.Draw(screen)
-	m.quit.Draw(screen)
-	m.bulletbox.Draw(screen)
+	for _, sprite := range m.sprites {
+		sprite.Draw(screen)
+	}
 }
