@@ -19,7 +19,7 @@ const (
 )
 
 type Bullet struct {
-	Shape           Shape
+	Shape           CircleShape
 	Type            BulletType
 	TargetActor     Actor   // Target actor to head towards
 	Speed           float64 // How fastum the bullet goes
@@ -36,7 +36,7 @@ type Bullet struct {
 // TODO: do this differently, hard to read and write arguments
 func CreateBullet(x, y, radius float64, bulletType BulletType, speed, angle, acceleration, minSpeed, maxSpeed, angularVelocity float64, color color.Color) *Bullet {
 	b := &Bullet{
-		Shape:           Shape{X: x, Y: y, Radius: radius},
+		Shape:           CircleShape{X: x, Y: y, Radius: radius},
 		Type:            bulletType,
 		Speed:           speed,
 		Angle:           angle,

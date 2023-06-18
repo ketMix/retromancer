@@ -122,6 +122,18 @@ func (s *World) Update(ctx states.Context) error {
 				}
 			}
 
+			// Okay, this probably isn't great, but let's check bullet collisions here.
+			for _, bullet := range s.bullets {
+				for _, actor := range s.actors {
+					if _, ok := actor.(*PC); ok {
+						if bullet.Shape.Collides(actor.Shape()) {
+							fmt.Println("TODO: bullet hit player!")
+							break
+						}
+					}
+				}
+			}
+
 			// Queue up the local player's impulses for the next tick!
 			for _, player := range s.Players {
 				if _, ok := player.(*LocalPlayer); ok {

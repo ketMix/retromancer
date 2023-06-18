@@ -12,7 +12,7 @@ type PC struct {
 	//
 	Arrow                     *resources.Sprite
 	Sprite                    *resources.Sprite
-	Shape                     Shape
+	shape                     CircleShape
 	Hand                      Hand
 	TicksSinceLastInteraction int
 	Energy                    int
@@ -41,8 +41,8 @@ func (p *PC) Update() (actions []Action) {
 		x := 5 * math.Cos((*p.impulses.Move).Direction)
 		y := 5 * math.Sin((*p.impulses.Move).Direction)
 		actions = append(actions, ActionMove{
-			X: p.Shape.X + x,
-			Y: p.Shape.Y + y,
+			X: p.shape.X + x,
+			Y: p.shape.Y + y,
 		})
 	}
 
@@ -62,7 +62,7 @@ func (p *PC) Update() (actions []Action) {
 				p.Energy -= imp.Cost()
 				p.TicksSinceLastInteraction = 0
 				actions = append(actions, ActionDeflect{
-					Direction: math.Atan2(imp.Y-p.Shape.Y, imp.X-p.Shape.X),
+					Direction: math.Atan2(imp.Y-p.shape.Y, imp.X-p.shape.X),
 				})
 			}
 		default:
@@ -86,7 +86,7 @@ func (p *PC) Draw(screen *ebiten.Image) {
 	p.Sprite.Draw(screen)
 	p.Hand.Sprite.Draw(screen)
 
-	r := math.Atan2(p.Shape.Y-p.Hand.Shape.Y, p.Shape.X-p.Hand.Shape.X)
+	r := math.Atan2(p.shape.Y-p.Hand.Shape.Y, p.shape.X-p.Hand.Shape.X)
 
 	// TODO: The arrow image should change based on if we're reflecting or deflecting.
 	// Draw direction arrow
@@ -96,23 +96,27 @@ func (p *PC) Draw(screen *ebiten.Image) {
 	opts.GeoM.Rotate(r)
 	// Position.
 	//opts.GeoM.Translate(p.Arrow.Width()/2, p.Arrow.Height()/2)
-	opts.GeoM.Translate(p.Shape.X, p.Shape.Y)
+	opts.GeoM.Translate(p.shape.X, p.shape.Y)
 	// Draw from center.
 	screen.DrawImage(p.Arrow.Image(), opts)
 }
 
 func (p *PC) Bounds() (x, y, w, h float64) {
 	// Return the radius of the shape as width and height in diameter.
-	return p.Shape.X, p.Shape.Y, p.Shape.Radius * 2, p.Shape.Radius * 2
+	return p.shape.X, p.shape.Y, p.shape.Radius * 2, p.shape.Radius * 2
+}
+
+func (p *PC) Shape() Shape {
+	return &p.shape
 }
 
 func (p *PC) SetXY(x, y float64) {
-	p.Shape.X = x
-	p.Shape.Y = y
+	p.shape.X = x
+	p.shape.Y = y
 	p.Sprite.X = x
 	p.Sprite.Y = y
 }
 
 func (p *PC) SetSize(r float64) {
-	p.Shape.Radius = r
+	p.shape.Radius = r
 }

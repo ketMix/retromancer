@@ -67,7 +67,7 @@ func (bg *BulletGroup) Update() (actions []Action) {
 
 // This can probably be attached to an actor instead being its own actor
 type Spawner struct {
-	shape        Shape
+	shape        CircleShape
 	bulletGroups []*BulletGroup
 }
 
@@ -75,7 +75,7 @@ type Spawner struct {
 // - these bullet groups should be created from external file for specific enemies
 func CreateSpawner(x, y float64) *Spawner {
 	return &Spawner{
-		shape: Shape{X: x, Y: y, Radius: 0},
+		shape: CircleShape{X: x, Y: y, Radius: 0},
 		bulletGroups: []*BulletGroup{
 			// WHITE: Aim radially
 			{
@@ -144,6 +144,7 @@ func (s *Spawner) Update() (actions []Action) {
 	return actions
 }
 
+func (s *Spawner) Shape() Shape                    { return &s.shape }
 func (s *Spawner) Player() Player                  { return nil }
 func (s *Spawner) SetPlayer(p Player)              {}
 func (s *Spawner) SetImpulses(impulses ImpulseSet) {}

@@ -3,7 +3,7 @@ package game
 import "ebijam23/resources"
 
 type Hand struct {
-	Shape  Shape
+	Shape  CircleShape
 	Sprite *resources.Sprite
 }
 
