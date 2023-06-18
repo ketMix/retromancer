@@ -30,6 +30,8 @@ type Bullet struct {
 	AngularVelocity float64 // How fast the bullet rotates
 	Color           color.Color
 	aimed           bool // If the bullet is aimed at a player (TODO: maybe do differently)
+	reflected       bool // If the bullet has been reflected
+	deflected       bool // If the bullet has been deflected.
 	sprite          *resources.Sprite
 }
 
@@ -99,6 +101,23 @@ func (b *Bullet) Update() (actions []Action) {
 		}
 	}
 	return actions
+}
+
+func (b *Bullet) Reflect() {
+	if b.reflected {
+		return
+	}
+	b.Angle = math.Mod(b.Angle+math.Pi, 2*math.Pi)
+	b.reflected = true
+}
+
+func (b *Bullet) Deflect(angle float64) {
+	if b.deflected {
+		return
+	}
+	// FIXME: Deflect should take into account the bullet's angle relative to the deflection angle and use that for the final angle.
+	b.Angle = angle
+	b.deflected = true
 }
 
 // Draw the bullet

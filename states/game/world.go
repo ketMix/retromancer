@@ -90,9 +90,24 @@ func (s *World) Update(ctx states.Context) error {
 					case ActionMove:
 						actor.SetXY(action.X, action.Y)
 					case ActionReflect:
-						fmt.Println("TODO: reflect projectiles in radius around", action.X, action.Y)
+						bullets := s.IntersectingBullets(&CircleShape{
+							X:      action.X,
+							Y:      action.Y,
+							Radius: 20,
+						})
+						for _, bullet := range bullets {
+							bullet.Reflect()
+						}
 					case ActionDeflect:
-						fmt.Println("TODO: deflect projectiles in a radius from the player in dir", action.Direction)
+						x, y, _, _ := actor.Bounds()
+						bullets := s.IntersectingBullets(&CircleShape{
+							X:      x,
+							Y:      y,
+							Radius: 20,
+						})
+						for _, bullet := range bullets {
+							bullet.Deflect(action.Direction)
+						}
 					case ActionSpawnBullets:
 						s.bullets = append(s.bullets, action.Bullets...)
 					}
@@ -190,4 +205,14 @@ func (s *World) HandleTrash() {
 		}
 	}
 	s.bullets = newBullets
+}
+
+func (s *World) IntersectingBullets(sh Shape) []*Bullet {
+	var bullets []*Bullet
+	for _, b := range s.bullets {
+		if b.Shape.Collides(sh) {
+			bullets = append(bullets, b)
+		}
+	}
+	return bullets
 }
