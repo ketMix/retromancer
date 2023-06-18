@@ -111,7 +111,7 @@ func (b *Bullet) Update(p []Player) {
 
 // Draw the bullet
 func (b *Bullet) Draw(screen *ebiten.Image) {
-	vector.DrawFilledCircle(screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius), b.Color, true)
+	vector.DrawFilledCircle(screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius), b.Color, false)
 }
 
 func (b *Bullet) OutOfBounds() bool {
