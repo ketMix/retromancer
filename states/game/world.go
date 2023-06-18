@@ -114,9 +114,9 @@ func (s *World) Draw(screen *ebiten.Image) {
 			w := 100
 			h := 5
 			x := screen.Bounds().Max.X/2 - w/2
-			vector.StrokeRect(screen, float32(x), float32(y), float32(w), float32(h), 1, color.White, true)
-			w2 := int(float32(w-2) * (float32(a.Energy) / float32(a.MaxEnergy)))
-			vector.DrawFilledRect(screen, float32(x+1), float32(y+1), float32(w2), float32(h-2), color.White, true)
+			vector.StrokeRect(screen, float32(x), float32(y), float32(w), float32(h), 1, color.White, false)
+			w2 := int(float32(w-3) * (float32(a.Energy) / float32(a.MaxEnergy)))
+			vector.DrawFilledRect(screen, float32(x+1), float32(y+1), float32(w2), float32(h-3), color.White, false)
 
 			y += h + 5
 		}
