@@ -89,9 +89,7 @@ func (s *World) Update(ctx states.Context) error {
 					case ActionDeflect:
 						fmt.Println("TODO: deflect projectiles in a radius from the player in dir", action.Direction)
 					case ActionSpawnBullets:
-						for _, b := range action.Bullets {
-							s.bullets = append(s.bullets, b)
-						}
+						s.bullets = append(s.bullets, action.Bullets...)
 					}
 				}
 			}
