@@ -86,6 +86,8 @@ func (s *Sprite) DrawWithOptions(screen *ebiten.Image, opts *ebiten.DrawImageOpt
 
 	if opts.ColorScale.A() != 1 || opts.ColorScale.R() != 1 || opts.ColorScale.G() != 1 || opts.ColorScale.B() != 1 {
 		s.Options.ColorScale = opts.ColorScale
+	} else {
+		s.Options.ColorScale.Reset()
 	}
 
 	screen.DrawImage(s.image, &s.Options)
