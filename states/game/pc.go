@@ -65,6 +65,11 @@ func (p *PC) Update() (actions []Action) {
 	if p.impulses.Move != nil {
 		x := 5 * math.Cos((*p.impulses.Move).Direction)
 		y := 5 * math.Sin((*p.impulses.Move).Direction)
+		if x < 0 {
+			p.Sprite.Flipped = true
+		} else if x > 0 {
+			p.Sprite.Flipped = false
+		}
 		actions = append(actions, ActionMove{
 			X: p.shape.X + x,
 			Y: p.shape.Y + y,

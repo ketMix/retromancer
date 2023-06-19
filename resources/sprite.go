@@ -13,6 +13,7 @@ type Sprite struct {
 	X, Y             float64
 	lastX, lastY     float64
 	interpX, interpY float64
+	Flipped          bool
 	Interpolate      bool
 	Centered         bool
 	Options          ebiten.DrawImageOptions
@@ -77,8 +78,15 @@ func (s *Sprite) DrawWithOptions(screen *ebiten.Image, opts *ebiten.DrawImageOpt
 	}
 
 	s.Options.GeoM.Reset()
+
+	if s.Flipped {
+		s.Options.GeoM.Scale(-1, 1)
+		s.Options.GeoM.Translate(s.Width(), 0)
+	}
+
 	if s.Centered {
 		s.Options.GeoM.Translate(s.interpX-s.Width()/2, s.interpY-s.Height()/2)
+
 	} else {
 		s.Options.GeoM.Translate(s.interpX, s.interpY)
 	}
