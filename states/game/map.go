@@ -4,6 +4,7 @@ import (
 	"ebijam23/resources"
 	"ebijam23/states"
 	"errors"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -34,6 +35,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 				switch m.data.RuneMap[string(cell.Type)] {
 				case "wall":
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "wall", (*ebiten.Image)(nil)).(*ebiten.Image))
+					cell.Blocks = true
 				case "floor":
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "floor", (*ebiten.Image)(nil)).(*ebiten.Image))
 				case "empty":
@@ -87,4 +89,43 @@ func (m *Map) Draw(screen *ebiten.Image) {
 	for _, b := range m.bullets {
 		b.Draw(screen)
 	}
+}
+
+func (m *Map) Collides(s Shape) bool {
+	// Get nearest cell to shape coordinates and check adjacent cells for collisions.
+	x, y, _, _ := s.Bounds()
+	x /= 16
+	y /= 16
+	x = math.Round(x)
+	y = math.Round(y)
+	z := 0
+
+	check := func(x, y int) bool {
+		if y >= 0 && int(y) < len(m.data.Layers[z].Cells) && x >= 0 && int(x) < len(m.data.Layers[z].Cells[int(y)]) {
+			if m.data.Layers[z].Cells[int(y)][int(x)].Blocks {
+				cell := m.data.Layers[z].Cells[int(y)][int(x)]
+				if s.Collides(&RectangleShape{
+					X:      cell.Sprite.X,
+					Y:      cell.Sprite.Y,
+					Width:  cell.Sprite.Width(),
+					Height: cell.Sprite.Height(),
+				}) {
+					return true
+				}
+			}
+		}
+		return false
+	}
+
+	// TODO: Get whatever its called when you get the minimum distance to ensure contact but not intersection and return it so the caller can still potentially move.
+	// lol
+	return check(int(x), int(y)) ||
+		check(int(x), int(y+1)) ||
+		check(int(x), int(y-1)) ||
+		check(int(x-1), int(y)) ||
+		check(int(x-1), int(y+1)) ||
+		check(int(x-1), int(y-1)) ||
+		check(int(x+1), int(y)) ||
+		check(int(x+1), int(y+1)) ||
+		check(int(x+1), int(y-1))
 }

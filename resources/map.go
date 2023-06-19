@@ -7,6 +7,7 @@ import (
 type Cell struct {
 	Sprite *Sprite `yaml:"-"`
 	Type   rune    `yaml:"-"` // I guess using runes is okay.
+	Blocks bool    `yaml:"-"`
 }
 
 type Layer struct {

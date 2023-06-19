@@ -1,8 +1,11 @@
 package game
 
-import "math"
+import (
+	"math"
+)
 
 type Shape interface {
+	Clone() Shape
 	Bounds() (x, y, width, height float64)
 	Collides(s Shape) bool
 }
@@ -10,6 +13,14 @@ type Shape interface {
 type CircleShape struct {
 	X, Y   float64
 	Radius float64
+}
+
+func (c *CircleShape) Clone() Shape {
+	return &CircleShape{
+		X:      c.X,
+		Y:      c.Y,
+		Radius: c.Radius,
+	}
 }
 
 func (c *CircleShape) Bounds() (x, y, width, height float64) {
@@ -48,6 +59,15 @@ func (c *CircleShape) Collides(s Shape) bool {
 
 type RectangleShape struct {
 	X, Y, Width, Height float64
+}
+
+func (r *RectangleShape) Clone() Shape {
+	return &RectangleShape{
+		X:      r.X,
+		Y:      r.Y,
+		Width:  r.Width,
+		Height: r.Height,
+	}
 }
 
 func (r *RectangleShape) Bounds() (x, y, width, height float64) {

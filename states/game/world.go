@@ -86,7 +86,12 @@ func (s *World) Update(ctx states.Context) error {
 				for _, action := range actorAction.Actions {
 					switch action := action.(type) {
 					case ActionMove:
-						actor.SetXY(action.X, action.Y)
+						checkShape := actor.Shape().Clone().(*CircleShape)
+						checkShape.X = action.X
+						checkShape.Y = action.Y + 4 // Stupid -4 to make the visual offset look nicer when bumpin' walls
+						if !s.activeMap.Collides(checkShape) {
+							actor.SetXY(action.X, action.Y)
+						}
 					case ActionReflect:
 						reflecting = true
 						bullets := s.IntersectingBullets(&CircleShape{
