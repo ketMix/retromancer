@@ -3,9 +3,11 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"image/color"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 type PC struct {
@@ -21,6 +23,8 @@ type PC struct {
 	Energy                    int
 	MaxEnergy                 int
 	EnergyRestoreRate         int
+	//
+	previousInteraction Action
 	//
 	impulses ImpulseSet
 }
@@ -67,6 +71,7 @@ func (p *PC) Update() (actions []Action) {
 		})
 	}
 
+	p.previousInteraction = nil
 	if p.impulses.Interaction != nil {
 		switch imp := p.impulses.Interaction.(type) {
 		case ImpulseReflect:
@@ -77,6 +82,7 @@ func (p *PC) Update() (actions []Action) {
 					X: imp.X,
 					Y: imp.Y,
 				})
+				p.previousInteraction = ActionReflect{}
 			}
 		case ImpulseDeflect:
 			if p.HasEnergyFor(imp) {
@@ -85,11 +91,11 @@ func (p *PC) Update() (actions []Action) {
 				actions = append(actions, ActionDeflect{
 					Direction: math.Atan2(imp.Y-p.shape.Y, imp.X-p.shape.X),
 				})
+				p.previousInteraction = ActionDeflect{}
 			}
 		default:
 			// Do nothing.
 		}
-		// TODO: Handle interactions.
 	}
 
 	return actions
@@ -104,6 +110,12 @@ func (p *PC) SetImpulses(impulses ImpulseSet) {
 }
 
 func (p *PC) Draw(screen *ebiten.Image) {
+	if _, ok := p.previousInteraction.(ActionDeflect); ok {
+		vector.DrawFilledCircle(screen, float32(p.shape.X), float32(p.shape.Y), 20, color.NRGBA{0x66, 0xff, 0x99, 0x33}, false)
+	} else if _, ok := p.previousInteraction.(ActionReflect); ok {
+		vector.DrawFilledCircle(screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0x66, 0x99, 0xff, 0x33}, false)
+	}
+
 	p.Sprite.Draw(screen)
 	p.Hand.Sprite.Draw(screen)
 
