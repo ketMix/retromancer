@@ -10,11 +10,9 @@ import (
 type GroupAngle string
 
 const (
-	Aimed     GroupAngle = "aimed"     // Aim at target player MAYBE THIS SHOULDN'T BE A THING AND JUST USED AIMED INIT
-	AimedInit            = "aimedinit" // Init angle is aimed at target player
-	Fixed                = "fixed"     // Fixed angle
-	Radial               = "radial"    // Radial angle from spawner
-	Random               = "random"    // Random angle
+	Fixed  = "fixed"  // Fixed angle
+	Radial = "radial" // Radial angle from spawner
+	Random = "random" // Random angle
 )
 
 type BulletGroup struct {
@@ -44,10 +42,6 @@ func (bg *BulletGroup) Update() (actions []Action) {
 			bullet := BulletFromExisting(bg.bullet)
 			// Set the bullet angle
 			switch bg.angle {
-			case Aimed:
-				bullet.aimed = true
-			case AimedInit:
-				bullet.initAimed = true
 			case Fixed:
 				bullet.Angle = 0
 			case Radial:
@@ -87,16 +81,16 @@ func CreateSpawner(x, y float64) *Spawner {
 			// 	lastSpawnedAt: 10, // Spawn immediately
 			// 	spawnRate:     15,
 			// 	loopCount:     -1, // Loop forever
-			// 	bullet:        CreateBullet(x, y, 3, Circular, 3, 0, 0, 0, 100, 0, color.White),
+			// 	bullet:        CreateBullet(Circular,color.White, x, y, 3, , 3, 0, 0, 0, 100, 0, 0, 0),
 			// },
 			// BLUE: Aim at player, but accelerated
 			{
-				angle:         AimedInit,
-				bulletCount:   1,
+				angle:         Radial,
+				bulletCount:   5,
 				lastSpawnedAt: 10, // Spawn immediately
 				spawnRate:     25,
 				loopCount:     -1,
-				bullet:        CreateBullet(x, y, 3, Directional, 1, 0, 1.5, 0, 10, 0, color.RGBA{0, 0, 255, 255}),
+				bullet:        CreateBullet(Directional, color.RGBA{0, 0, 255, 255}, x, y, 3, 0.5, 0, 2, 0, 10, 0, 5, 10),
 			},
 			// // GREEN: Radial with a bit of angular velocity
 			// {
@@ -105,7 +99,7 @@ func CreateSpawner(x, y float64) *Spawner {
 			// 	lastSpawnedAt: 10, // Spawn immediately
 			// 	spawnRate:     20,
 			// 	loopCount:     -1,
-			// 	bullet:        CreateBullet(x, y, 3, Circular, 5, 0, 0, 0, 100, 0.02, color.RGBA{0, 255, 0, 255}),
+			// 	bullet:        CreateBullet(Circular,color.RGBA{0, 255, 0, 255}, x, y, 3,  5, 0, 0, 0, 100, 0.02, 0, 0),
 			// },
 			// PURPLE: Cool lil' spiral thing
 			{
@@ -114,7 +108,7 @@ func CreateSpawner(x, y float64) *Spawner {
 				lastSpawnedAt: 10, // Spawn immediately
 				spawnRate:     20,
 				loopCount:     -1,
-				bullet:        CreateBullet(x, y, 3, Circular, 5, 0, 0, 0, 100, 0.1, color.RGBA{255, 0, 255, 255}),
+				bullet:        CreateBullet(Circular, color.RGBA{255, 0, 255, 255}, x, y, 3, 5, 0, 0, 0, 100, 0.1, 0, 0),
 			},
 			// YELLOW: Random Angle
 			{
@@ -123,15 +117,15 @@ func CreateSpawner(x, y float64) *Spawner {
 				lastSpawnedAt: 10, // Spawn immediately
 				spawnRate:     5,
 				loopCount:     -1,
-				bullet:        CreateBullet(x, y, 3, Circular, 5, 0, 0, 0, 100, 0, color.RGBA{255, 255, 0, 255}),
+				bullet:        CreateBullet(Circular, color.RGBA{255, 255, 0, 255}, x, y, 3, 5, 0, 0, 0, 100, 0, 0, 0),
 			},
 			// RED: Aim at player
 			{
-				angle:       Aimed,
+				angle:       Fixed,
 				bulletCount: 1,
 				spawnRate:   35,
 				loopCount:   -1,
-				bullet:      CreateBullet(x, y, 4, Vector, 2, 0, 0, 0, 100, 0, color.RGBA{255, 0, 0, 255}),
+				bullet:      CreateBullet(Vector, color.RGBA{255, 0, 0, 255}, x, y, 4, 2, 0, 0, 0, 100, 0, 100, 0),
 			},
 		},
 	}
