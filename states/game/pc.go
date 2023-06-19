@@ -2,6 +2,7 @@ package game
 
 import (
 	"ebijam23/resources"
+	"ebijam23/states"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -12,6 +13,7 @@ type PC struct {
 	//
 	Arrow                     *resources.Sprite
 	Sprite                    *resources.Sprite
+	Phylactery                *resources.Sprite
 	shape                     CircleShape
 	Hand                      Hand
 	TicksSinceLastInteraction int
@@ -20,6 +22,24 @@ type PC struct {
 	EnergyRestoreRate         int
 	//
 	impulses ImpulseSet
+}
+
+func (s *World) NewPC(ctx states.Context) *PC {
+	pc := &PC{
+		Sprite:            resources.NewSprite(ctx.Manager.GetAs("images", "player", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Phylactery:        resources.NewSprite(ctx.Manager.GetAs("images", "phylactery", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Arrow:             resources.NewSprite(ctx.Manager.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Energy:            0,
+		MaxEnergy:         100,
+		EnergyRestoreRate: 1,
+	}
+	pc.shape.Radius = 2
+	//pc.Sprite.Interpolate = true
+	pc.Sprite.Centered = true
+	pc.Hand.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
+	pc.Hand.Sprite.Centered = true
+
+	return pc
 }
 
 func (p *PC) SetPlayer(player Player) {
@@ -86,11 +106,17 @@ func (p *PC) Draw(screen *ebiten.Image) {
 	p.Sprite.Draw(screen)
 	p.Hand.Sprite.Draw(screen)
 
+	// Draw the player's phylactery (hit box representation).
+	opts := &ebiten.DrawImageOptions{}
+	opts.GeoM.Translate(p.shape.X-float64(int(p.Phylactery.Width())/2), p.shape.Y-float64(int(p.Phylactery.Height())/2))
+	opts.ColorScale.Scale(0.5, 0.5, 1.0, 1.0)
+	screen.DrawImage(p.Phylactery.Image(), opts)
+
 	r := math.Atan2(p.shape.Y-p.Hand.Shape.Y, p.shape.X-p.Hand.Shape.X)
 
 	// TODO: The arrow image should change based on if we're reflecting or deflecting.
 	// Draw direction arrow
-	opts := &ebiten.DrawImageOptions{}
+	opts = &ebiten.DrawImageOptions{}
 	// Rotate about its center.
 	opts.GeoM.Translate(-p.Arrow.Width()/2, -p.Arrow.Height()/2)
 	opts.GeoM.Rotate(r)
@@ -114,7 +140,7 @@ func (p *PC) SetXY(x, y float64) {
 	p.shape.X = x
 	p.shape.Y = y
 	p.Sprite.X = x
-	p.Sprite.Y = y
+	p.Sprite.Y = y + 2 // We lightly offset the sprite so the phylactery is in a nicer visual position.
 }
 
 func (p *PC) SetSize(r float64) {
