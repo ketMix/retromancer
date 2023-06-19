@@ -94,13 +94,16 @@ func (s *World) Update(ctx states.Context) error {
 						}
 					case ActionReflect:
 						reflecting = true
-						bullets := s.IntersectingBullets(&CircleShape{
-							X:      action.X,
-							Y:      action.Y,
-							Radius: 20,
-						})
-						for _, bullet := range bullets {
-							bullet.Reflect()
+						x, y, _, _ := actor.Bounds()
+						if !s.activeMap.DoesLineCollide(x, y, action.X, action.Y, 0) {
+							bullets := s.IntersectingBullets(&CircleShape{
+								X:      action.X,
+								Y:      action.Y,
+								Radius: 20,
+							})
+							for _, bullet := range bullets {
+								bullet.Reflect()
+							}
 						}
 					case ActionDeflect:
 						deflecting = true
@@ -154,6 +157,11 @@ func (s *World) Update(ctx states.Context) error {
 
 			// Okay, this probably isn't great, but let's check bullet collisions here.
 			for _, bullet := range s.activeMap.bullets {
+				// Check for bullet collisions with walls.
+				if s.activeMap.Collides(&bullet.Shape) {
+					bullet.Destroyed = true
+					continue
+				}
 				for _, actor := range s.activeMap.actors {
 					if _, ok := actor.(*PC); ok {
 						if bullet.Shape.Collides(actor.Shape()) {
@@ -205,7 +213,7 @@ func (s *World) Draw(screen *ebiten.Image) {
 func (s *World) HandleTrash() {
 	newBullets := make([]*Bullet, 0)
 	for _, b := range s.activeMap.bullets {
-		if !b.OutOfBounds() {
+		if !b.OutOfBounds() && !b.Destroyed {
 			newBullets = append(newBullets, b)
 		}
 	}

@@ -35,6 +35,7 @@ type Bullet struct {
 	reflected       bool // If the bullet has been reflected
 	deflected       bool // If the bullet has been deflected.
 	sprite          *resources.Sprite
+	Destroyed       bool
 }
 
 // TODO: do this differently, hard to read and write arguments

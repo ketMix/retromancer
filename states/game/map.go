@@ -91,6 +91,13 @@ func (m *Map) Draw(screen *ebiten.Image) {
 	}
 }
 
+func (m *Map) GetCell(x, y, z int) (resources.Cell, error) {
+	if z < 0 || z >= len(m.data.Layers) || y < 0 || y >= len(m.data.Layers[z].Cells) || x < 0 || x >= len(m.data.Layers[z].Cells[y]) {
+		return resources.Cell{}, errors.New("no such cell")
+	}
+	return m.data.Layers[z].Cells[y][x], nil
+}
+
 func (m *Map) Collides(s Shape) bool {
 	// Get nearest cell to shape coordinates and check adjacent cells for collisions.
 	x, y, _, _ := s.Bounds()
@@ -128,4 +135,51 @@ func (m *Map) Collides(s Shape) bool {
 		check(int(x+1), int(y)) ||
 		check(int(x+1), int(y+1)) ||
 		check(int(x+1), int(y-1))
+}
+
+func (m *Map) DoesLineCollide(fx1, fy1, fx2, fy2 float64, z int) bool {
+	x1 := int(math.Round(fx1 / 16))
+	y1 := int(math.Round(fy1 / 16))
+	x2 := int(math.Round(fx2 / 16))
+	y2 := int(math.Round(fy2 / 16))
+
+	// Bresenham's line algorithm.
+	dx := math.Abs(float64(x2 - x1))
+	dy := math.Abs(float64(y2 - y1))
+	var sx, sy int
+
+	if x1 < x2 {
+		sx = 1
+	} else {
+		sx = -1
+	}
+	if y1 < y2 {
+		sy = 1
+	} else {
+		sy = -1
+	}
+
+	err := dx - dy
+
+	for {
+		if cell, er := m.GetCell(x1, y1, z); er == nil {
+			if cell.Blocks {
+				return true
+			}
+		}
+		if x1 == x2 && y1 == y2 {
+			break
+		}
+		e2 := 2 * err
+		if e2 > -dy {
+			err -= dy
+			x1 += sx
+		}
+		if e2 < dx {
+			err += dx
+			y1 += sy
+		}
+	}
+
+	return false
 }
