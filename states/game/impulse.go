@@ -26,5 +26,5 @@ type ImpulseDeflect struct {
 }
 
 func (i ImpulseDeflect) Cost() int {
-	return 4
+	return 2
 }

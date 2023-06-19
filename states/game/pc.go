@@ -30,7 +30,7 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		Sprite:            resources.NewSprite(ctx.Manager.GetAs("images", "player", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Phylactery:        resources.NewSprite(ctx.Manager.GetAs("images", "phylactery", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Arrow:             resources.NewSprite(ctx.Manager.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
-		Energy:            0,
+		Energy:            100,
 		MaxEnergy:         100,
 		EnergyRestoreRate: 1,
 	}
