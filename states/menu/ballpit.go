@@ -7,14 +7,14 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
-type BulletBox struct {
+type Ballpit struct {
 }
 
-func (s *BulletBox) Init(ctx states.Context) error {
+func (s *Ballpit) Init(ctx states.Context) error {
 	return nil
 }
 
-func (s *BulletBox) Update(ctx states.Context) error {
+func (s *Ballpit) Update(ctx states.Context) error {
 	ctx.StateMachine.PopState()
 	world := game.World{
 		Players: []game.Player{
@@ -28,5 +28,5 @@ func (s *BulletBox) Update(ctx states.Context) error {
 	return nil
 }
 
-func (s *BulletBox) Draw(screen *ebiten.Image) {
+func (s *Ballpit) Draw(screen *ebiten.Image) {
 }

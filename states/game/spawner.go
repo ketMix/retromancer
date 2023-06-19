@@ -77,33 +77,33 @@ func CreateSpawner(x, y float64) *Spawner {
 	return &Spawner{
 		shape: CircleShape{X: x, Y: y, Radius: 0},
 		bulletGroups: []*BulletGroup{
-			// WHITE: Aim radially
-			{
-				angle:         Radial,
-				bulletCount:   24,
-				lastSpawnedAt: 10, // Spawn immediately
-				spawnRate:     15,
-				loopCount:     -1, // Loop forever
-				bullet:        CreateBullet(x, y, 3, Circular, 3, 0, 0, 0, 100, 0, color.White),
-			},
+			// // WHITE: Aim radially
+			// {
+			// 	angle:         Radial,
+			// 	bulletCount:   24,
+			// 	lastSpawnedAt: 10, // Spawn immediately
+			// 	spawnRate:     15,
+			// 	loopCount:     -1, // Loop forever
+			// 	bullet:        CreateBullet(x, y, 3, Circular, 3, 0, 0, 0, 100, 0, color.White),
+			// },
 			// BLUE: Aim radially, but accelerated
-			{
-				angle:         Radial,
-				bulletCount:   12,
-				lastSpawnedAt: 10, // Spawn immediately
-				spawnRate:     25,
-				loopCount:     -1,
-				bullet:        CreateBullet(x, y, 3, Circular, 1, 0, 1, 0, 3, 0, color.RGBA{0, 0, 255, 255}),
-			},
-			// GREEN: Radial with a bit of angular velocity
 			{
 				angle:         Radial,
 				bulletCount:   5,
 				lastSpawnedAt: 10, // Spawn immediately
-				spawnRate:     20,
+				spawnRate:     25,
 				loopCount:     -1,
-				bullet:        CreateBullet(x, y, 3, Circular, 5, 0, 0, 0, 100, 0.02, color.RGBA{0, 255, 0, 255}),
+				bullet:        CreateBullet(x, y, 3, Directional, 1, 0, 1, 0, 3, 0, color.RGBA{0, 0, 255, 255}),
 			},
+			// // GREEN: Radial with a bit of angular velocity
+			// {
+			// 	angle:         Radial,
+			// 	bulletCount:   5,
+			// 	lastSpawnedAt: 10, // Spawn immediately
+			// 	spawnRate:     20,
+			// 	loopCount:     -1,
+			// 	bullet:        CreateBullet(x, y, 3, Circular, 5, 0, 0, 0, 100, 0.02, color.RGBA{0, 255, 0, 255}),
+			// },
 			// PURPLE: Cool lil' spiral thing
 			{
 				angle:         Radial,
@@ -116,7 +116,7 @@ func CreateSpawner(x, y float64) *Spawner {
 			// YELLOW: Random Angle
 			{
 				angle:         Random,
-				bulletCount:   20,
+				bulletCount:   10,
 				lastSpawnedAt: 10, // Spawn immediately
 				spawnRate:     5,
 				loopCount:     -1,
@@ -128,7 +128,7 @@ func CreateSpawner(x, y float64) *Spawner {
 				bulletCount: 1,
 				spawnRate:   35,
 				loopCount:   -1,
-				bullet:      CreateBullet(x, y, 5, Circular, 2, 0, 0, 0, 100, 0, color.RGBA{255, 0, 0, 255}),
+				bullet:      CreateBullet(x, y, 4, Vector, 2, 0, 0, 0, 100, 0, color.RGBA{255, 0, 0, 255}),
 			},
 		},
 	}

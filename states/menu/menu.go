@@ -10,8 +10,8 @@ import (
 )
 
 type Menu struct {
-	logo, sp, mp, quit, bulletbox, maptest *resources.Sprite
-	sprites                                resources.Sprites
+	logo, sp, mp, quit, ballpit, maptest *resources.Sprite
+	sprites                              resources.Sprites
 }
 
 func (m *Menu) Init(ctx states.Context) error {
@@ -33,14 +33,14 @@ func (m *Menu) Init(ctx states.Context) error {
 	m.quit.X = x - m.quit.Width()/2
 	m.quit.Y = y
 	y += m.quit.Height() + 16
-	m.bulletbox = resources.NewSprite(ctx.Manager.GetAs("images", "bulletbox", (*ebiten.Image)(nil)).(*ebiten.Image))
-	m.bulletbox.X = x - m.quit.Width()/2
-	m.bulletbox.Y = y
-	y += m.bulletbox.Height() + 16
+	m.ballpit = resources.NewSprite(ctx.Manager.GetAs("images", "ballpit", (*ebiten.Image)(nil)).(*ebiten.Image))
+	m.ballpit.X = x - m.quit.Width()/2
+	m.ballpit.Y = y
+	y += m.ballpit.Height() + 16
 	m.maptest = resources.NewSprite(ctx.Manager.GetAs("images", "maptest", (*ebiten.Image)(nil)).(*ebiten.Image))
 	m.maptest.X = x - m.maptest.Width()/2
 	m.maptest.Y = y
-	m.sprites = append(m.sprites, m.sp, m.mp, m.quit, m.bulletbox, m.maptest)
+	m.sprites = append(m.sprites, m.sp, m.mp, m.quit, m.ballpit, m.maptest)
 	return nil
 }
 
@@ -67,8 +67,8 @@ func (m *Menu) Update(ctx states.Context) error {
 			ctx.StateMachine.PushState(&MultiPlayer{})
 		} else if m.quit.Hit(float64(x), float64(y)) {
 			return states.ErrQuitGame
-		} else if m.bulletbox.Hit(float64(x), float64(y)) {
-			ctx.StateMachine.PushState(&BulletBox{})
+		} else if m.ballpit.Hit(float64(x), float64(y)) {
+			ctx.StateMachine.PushState(&Ballpit{})
 		} else if m.maptest.Hit(float64(x), float64(y)) {
 			ctx.StateMachine.PushState(&tests.MapLayer{})
 		}
