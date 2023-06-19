@@ -30,10 +30,11 @@ type Bullet struct {
 	MaxSpeed        float64 // Maximum speed of the bullet
 	AngularVelocity float64 // How fast the bullet rotates
 	Color           color.Color
-	aimDelay        int  // How long the bullet should wait before aiming at player
-	aimTime         int  // How long the bullet should aim at player
-	reflected       bool // If the bullet has been reflected
-	deflected       bool // If the bullet has been deflected.
+	aimDelay        int       // How long the bullet should wait before aiming at player
+	aimTime         int       // How long the bullet should aim at player
+	reflected       bool      // If the bullet has been reflected
+	deflected       bool      // If the bullet has been deflected.
+	timeLine        []*Bullet // Positions the bullet has been in
 	sprite          *resources.Sprite
 	Destroyed       bool
 }
@@ -42,22 +43,23 @@ type Bullet struct {
 func CreateBullet(
 	bulletType BulletType,
 	color color.Color,
-	x, y, radius, speed, acceleration, accelAccel, minSpeed, maxSpeed, angularVelocity float64,
+	x, y, radius, speed, angle, acceleration, accelAccel, minSpeed, maxSpeed, angularVelocity float64,
 	aimTime, aimDelay int,
 ) *Bullet {
 	b := &Bullet{
-		Shape:        CircleShape{X: x, Y: y, Radius: radius},
-		Type:         bulletType,
-		Speed:        speed,
-		Acceleration: acceleration,
-		AccelAccel:   accelAccel,
-		// Angle:           angle, Set by spawner
+		Shape:           CircleShape{X: x, Y: y, Radius: radius},
+		Type:            bulletType,
+		Speed:           speed,
+		Acceleration:    acceleration,
+		AccelAccel:      accelAccel,
+		Angle:           angle,
 		MinSpeed:        minSpeed,
 		MaxSpeed:        maxSpeed,
 		AngularVelocity: angularVelocity,
 		Color:           color,
 		aimTime:         aimTime,
 		aimDelay:        aimDelay,
+		timeLine:        make([]*Bullet, 0),
 	}
 	b.sprite = resources.NewSprite(ebiten.NewImage(int(radius*2), int(radius*2)))
 	b.sprite.X = x
@@ -66,7 +68,7 @@ func CreateBullet(
 }
 
 // Copy a bullet
-func BulletFromExisting(b *Bullet) *Bullet {
+func BulletFromExisting(b *Bullet, angle float64) *Bullet {
 	bullet := CreateBullet(
 		b.Type,
 		b.Color,
@@ -74,6 +76,7 @@ func BulletFromExisting(b *Bullet) *Bullet {
 		b.Shape.Y,
 		b.Shape.Radius,
 		b.Speed,
+		angle,
 		b.Acceleration,
 		b.AccelAccel,
 		b.MinSpeed,
@@ -87,6 +90,38 @@ func BulletFromExisting(b *Bullet) *Bullet {
 
 // Update the bullet's position and speed
 func (b *Bullet) Update() (actions []Action) {
+	if len(b.timeLine) == 1 && b.reflected {
+		// if we're at the first point in timeLine, use the bullet as current bullet
+		prevBullet := b.timeLine[0]
+		b.timeLine = b.timeLine[:0]
+		b.Speed = prevBullet.Speed
+		b.Angle = prevBullet.Angle
+		b.Acceleration = prevBullet.Acceleration
+		b.aimTime = prevBullet.aimTime
+		b.aimDelay = prevBullet.aimDelay
+	}
+
+	if b.reflected && len(b.timeLine) > 0 {
+		// Get previous bullet and remove it from the timeline
+		prevBullet := b.timeLine[len(b.timeLine)-1]
+		b.timeLine = b.timeLine[:len(b.timeLine)-1]
+
+		// Set properties of the bullet
+		b.Speed = prevBullet.Speed
+
+		// Move bullet towards previous position, but keep it facing the same direction as previous bullet
+		movementAngle := math.Atan2(prevBullet.Shape.Y-b.Shape.Y, prevBullet.Shape.X-b.Shape.X)
+		b.Angle = prevBullet.Angle
+		b.Shape.X += b.Speed * math.Cos(movementAngle)
+		b.sprite.X = b.Shape.X
+		b.Shape.Y += b.Speed * math.Sin(movementAngle)
+		b.sprite.Y = b.Shape.Y
+		return actions
+	}
+	if len(b.timeLine) == 0 {
+		// Stop reflecting
+		b.reflected = false
+	}
 	b.Speed += b.Acceleration
 	b.Acceleration += b.AccelAccel
 
@@ -105,6 +140,9 @@ func (b *Bullet) Update() (actions []Action) {
 	if b.aimDelay > 0 {
 		b.aimDelay--
 	}
+
+	// Add bullet to timeline
+	b.timeLine = append(b.timeLine, BulletFromExisting(b, b.Angle))
 
 	// If we're not aiming at the player yet, adjust angle by angular velocity.
 	if b.aimDelay > 0 || b.aimTime <= 0 {
@@ -125,6 +163,7 @@ func (b *Bullet) Update() (actions []Action) {
 		}
 		b.aimTime--
 	}
+
 	return actions
 }
 
@@ -134,8 +173,8 @@ func (b *Bullet) Reflect() {
 	}
 	// Stop aiming the bullet if it was aimed. Perhaps this should deflect the bullet towards the spawner that created it.
 	b.aimTime = 0
-	b.Angle = math.Mod(b.Angle+math.Pi, 2*math.Pi)
-	b.AngularVelocity = 0
+	// b.Angle = math.Mod(b.Angle+math.Pi, 2*math.Pi)
+	// b.AngularVelocity = 0
 	b.reflected = true
 }
 
