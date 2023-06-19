@@ -41,16 +41,16 @@ type Bullet struct {
 func CreateBullet(
 	bulletType BulletType,
 	color color.Color,
-	x, y, radius, speed, angle, acceleration, accelAccel, minSpeed, maxSpeed, angularVelocity float64,
+	x, y, radius, speed, acceleration, accelAccel, minSpeed, maxSpeed, angularVelocity float64,
 	aimTime, aimDelay int,
 ) *Bullet {
 	b := &Bullet{
-		Shape:           CircleShape{X: x, Y: y, Radius: radius},
-		Type:            bulletType,
-		Speed:           speed,
-		Angle:           angle,
-		Acceleration:    acceleration,
-		AccelAccel:      accelAccel,
+		Shape:        CircleShape{X: x, Y: y, Radius: radius},
+		Type:         bulletType,
+		Speed:        speed,
+		Acceleration: acceleration,
+		AccelAccel:   accelAccel,
+		// Angle:           angle, Set by spawner
 		MinSpeed:        minSpeed,
 		MaxSpeed:        maxSpeed,
 		AngularVelocity: angularVelocity,
@@ -73,7 +73,6 @@ func BulletFromExisting(b *Bullet) *Bullet {
 		b.Shape.Y,
 		b.Shape.Radius,
 		b.Speed,
-		b.Angle,
 		b.Acceleration,
 		b.AccelAccel,
 		b.MinSpeed,
@@ -120,7 +119,6 @@ func (b *Bullet) Update() (actions []Action) {
 			actions = append(actions, ActionFindNearestActor{Actor: (*PC)(nil)})
 		} else {
 			// Aim at closest actor.
-			// Need to add some momentum so it doesn't just follow the target.
 			x, y, _, _ := b.TargetActor.Bounds()
 			b.Angle = math.Atan2(y-b.Shape.Y, x-b.Shape.X)
 		}
