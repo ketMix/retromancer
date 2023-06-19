@@ -2,7 +2,6 @@ package game
 
 import (
 	"ebijam23/net"
-	"ebijam23/states"
 )
 
 // RemotePlayer is a networked player.
@@ -14,7 +13,7 @@ type RemotePlayer struct {
 	queuedImpulses ImpulseSet
 }
 
-func (p *RemotePlayer) Update(ctx states.Context) {
+func (p *RemotePlayer) Update() {
 }
 
 func (p *RemotePlayer) Tick() {

@@ -2,7 +2,6 @@ package game
 
 import (
 	"ebijam23/net"
-	"ebijam23/states"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -16,7 +15,7 @@ type LocalPlayer struct {
 	queuedImpulses ImpulseSet
 }
 
-func (p *LocalPlayer) Update(ctx states.Context) {
+func (p *LocalPlayer) Update() {
 	// FIXME: Use a bind system.
 	ydir := 0
 	xdir := 0
@@ -51,24 +50,13 @@ func (p *LocalPlayer) Update(ctx states.Context) {
 			X: float64(x),
 			Y: float64(y),
 		}
-		// FIXME: Change the sprite _during_ world update.
-		if a, ok := p.actor.(*PC); ok {
-			a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-reflect", (*ebiten.Image)(nil)).(*ebiten.Image))
-		}
-
 	} else if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
 		p.impulses.Interaction = ImpulseDeflect{
 			X: float64(x),
 			Y: float64(y),
 		}
-		if a, ok := p.actor.(*PC); ok {
-			a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-deflect", (*ebiten.Image)(nil)).(*ebiten.Image))
-		}
 	} else {
 		p.impulses.Interaction = nil
-		if a, ok := p.actor.(*PC); ok {
-			a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
-		}
 	}
 }
 
