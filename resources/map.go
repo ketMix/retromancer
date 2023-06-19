@@ -15,8 +15,9 @@ type Layer struct {
 
 type Map struct {
 	Title        string
-	Layers       []Layer  `yaml:"-"`
-	SourceLayers []string `yaml:"layers"`
+	RuneMap      map[string]string `yaml:"runes"`
+	Layers       []Layer           `yaml:"-"`
+	SourceLayers []string          `yaml:"layers"`
 }
 
 func (m *Map) UnmarshalYAML(unmarshal func(interface{}) error) error {

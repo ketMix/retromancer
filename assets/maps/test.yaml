@@ -1,4 +1,10 @@
 title: Map o' Testing
+runes:
+  "@": player
+  "f": fire
+  "#": wall
+  ".": floor
+  " ": empty
 layers:
   - |
    #############

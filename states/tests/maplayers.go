@@ -17,17 +17,17 @@ type MapLayer struct {
 }
 
 func (m *MapLayer) Init(ctx states.Context) error {
-	m.Map = ctx.Manager.GetAs("maps", "test", (*resources.Map)(nil)).(*resources.Map)
+	m.Map = ctx.Manager.GetAs("maps", "test2", (*resources.Map)(nil)).(*resources.Map)
 
 	for i, l := range m.Map.Layers {
 		for j, row := range l.Cells {
 			for k, cell := range row {
-				switch cell.Type {
-				case '#':
+				switch m.Map.RuneMap[string(cell.Type)] {
+				case "wall":
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "wall", (*ebiten.Image)(nil)).(*ebiten.Image))
-				case 'f':
+				case "fire":
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "fire", (*ebiten.Image)(nil)).(*ebiten.Image))
-				case '.':
+				case "floor":
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "floor", (*ebiten.Image)(nil)).(*ebiten.Image))
 				default:
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "empty", (*ebiten.Image)(nil)).(*ebiten.Image))
