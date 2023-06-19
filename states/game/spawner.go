@@ -10,10 +10,11 @@ import (
 type GroupAngle string
 
 const (
-	Aimed  GroupAngle = "aimed"  // Aim at nearest player
-	Fixed             = "fixed"  // Fixed angle
-	Radial            = "radial" // Radial angle from spawner
-	Random            = "random" // Random angle
+	Aimed     GroupAngle = "aimed"     // Aim at target player MAYBE THIS SHOULDN'T BE A THING AND JUST USED AIMED INIT
+	AimedInit            = "aimedinit" // Init angle is aimed at target player
+	Fixed                = "fixed"     // Fixed angle
+	Radial               = "radial"    // Radial angle from spawner
+	Random               = "random"    // Random angle
 )
 
 type BulletGroup struct {
@@ -45,6 +46,8 @@ func (bg *BulletGroup) Update() (actions []Action) {
 			switch bg.angle {
 			case Aimed:
 				bullet.aimed = true
+			case AimedInit:
+				bullet.initAimed = true
 			case Fixed:
 				bullet.Angle = 0
 			case Radial:
@@ -86,14 +89,14 @@ func CreateSpawner(x, y float64) *Spawner {
 			// 	loopCount:     -1, // Loop forever
 			// 	bullet:        CreateBullet(x, y, 3, Circular, 3, 0, 0, 0, 100, 0, color.White),
 			// },
-			// BLUE: Aim radially, but accelerated
+			// BLUE: Aim at player, but accelerated
 			{
-				angle:         Radial,
-				bulletCount:   5,
+				angle:         AimedInit,
+				bulletCount:   1,
 				lastSpawnedAt: 10, // Spawn immediately
 				spawnRate:     25,
 				loopCount:     -1,
-				bullet:        CreateBullet(x, y, 3, Directional, 1, 0, 1, 0, 3, 0, color.RGBA{0, 0, 255, 255}),
+				bullet:        CreateBullet(x, y, 3, Directional, 1, 0, 1.5, 0, 10, 0, color.RGBA{0, 0, 255, 255}),
 			},
 			// // GREEN: Radial with a bit of angular velocity
 			// {
