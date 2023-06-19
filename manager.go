@@ -108,13 +108,17 @@ func (m *ResourceManager) GetAs(category string, name string, target interface{}
 func (m *ResourceManager) LoadAll() error {
 	m.files.Walk("images/", func(path string, entry fs.DirEntry, err error) error {
 		if !entry.IsDir() {
-			m.Load("images", entry.Name())
+			if _, err := m.Load("images", entry.Name()); err != nil {
+				return err
+			}
 		}
 		return nil
 	})
 	m.files.Walk("maps/", func(path string, entry fs.DirEntry, err error) error {
 		if !entry.IsDir() {
-			m.Load("maps", entry.Name())
+			if _, err := m.Load("maps", entry.Name()); err != nil {
+				return err
+			}
 		}
 		return nil
 	})
