@@ -25,12 +25,12 @@ func (m *MapLayer) Init(ctx states.Context) error {
 				switch m.Map.RuneMap[string(cell.Type)] {
 				case "wall":
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "wall", (*ebiten.Image)(nil)).(*ebiten.Image))
-				case "fire":
-					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "fire", (*ebiten.Image)(nil)).(*ebiten.Image))
 				case "floor":
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "floor", (*ebiten.Image)(nil)).(*ebiten.Image))
-				default:
+				case "empty":
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "empty", (*ebiten.Image)(nil)).(*ebiten.Image))
+				default:
+					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", m.Map.RuneMap[string(cell.Type)], (*ebiten.Image)(nil)).(*ebiten.Image))
 				}
 				cell.Sprite.SetXY(
 					cell.Sprite.Width()*float64(k),
@@ -145,23 +145,17 @@ func (m *MapLayer) DrawCoord(x, y, z int, screen *ebiten.Image) {
 	opts.GeoM.Translate(0, float64(z)*float64(cellH))
 
 	if cell.Type == '.' {
-		opts.GeoM.Translate(1, 2)
-	}
-	if cell.Type == 'f' {
-		opts.ColorScale.ScaleAlpha(float32(dz))
-		cell.Sprite.DrawWithOptions(screen, opts)
-	} else if cell.Type == '.' {
+		opts.GeoM.Translate(0, -4)
 		for i := 0; i < 2; i++ {
 			v := float32(i) / float32(cellH) * float32(zv)
 			opts.ColorScale.SetR(v)
 			opts.ColorScale.SetG(v)
 			opts.ColorScale.SetB(v)
-			//opts.ColorScale.SetA(1 - float32(dz))
 			opts.ColorScale.ScaleAlpha(float32(dz))
 			cell.Sprite.DrawWithOptions(screen, opts)
 			opts.GeoM.Translate(-1, -2)
 		}
-	} else {
+	} else if cell.Type == '#' {
 		for i := 0; i < cellH; i++ {
 			v := float32(i) / float32(cellH) * float32(zv)
 			opts.ColorScale.SetR(v)
@@ -171,9 +165,12 @@ func (m *MapLayer) DrawCoord(x, y, z int, screen *ebiten.Image) {
 			cell.Sprite.DrawWithOptions(screen, opts)
 			opts.GeoM.Translate(-1, -2)
 		}
-	}
-	/*} else if cell.Type == '.' {
-		opts.GeoM.Translate(0, -2)
+	} else {
+		v := float32(2) / float32(cellH) * float32(zv)
+		opts.ColorScale.SetR(v)
+		opts.ColorScale.SetG(v)
+		opts.ColorScale.SetB(v)
+		opts.ColorScale.ScaleAlpha(float32(dz))
 		cell.Sprite.DrawWithOptions(screen, opts)
-	}*/
+	}
 }
