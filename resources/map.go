@@ -18,6 +18,13 @@ type Map struct {
 	RuneMap      map[string]string `yaml:"runes"`
 	Layers       []Layer           `yaml:"-"`
 	SourceLayers []string          `yaml:"layers"`
+	Start        [3]int            `yaml:"start"`
+	Actors       []ActorSpawn      `yaml:"actors"`
+}
+
+type ActorSpawn struct {
+	Spawn [3]int `yaml:"spawn"`
+	Type  string `yaml:"type"`
 }
 
 func (m *Map) UnmarshalYAML(unmarshal func(interface{}) error) error {

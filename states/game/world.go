@@ -17,8 +17,8 @@ type World struct {
 	Players     []Player // Exposed so singleplayer/multiplayer can set it.
 	tick        int      // tick represents the current processed game tick. This is used to lockstep the players.
 	ebitenTicks int      // Elapsed ebiten ticks.
-	actors      []Actor
-	bullets     []*Bullet
+	StartingMap string
+	activeMap   *Map
 }
 
 func (s *World) Init(ctx states.Context) error {
@@ -34,9 +34,10 @@ func (s *World) Init(ctx states.Context) error {
 		pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", hats[rand.Int31n(int32(len(hats)))], (*ebiten.Image)(nil)).(*ebiten.Image))
 
 		p.SetActor(pc)
-		// Add to the world. FIXME: This should be done in some sort of sub-game state.
-		s.actors = append(s.actors, p.Actor())
 	}
+
+	// Travel to the starting map.
+	s.TravelToMap(ctx, s.StartingMap)
 
 	return nil
 }
@@ -61,7 +62,7 @@ func (s *World) Update(ctx states.Context) error {
 
 			// Process the world!!!
 			var actorActions []ActorActions
-			for _, actor := range s.actors {
+			for _, actor := range s.activeMap.actors {
 				actorActions = append(actorActions, ActorActions{
 					Actor:   actor,
 					Actions: actor.Update(),
@@ -70,7 +71,7 @@ func (s *World) Update(ctx states.Context) error {
 
 			// Process bulleets
 			var bulletActions []BulletActions
-			for _, b := range s.bullets {
+			for _, b := range s.activeMap.bullets {
 				bulletActions = append(bulletActions, BulletActions{
 					Bullet:  b,
 					Actions: b.Update(),
@@ -108,7 +109,7 @@ func (s *World) Update(ctx states.Context) error {
 							bullet.Deflect(action.Direction)
 						}
 					case ActionSpawnBullets:
-						s.bullets = append(s.bullets, action.Bullets...)
+						s.activeMap.bullets = append(s.activeMap.bullets, action.Bullets...)
 					}
 				}
 				if a, ok := actor.(*PC); ok {
@@ -130,7 +131,7 @@ func (s *World) Update(ctx states.Context) error {
 					case ActionFindNearestActor:
 						var closestActor Actor
 						var closestDistance float64
-						for _, actor := range s.actors {
+						for _, actor := range s.activeMap.actors {
 							// Reflect isn't great to use here, but it beats nested type switches.
 							if reflect.TypeOf(actor) == reflect.TypeOf(action.Actor) {
 								x, y, _, _ := actor.Bounds()
@@ -147,8 +148,8 @@ func (s *World) Update(ctx states.Context) error {
 			}
 
 			// Okay, this probably isn't great, but let's check bullet collisions here.
-			for _, bullet := range s.bullets {
-				for _, actor := range s.actors {
+			for _, bullet := range s.activeMap.bullets {
+				for _, actor := range s.activeMap.actors {
 					if _, ok := actor.(*PC); ok {
 						if bullet.Shape.Collides(actor.Shape()) {
 							fmt.Println("TODO: bullet hit player!")
@@ -176,13 +177,8 @@ func (s *World) Update(ctx states.Context) error {
 }
 
 func (s *World) Draw(screen *ebiten.Image) {
-	// Draw bullets first.
-	for _, b := range s.bullets {
-		b.Draw(screen)
-	}
-	for _, a := range s.actors {
-		a.Draw(screen)
-	}
+	s.activeMap.Draw(screen)
+
 	for _, p := range s.Players {
 		y := screen.Bounds().Max.Y - 100
 		if _, ok := p.(*LocalPlayer); !ok {
@@ -201,24 +197,19 @@ func (s *World) Draw(screen *ebiten.Image) {
 	}
 }
 
-// TODO: This should be handled by map loading.
-func (s *World) AddActor(a Actor) {
-	s.actors = append(s.actors, a)
-}
-
 func (s *World) HandleTrash() {
 	newBullets := make([]*Bullet, 0)
-	for _, b := range s.bullets {
+	for _, b := range s.activeMap.bullets {
 		if !b.OutOfBounds() {
 			newBullets = append(newBullets, b)
 		}
 	}
-	s.bullets = newBullets
+	s.activeMap.bullets = newBullets
 }
 
 func (s *World) IntersectingBullets(sh Shape) []*Bullet {
 	var bullets []*Bullet
-	for _, b := range s.bullets {
+	for _, b := range s.activeMap.bullets {
 		if b.Shape.Collides(sh) {
 			bullets = append(bullets, b)
 		}

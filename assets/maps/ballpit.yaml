@@ -1,0 +1,10 @@
+title: Vomit in the Ballpit
+runes:
+  " ": empty
+start: [8, 11, 1]
+actors:
+  - spawn: [20, 11, 0]
+    type: spawner
+layers:
+  - |
+

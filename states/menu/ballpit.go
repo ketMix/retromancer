@@ -17,13 +17,11 @@ func (s *Ballpit) Init(ctx states.Context) error {
 func (s *Ballpit) Update(ctx states.Context) error {
 	ctx.StateMachine.PopState()
 	world := game.World{
+		StartingMap: "ballpit",
 		Players: []game.Player{
 			&game.LocalPlayer{},
 		},
 	}
-	w, h := ebiten.WindowSize()
-	spawner := game.CreateSpawner(float64(w/4), float64(h/4))
-	world.AddActor(spawner)
 	ctx.StateMachine.PushState(&world)
 	return nil
 }

@@ -17,6 +17,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 func (s *SinglePlayer) Update(ctx states.Context) error {
 	ctx.StateMachine.PopState()
 	ctx.StateMachine.PushState(&game.World{
+		StartingMap: "start",
 		Players: []game.Player{
 			&game.LocalPlayer{},
 		},
