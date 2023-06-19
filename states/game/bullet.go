@@ -113,6 +113,8 @@ func (b *Bullet) Update() (actions []Action) {
 	}
 
 	if b.aimTime > 0 {
+		// Disable angular velocity.
+		b.AngularVelocity = 0
 		// Request closest player actor for next tick.
 		if b.TargetActor == nil {
 			actions = append(actions, ActionFindNearestActor{Actor: (*PC)(nil)})
