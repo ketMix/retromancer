@@ -25,6 +25,7 @@ type Bullet struct {
 	Speed           float64 // How fastum the bullet goes
 	Angle           float64 // What angle the bullet has
 	Acceleration    float64 // How fast the bullet accelerates
+	AccelAccel      float64 // How fast the bullet accelerates its acceleration
 	MinSpeed        float64 // Minimum speed of the bullet
 	MaxSpeed        float64 // Maximum speed of the bullet
 	AngularVelocity float64 // How fast the bullet rotates
@@ -40,7 +41,7 @@ type Bullet struct {
 func CreateBullet(
 	bulletType BulletType,
 	color color.Color,
-	x, y, radius, speed, angle, acceleration, minSpeed, maxSpeed, angularVelocity float64,
+	x, y, radius, speed, angle, acceleration, accelAccel, minSpeed, maxSpeed, angularVelocity float64,
 	aimTime, aimDelay int,
 ) *Bullet {
 	b := &Bullet{
@@ -49,6 +50,7 @@ func CreateBullet(
 		Speed:           speed,
 		Angle:           angle,
 		Acceleration:    acceleration,
+		AccelAccel:      accelAccel,
 		MinSpeed:        minSpeed,
 		MaxSpeed:        maxSpeed,
 		AngularVelocity: angularVelocity,
@@ -73,6 +75,7 @@ func BulletFromExisting(b *Bullet) *Bullet {
 		b.Speed,
 		b.Angle,
 		b.Acceleration,
+		b.AccelAccel,
 		b.MinSpeed,
 		b.MaxSpeed,
 		b.AngularVelocity,
@@ -84,6 +87,9 @@ func BulletFromExisting(b *Bullet) *Bullet {
 
 // Update the bullet's position and speed
 func (b *Bullet) Update() (actions []Action) {
+	b.Speed += b.Acceleration
+	b.Acceleration += b.AccelAccel
+
 	if b.Speed < b.MinSpeed {
 		b.Speed = b.MinSpeed
 	}
@@ -94,8 +100,6 @@ func (b *Bullet) Update() (actions []Action) {
 	b.sprite.X = b.Shape.X
 	b.Shape.Y += b.Speed * math.Sin(b.Angle)
 	b.sprite.Y = b.Shape.Y
-
-	b.Speed += b.Acceleration
 
 	// Decrement delay
 	if b.aimDelay > 0 {

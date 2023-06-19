@@ -81,7 +81,7 @@ func CreateSpawner(x, y float64) *Spawner {
 			// 	lastSpawnedAt: 10, // Spawn immediately
 			// 	spawnRate:     15,
 			// 	loopCount:     -1, // Loop forever
-			// 	bullet:        CreateBullet(Circular,color.White, x, y, 3, , 3, 0, 0, 0, 100, 0, 0, 0),
+			// 	bullet:        CreateBullet(Circular,color.White, x, y, 3, , 3, 0, 0, 0, 0, 100, 0, 0, 0),
 			// },
 			// BLUE: Aim at player, but accelerated
 			{
@@ -90,7 +90,7 @@ func CreateSpawner(x, y float64) *Spawner {
 				lastSpawnedAt: 10, // Spawn immediately
 				spawnRate:     25,
 				loopCount:     -1,
-				bullet:        CreateBullet(Directional, color.RGBA{0, 0, 255, 255}, x, y, 3, 0.5, 0, 2, 0, 10, 0, 5, 10),
+				bullet:        CreateBullet(Directional, color.RGBA{0, 0, 255, 255}, x, y, 3, 0.5, 0, 0, 0.25, 0, 10, 0, 5, 10),
 			},
 			// // GREEN: Radial with a bit of angular velocity
 			// {
@@ -99,34 +99,34 @@ func CreateSpawner(x, y float64) *Spawner {
 			// 	lastSpawnedAt: 10, // Spawn immediately
 			// 	spawnRate:     20,
 			// 	loopCount:     -1,
-			// 	bullet:        CreateBullet(Circular,color.RGBA{0, 255, 0, 255}, x, y, 3,  5, 0, 0, 0, 100, 0.02, 0, 0),
+			// 	bullet:        CreateBullet(Circular,color.RGBA{0, 255, 0, 255}, x, y, 3, 5, 0, 0, 0, 0, 100, 0.02, 0, 0),
 			// },
 			// PURPLE: Cool lil' spiral thing
-			{
-				angle:         Radial,
-				bulletCount:   5,
-				lastSpawnedAt: 10, // Spawn immediately
-				spawnRate:     20,
-				loopCount:     -1,
-				bullet:        CreateBullet(Circular, color.RGBA{255, 0, 255, 255}, x, y, 3, 5, 0, 0, 0, 100, 0.1, 0, 0),
-			},
-			// YELLOW: Random Angle
-			{
-				angle:         Random,
-				bulletCount:   10,
-				lastSpawnedAt: 10, // Spawn immediately
-				spawnRate:     5,
-				loopCount:     -1,
-				bullet:        CreateBullet(Circular, color.RGBA{255, 255, 0, 255}, x, y, 3, 5, 0, 0, 0, 100, 0, 0, 0),
-			},
-			// RED: Aim at player
-			{
-				angle:       Fixed,
-				bulletCount: 1,
-				spawnRate:   35,
-				loopCount:   -1,
-				bullet:      CreateBullet(Vector, color.RGBA{255, 0, 0, 255}, x, y, 4, 2, 0, 0, 0, 100, 0, 100, 0),
-			},
+			// {
+			// 	angle:         Radial,
+			// 	bulletCount:   5,
+			// 	lastSpawnedAt: 10, // Spawn immediately
+			// 	spawnRate:     20,
+			// 	loopCount:     -1,
+			// 	bullet:        CreateBullet(Circular, color.RGBA{255, 0, 255, 255}, x, y, 3, 5, 0, 0, 0, 0, 100, 0.1, 0, 0),
+			// },
+			// // YELLOW: Random Angle
+			// {
+			// 	angle:         Random,
+			// 	bulletCount:   10,
+			// 	lastSpawnedAt: 10, // Spawn immediately
+			// 	spawnRate:     5,
+			// 	loopCount:     -1,
+			// 	bullet:        CreateBullet(Circular, color.RGBA{255, 255, 0, 255}, x, y, 3, 5, 0, 0, 0, 0, 100, 0, 0, 0),
+			// },
+			// // RED: Aim at player
+			// {
+			// 	angle:       Fixed,
+			// 	bulletCount: 1,
+			// 	spawnRate:   35,
+			// 	loopCount:   -1,
+			// 	bullet:      CreateBullet(Vector, color.RGBA{255, 0, 0, 255}, x, y, 4, 2, 0, 0, 0, 0, 100, 0, 100, 0),
+			// },
 		},
 	}
 }
