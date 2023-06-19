@@ -14,6 +14,7 @@ type PC struct {
 	Arrow                     *resources.Sprite
 	Sprite                    *resources.Sprite
 	Phylactery                *resources.Sprite
+	Hat                       *resources.Sprite
 	shape                     CircleShape
 	Hand                      Hand
 	TicksSinceLastInteraction int
@@ -111,6 +112,11 @@ func (p *PC) Draw(screen *ebiten.Image) {
 	opts.GeoM.Translate(p.shape.X-float64(int(p.Phylactery.Width())/2), p.shape.Y-float64(int(p.Phylactery.Height())/2))
 	opts.ColorScale.Scale(0.5, 0.5, 1.0, 1.0)
 	screen.DrawImage(p.Phylactery.Image(), opts)
+
+	// Draw the player's dumb hat.
+	opts = &ebiten.DrawImageOptions{}
+	opts.GeoM.Translate(p.shape.X-float64(int(p.Hat.Width())/2), p.Sprite.Y-p.Sprite.Height()/2-p.Hat.Height()+3)
+	screen.DrawImage(p.Hat.Image(), opts)
 
 	r := math.Atan2(p.shape.Y-p.Hand.Shape.Y, p.shape.X-p.Hand.Shape.X)
 

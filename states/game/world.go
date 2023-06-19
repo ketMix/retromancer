@@ -1,10 +1,12 @@
 package game
 
 import (
+	"ebijam23/resources"
 	"ebijam23/states"
 	"fmt"
 	"image/color"
 	"math"
+	"math/rand"
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -26,6 +28,11 @@ func (s *World) Init(ctx states.Context) error {
 	// Create actors for our players.
 	for _, p := range s.Players {
 		pc := s.NewPC(ctx)
+
+		// TODO: Read this in from the player's desired hat. Also, the hats should be dynamically built from the any hat- prefixed file in the manager's images.
+		hats := []string{"hat-ebiten", "hat-wizard", "hat-gopher", "hat-tux"}
+		pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", hats[rand.Int31n(int32(len(hats)))], (*ebiten.Image)(nil)).(*ebiten.Image))
+
 		p.SetActor(pc)
 		// Add to the world. FIXME: This should be done in some sort of sub-game state.
 		s.actors = append(s.actors, p.Actor())
