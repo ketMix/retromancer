@@ -130,7 +130,80 @@ func (b *Bullet) Deflect(angle float64) {
 
 // Draw the bullet
 func (b *Bullet) Draw(screen *ebiten.Image) {
+	// Draw base bullet
 	vector.DrawFilledCircle(screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius), b.Color, false)
+
+	// Draw the border depending on its type
+	switch b.Type {
+	case Circular:
+		// Draw circle border
+		vector.StrokeCircle(screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius)+2, 1, color.White, false)
+	case Directional:
+		// Draw V shape on both ends
+		vector.StrokeLine(
+			screen,
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*2),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*2),
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)+b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)+b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
+			1,
+			color.White,
+			false,
+		)
+		vector.StrokeLine(
+			screen,
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*2),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*2),
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)-b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)-b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
+			1,
+			color.White,
+			false,
+		)
+		vector.StrokeLine(
+			screen,
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*-2),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*-2),
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)+b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)+b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
+			1,
+			color.White,
+			false,
+		)
+		vector.StrokeLine(
+			screen,
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*-2),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*-2),
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)-b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)-b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
+			1,
+			color.White,
+			false,
+		)
+	case Vector:
+		// Draw V shape
+		// Should be drawn on the edge in the direction of the bullet's angle
+		vector.StrokeLine(
+			screen,
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*2),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*2),
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)+b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)+b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
+			1,
+			color.White,
+			false,
+		)
+		vector.StrokeLine(
+			screen,
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*2),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*2),
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)-b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)-b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
+			1,
+			color.White,
+			false,
+		)
+	}
 }
 
 func (b *Bullet) OutOfBounds() bool {
