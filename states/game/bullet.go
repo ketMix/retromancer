@@ -30,6 +30,7 @@ type Bullet struct {
 	AngularVelocity float64 // How fast the bullet rotates
 	Color           color.Color
 	aimed           bool // If the bullet is aimed at a player (TODO: maybe do differently)
+	initAimed       bool // If the bullet is aimed at a player on init
 	reflected       bool // If the bullet has been reflected
 	deflected       bool // If the bullet has been deflected.
 	sprite          *resources.Sprite
@@ -87,7 +88,7 @@ func (b *Bullet) Update() (actions []Action) {
 
 	b.Speed += b.Acceleration
 
-	if !b.aimed {
+	if !b.aimed && !b.initAimed {
 		b.Angle += b.AngularVelocity
 	} else {
 		// Request closest player actor for next tick.
@@ -98,6 +99,7 @@ func (b *Bullet) Update() (actions []Action) {
 			// Need to add some momentum so it doesn't just follow the target.
 			x, y, _, _ := b.TargetActor.Bounds()
 			b.Angle = math.Atan2(y-b.Shape.Y, x-b.Shape.X)
+			b.initAimed = false
 		}
 	}
 	return actions
@@ -136,8 +138,9 @@ func (b *Bullet) Draw(screen *ebiten.Image) {
 	// Draw the border depending on its type
 	switch b.Type {
 	case Circular:
-		// Draw circle border
-		vector.StrokeCircle(screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius)+2, 1, color.White, false)
+		// Draw circle border? Bit too visually noisy.
+		// vector.StrokeCircle(screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius)+2, 1, color.White, false)
+		return
 	case Directional:
 		// Draw V shape on both ends
 		vector.StrokeLine(
