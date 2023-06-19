@@ -132,6 +132,10 @@ func (p *PC) Draw(screen *ebiten.Image) {
 
 	// Draw the player's dumb hat.
 	opts = &ebiten.DrawImageOptions{}
+	if p.Sprite.Flipped {
+		opts.GeoM.Scale(-1, 1)
+		opts.GeoM.Translate(p.Hat.Width(), 0)
+	}
 	opts.GeoM.Translate(p.shape.X-float64(int(p.Hat.Width())/2), p.Sprite.Y-p.Sprite.Height()/2-p.Hat.Height()+3)
 	screen.DrawImage(p.Hat.Image(), opts)
 
