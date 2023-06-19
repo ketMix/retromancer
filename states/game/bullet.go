@@ -107,6 +107,10 @@ func (b *Bullet) Reflect() {
 	if b.reflected {
 		return
 	}
+	// Stop aiming the bullet if it was aimed. Perhaps this should deflect the bullet towards the spawner that created it.
+	if b.aimed {
+		b.aimed = false
+	}
 	b.Angle = math.Mod(b.Angle+math.Pi, 2*math.Pi)
 	b.reflected = true
 }
@@ -114,6 +118,10 @@ func (b *Bullet) Reflect() {
 func (b *Bullet) Deflect(angle float64) {
 	if b.deflected {
 		return
+	}
+	// Stop aiming the bullet if it was aimed. Perhaps this should deflect the bullet towards the spawner that created it.
+	if b.aimed {
+		b.aimed = false
 	}
 	// FIXME: Deflect should take into account the bullet's angle relative to the deflection angle and use that for the final angle.
 	b.Angle = angle
