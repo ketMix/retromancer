@@ -46,7 +46,7 @@ func (s *World) Update(ctx states.Context) error {
 	readyCount := 0
 	for _, player := range s.Players {
 		// Passing context to players seems a bit of a violation.
-		player.Update(ctx)
+		player.Update()
 		if player.Ready(s.tick + 1) {
 			readyCount++
 		}
@@ -80,11 +80,14 @@ func (s *World) Update(ctx states.Context) error {
 			// Okay, this is very likely overkill to process actions entirely separately, but whatever.
 			for _, actorAction := range actorActions {
 				actor := actorAction.Actor
+				deflecting := false
+				reflecting := false
 				for _, action := range actorAction.Actions {
 					switch action := action.(type) {
 					case ActionMove:
 						actor.SetXY(action.X, action.Y)
 					case ActionReflect:
+						reflecting = true
 						bullets := s.IntersectingBullets(&CircleShape{
 							X:      action.X,
 							Y:      action.Y,
@@ -94,6 +97,7 @@ func (s *World) Update(ctx states.Context) error {
 							bullet.Reflect()
 						}
 					case ActionDeflect:
+						deflecting = true
 						x, y, _, _ := actor.Bounds()
 						bullets := s.IntersectingBullets(&CircleShape{
 							X:      x,
@@ -105,6 +109,16 @@ func (s *World) Update(ctx states.Context) error {
 						}
 					case ActionSpawnBullets:
 						s.bullets = append(s.bullets, action.Bullets...)
+					}
+				}
+				if a, ok := actor.(*PC); ok {
+					// FIXME: Probably only SetImage if image is not the expected one.
+					if deflecting {
+						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-deflect", (*ebiten.Image)(nil)).(*ebiten.Image))
+					} else if reflecting {
+						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-reflect", (*ebiten.Image)(nil)).(*ebiten.Image))
+					} else {
+						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
 					}
 				}
 			}
