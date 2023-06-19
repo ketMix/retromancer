@@ -134,6 +134,7 @@ func (b *Bullet) Reflect() {
 	// Stop aiming the bullet if it was aimed. Perhaps this should deflect the bullet towards the spawner that created it.
 	b.aimTime = 0
 	b.Angle = math.Mod(b.Angle+math.Pi, 2*math.Pi)
+	b.AngularVelocity = 0
 	b.reflected = true
 }
 
