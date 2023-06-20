@@ -29,7 +29,7 @@ func (s *World) Init(ctx states.Context) error {
 		pc := s.NewPC(ctx)
 
 		// TODO: Read this in from the player's desired hat. Also, the hats should be dynamically built from the any hat- prefixed file in the manager's images.
-		hats := []string{"hat-ebiten", "hat-wizard", "hat-gopher", "hat-tux", "hat-max", "hat-pep"}
+		hats := []string{"hat-ebiten", "hat-wizard", "hat-gopher", "hat-tux", "hat-max", "hat-pep", "hat-nootnoot"}
 		pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", hats[rand.Int31n(int32(len(hats)))], (*ebiten.Image)(nil)).(*ebiten.Image))
 
 		p.SetActor(pc)
