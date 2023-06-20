@@ -3,6 +3,7 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"fmt"
 	"image/color"
 	"math"
 
@@ -15,6 +16,7 @@ type PC struct {
 	//
 	Arrow                     *resources.Sprite
 	Sprite                    *resources.Sprite
+	DeathSprite               *resources.Sprite
 	Phylactery                *resources.Sprite
 	Hat                       *resources.Sprite
 	Life                      *resources.Sprite
@@ -35,14 +37,23 @@ type PC struct {
 func (s *World) NewPC(ctx states.Context) *PC {
 	pc := &PC{
 		Sprite:            resources.NewSprite(ctx.Manager.GetAs("images", "player", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		DeathSprite:       resources.NewSprite(ctx.Manager.GetAs("images", "player-dead1", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Phylactery:        resources.NewSprite(ctx.Manager.GetAs("images", "phylactery", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Arrow:             resources.NewSprite(ctx.Manager.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Life:              resources.NewSprite(ctx.Manager.GetAs("images", "life", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Energy:            100,
 		MaxEnergy:         100,
 		EnergyRestoreRate: 2,
-		Lives:             3,
+		Lives:             0,
 	}
+
+	// FIXME: This shouldn't be hardcoded.
+	pc.DeathSprite.Framerate = 2
+	pc.DeathSprite.Centered = true
+	for i := 1; i <= 11; i++ {
+		pc.DeathSprite.AddImage(ctx.Manager.GetAs("images", fmt.Sprintf("player-dead%d", i), (*ebiten.Image)(nil)).(*ebiten.Image))
+	}
+
 	pc.shape.Radius = 2
 	//pc.Sprite.Interpolate = true
 	pc.Sprite.Centered = true
@@ -61,6 +72,11 @@ func (p *PC) Player() Player {
 }
 
 func (p *PC) Update() (actions []Action) {
+	if p.Lives < 0 {
+		p.DeathSprite.Update()
+		return
+	}
+
 	p.TicksSinceLastInteraction++
 	if p.TicksSinceLastInteraction > 20 {
 		if p.Energy+p.EnergyRestoreRate <= p.MaxEnergy {
@@ -120,6 +136,10 @@ func (p *PC) Update() (actions []Action) {
 	return actions
 }
 
+func (p *PC) Dead() bool {
+	return p.Lives < 0
+}
+
 func (p *PC) HasEnergyFor(imp Impulse) bool {
 	return p.Energy-imp.Cost() >= 0
 }
@@ -128,7 +148,33 @@ func (p *PC) SetImpulses(impulses ImpulseSet) {
 	p.impulses = impulses
 }
 
+// DrawHat draws the player's dumb hat.
+func (p *PC) DrawHat(screen *ebiten.Image, x, y float64) {
+	opts := &ebiten.DrawImageOptions{}
+	if p.Sprite.Flipped {
+		opts.GeoM.Scale(-1, 1)
+		opts.GeoM.Translate(p.Hat.Width(), 0)
+	}
+	opts.GeoM.Translate(p.shape.X-float64(int(p.Hat.Width())/2)+x, p.Sprite.Y-p.Sprite.Height()/2-p.Hat.Height()+y)
+	screen.DrawImage(p.Hat.Image(), opts)
+}
+
 func (p *PC) Draw(screen *ebiten.Image) {
+	if p.Dead() {
+		// Hackiness ahoy. This is hard coded to the exact death sprite frames and positions.
+		p.DeathSprite.SetXY(p.Sprite.X, p.Sprite.Y)
+		p.DeathSprite.Draw(screen)
+		y := 0.0
+		switch p.DeathSprite.Frame() {
+		case 9:
+			y = 1.0
+		case 10:
+			y = 8
+		}
+		p.DrawHat(screen, 0, 3+y)
+		return
+	}
+
 	if _, ok := p.previousInteraction.(ActionDeflect); ok {
 		vector.DrawFilledCircle(screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0xff, 0x66, 0x99, 0x33}, false)
 	} else if _, ok := p.previousInteraction.(ActionReflect); ok {
@@ -153,14 +199,7 @@ func (p *PC) Draw(screen *ebiten.Image) {
 			screen.DrawImage(p.Phylactery.Image(), opts)
 		}
 
-		// Draw the player's dumb hat.
-		opts = &ebiten.DrawImageOptions{}
-		if p.Sprite.Flipped {
-			opts.GeoM.Scale(-1, 1)
-			opts.GeoM.Translate(p.Hat.Width(), 0)
-		}
-		opts.GeoM.Translate(p.shape.X-float64(int(p.Hat.Width())/2), p.Sprite.Y-p.Sprite.Height()/2-p.Hat.Height()+3)
-		screen.DrawImage(p.Hat.Image(), opts)
+		p.DrawHat(screen, 0, 3)
 	}
 
 	// Draw lives?
