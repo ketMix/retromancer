@@ -1,6 +1,7 @@
 title: Vomit in the Ballpit
 runes:
-  " ": empty
+  " ":
+    sprite: empty
 start: [8, 11, 0]
 actors:
   - spawn: [20, 11, 0]

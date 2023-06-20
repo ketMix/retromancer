@@ -95,7 +95,7 @@ func (s *World) Update(ctx states.Context) error {
 					case ActionReflect:
 						reflecting = true
 						x, y, _, _ := actor.Bounds()
-						if !s.activeMap.DoesLineCollide(x, y, action.X, action.Y, 0) {
+						if !s.activeMap.DoesLineCollide(x, y, action.X, action.Y, s.activeMap.currentZ) {
 							bullets := s.IntersectingBullets(&CircleShape{
 								X:      action.X,
 								Y:      action.Y,

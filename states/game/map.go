@@ -14,9 +14,10 @@ var (
 )
 
 type Map struct {
-	data    *resources.Map
-	actors  []Actor
-	bullets []*Bullet
+	data     *resources.Map
+	actors   []Actor
+	bullets  []*Bullet
+	currentZ int // This isn't the right location for this, but we need to keep track of the current/active Z for rendering appropriate fading.
 }
 
 func (s *World) TravelToMap(ctx states.Context, mapName string) error {
@@ -29,24 +30,26 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		data: mapData,
 	}
 
+	//wallH := 6
+
 	for i, l := range m.data.Layers {
+		//xoffset := float64(wallH * len(m.data.Layers))
+		//yoffset := float64(wallH * 2 * len(m.data.Layers))
+		xoffset := 0.0
+		yoffset := 0.0
 		for j, row := range l.Cells {
 			for k, cell := range row {
-				switch m.data.RuneMap[string(cell.Type)] {
-				case "wall":
-					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "wall", (*ebiten.Image)(nil)).(*ebiten.Image))
-					cell.Blocks = true
-				case "floor":
-					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "floor", (*ebiten.Image)(nil)).(*ebiten.Image))
-				case "empty":
-					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "empty", (*ebiten.Image)(nil)).(*ebiten.Image))
-				default:
-					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", m.data.RuneMap[string(cell.Type)], (*ebiten.Image)(nil)).(*ebiten.Image))
+				if r, ok := m.data.RuneMap[string(cell.Type)]; ok {
+					cell.Blocks = r.Blocks
+					cell.Wall = r.Wall
+					cell.Floor = r.Floor
+					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", r.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
+					cell.Sprite.SetXY(
+						cell.Sprite.Width()*float64(k)+xoffset,
+						cell.Sprite.Height()*float64(j)+yoffset,
+					)
 				}
-				cell.Sprite.SetXY(
-					cell.Sprite.Width()*float64(k),
-					cell.Sprite.Height()*float64(j),
-				)
+				//cell.Sprite.Centered = true
 				row[k] = cell
 			}
 			l.Cells[j] = row
@@ -63,6 +66,9 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		}
 	}
 
+	// Set proper active layer.
+	m.currentZ = m.data.Start[2]
+
 	s.activeMap = m
 
 	// Move players over to new map.
@@ -75,11 +81,45 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 }
 
 func (m *Map) Draw(screen *ebiten.Image) {
-	for i := len(m.data.Layers) - 1; i >= 0; i-- {
-		l := m.data.Layers[i]
+	wallH := 6
+
+	for z := len(m.data.Layers) - 1; z >= 0; z-- {
+		layerOpts := &ebiten.DrawImageOptions{}
+		// Offset the layer -- this makes the player's collision position look better.
+		layerOpts.GeoM.Translate(2, 5)
+
+		//zv := float64(z) / float64(len(m.data.Layers))
+		dz := 1.0 - math.Abs(float64(z)-float64(m.currentZ))*0.5
+
+		layerOpts.GeoM.Translate(float64(wallH*z), float64(wallH*z)*2)
+
+		// TODO: Draw/render operations should probably be queued, sorted by z-index, then rendered in game.Draw.
+		l := m.data.Layers[z]
 		for _, row := range l.Cells {
 			for _, cell := range row {
-				cell.Sprite.Draw(screen)
+				if cell.Floor {
+					opts := &ebiten.DrawImageOptions{}
+					opts.GeoM.Concat(layerOpts.GeoM)
+					for i := wallH / 3; i >= 0; i-- {
+						ds := 1 - float32(i)/float32(wallH/3)*float32(dz)
+						opts.ColorScale.Reset()
+						opts.ColorScale.Scale(ds, ds, ds, 1.0)
+						cell.Sprite.DrawWithOptions(screen, opts)
+						opts.GeoM.Translate(-1, -2)
+					}
+				} else if cell.Wall {
+					opts := &ebiten.DrawImageOptions{}
+					opts.GeoM.Concat(layerOpts.GeoM)
+					for i := 0; i < wallH; i++ {
+						ds := float32(i) / float32(wallH) * float32(dz)
+						opts.ColorScale.Reset()
+						opts.ColorScale.Scale(ds, ds, ds, 1.0)
+						cell.Sprite.DrawWithOptions(screen, opts)
+						opts.GeoM.Translate(-1, -2)
+					}
+				} else {
+					cell.Sprite.Draw(screen)
+				}
 			}
 		}
 	}
@@ -105,7 +145,7 @@ func (m *Map) Collides(s Shape) bool {
 	y /= 16
 	x = math.Round(x)
 	y = math.Round(y)
-	z := 0
+	z := m.currentZ
 
 	check := func(x, y int) bool {
 		if y >= 0 && int(y) < len(m.data.Layers[z].Cells) && x >= 0 && int(x) < len(m.data.Layers[z].Cells[int(y)]) {

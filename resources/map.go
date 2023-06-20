@@ -4,10 +4,19 @@ import (
 	"strings"
 )
 
+type RuneDef struct {
+	Sprite string `yaml:"sprite"`
+	Blocks bool   `yaml:"blocks"`
+	Wall   bool   `yaml:"wall"`
+	Floor  bool   `yaml:"floor"`
+}
+
 type Cell struct {
 	Sprite *Sprite `yaml:"-"`
 	Type   rune    `yaml:"-"` // I guess using runes is okay.
 	Blocks bool    `yaml:"-"`
+	Wall   bool    `yaml:"-"`
+	Floor  bool    `yaml:"-"`
 }
 
 type Layer struct {
@@ -16,11 +25,11 @@ type Layer struct {
 
 type Map struct {
 	Title        string
-	RuneMap      map[string]string `yaml:"runes"`
-	Layers       []Layer           `yaml:"-"`
-	SourceLayers []string          `yaml:"layers"`
-	Start        [3]int            `yaml:"start"`
-	Actors       []ActorSpawn      `yaml:"actors"`
+	RuneMap      map[string]RuneDef `yaml:"runes"`
+	Layers       []Layer            `yaml:"-"`
+	SourceLayers []string           `yaml:"layers"`
+	Start        [3]int             `yaml:"start"`
+	Actors       []ActorSpawn       `yaml:"actors"`
 }
 
 type ActorSpawn struct {

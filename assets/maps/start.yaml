@@ -1,39 +1,54 @@
 title: Resurrection
 runes:
-  "f": fire
-  "*": wall
-  "^": wall
-  ".": floor
-  " ": empty
+  "f":
+    sprite: fire
+  "*":
+    sprite: wall
+    blocks: true
+    wall: true
+  "^":
+    sprite: wall2
+    blocks: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  ",":
+    sprite: dead-grass
+  " ":
+    sprite: empty
 start: [8, 11, 0]
 actors:
   - spawn: [8, 3, 0]
     type: spawner
 layers:
   - |
-   ^                ^
-   ^                ^
-   ^^               ^
-   ^^^              ^
-   ^^               ^
-   ^                ^
-   ^                ^
-   ^^               ^
-   ^^^              ^
-   ^^^^^            ^
-   ^^^^             ^
-   ^^^              ^
+   ^                ^.^
+   ^                ^.^
+   ^^               ^.^
+   ^^^              ^.^
+   ^^               ^.^
+   ^                ^.^
+   ^                ^.^
+   ^^               ^.^
+   ^^^              ^.^
+   ^^^^^,, ____     ^.^
+   ^^^^,,,,,__      ^.^
+   ^^^,,,,,____     ^.^
 #  - |
-#   ^              * ^
-#   ^                ^
-#   ^^        *  *  *^
-#   ^^^             *^
-#   ^^       *  *  **^
-#   ^             ***^
-#   ^             ***^
-#   ^^             **^
-#   ^^^           ***^
-#   ^^^^^         ***^
-#   ^^^^          ***^
-#   ^^^           ***^
+#   ^              * ^ 
+#   ^                ^ 
+#   ^^        *  *  *^ 
+#   ^^^             *^ 
+#   ^^       *  *  **^ 
+#   ^             ***^ 
+#   ^             ***^ 
+#   ^^             **^ 
+#   ^^^           ***^ 
+#   ^^^^^         ***^ 
+#   ^^^^          ***^ 
+#   ^^^           ***^^
 
