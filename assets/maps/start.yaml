@@ -24,6 +24,11 @@ start: [8, 11, 0]
 actors:
   - spawn: [8, 3, 0]
     type: spawner
+    bullets: 
+      - alias: daggers
+        bulletCount: 3
+        bullet:
+          color: [0, 128, 255, 128]
 layers:
   - |
    ^                ^.^
