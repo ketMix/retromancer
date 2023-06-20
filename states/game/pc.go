@@ -44,7 +44,7 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		Energy:            100,
 		MaxEnergy:         100,
 		EnergyRestoreRate: 2,
-		Lives:             0,
+		Lives:             3,
 	}
 
 	// FIXME: This shouldn't be hardcoded.
