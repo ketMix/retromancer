@@ -164,6 +164,7 @@ func (s *World) Update(ctx states.Context) error {
 				for _, actor := range s.activeMap.actors {
 					if _, ok := actor.(*PC); ok {
 						if bullet.Shape.Collides(actor.Shape()) {
+							bullet.Destroyed = true
 							fmt.Println("TODO: bullet hit player!")
 							break
 						}
