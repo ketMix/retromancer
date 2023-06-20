@@ -3,15 +3,14 @@ package menu
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
-	"ebijam23/states/tests"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
 type Menu struct {
-	logo, sp, mp, quit, ballpit, maptest *resources.Sprite
-	sprites                              resources.Sprites
+	logo, sp, mp, quit, ballpit *resources.Sprite
+	sprites                     resources.Sprites
 }
 
 func (m *Menu) Init(ctx states.Context) error {
@@ -37,10 +36,7 @@ func (m *Menu) Init(ctx states.Context) error {
 	m.ballpit.X = x - m.quit.Width()/2
 	m.ballpit.Y = y
 	y += m.ballpit.Height() + 16
-	m.maptest = resources.NewSprite(ctx.Manager.GetAs("images", "maptest", (*ebiten.Image)(nil)).(*ebiten.Image))
-	m.maptest.X = x - m.maptest.Width()/2
-	m.maptest.Y = y
-	m.sprites = append(m.sprites, m.sp, m.mp, m.quit, m.ballpit, m.maptest)
+	m.sprites = append(m.sprites, m.sp, m.mp, m.quit, m.ballpit)
 	return nil
 }
 
@@ -69,8 +65,6 @@ func (m *Menu) Update(ctx states.Context) error {
 			return states.ErrQuitGame
 		} else if m.ballpit.Hit(float64(x), float64(y)) {
 			ctx.StateMachine.PushState(&Ballpit{})
-		} else if m.maptest.Hit(float64(x), float64(y)) {
-			ctx.StateMachine.PushState(&tests.MapLayer{})
 		}
 
 	}
