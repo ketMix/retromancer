@@ -158,6 +158,10 @@ func (s *World) Update(ctx states.Context) error {
 						var closestActor Actor
 						var closestDistance float64
 						for _, actor := range s.activeMap.actors {
+							// Skip dead actors.
+							if actor.Dead() {
+								continue
+							}
 							// Reflect isn't great to use here, but it beats nested type switches.
 							if reflect.TypeOf(actor) == reflect.TypeOf(action.Actor) {
 								x, y, _, _ := actor.Bounds()

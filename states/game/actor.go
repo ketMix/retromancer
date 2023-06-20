@@ -5,6 +5,7 @@ import (
 )
 
 type Actor interface {
+	Dead() bool
 	Player() Player
 	SetPlayer(p Player)
 	SetImpulses(impulses ImpulseSet)
