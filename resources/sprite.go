@@ -10,6 +10,11 @@ type Sprites []*Sprite
 
 type Sprite struct {
 	image            *ebiten.Image
+	images           []*ebiten.Image
+	frame            int
+	Framerate        int
+	elapsed          int
+	Loop             bool
 	X, Y             float64
 	lastX, lastY     float64
 	interpX, interpY float64
@@ -34,12 +39,44 @@ func (s *Sprite) SetXY(x, y float64) {
 	s.Y = y
 }
 
+func (s *Sprite) Frame() int {
+	return s.frame
+}
+
+func (s *Sprite) AddImage(image *ebiten.Image) {
+	s.images = append(s.images, image)
+}
+
 func (s *Sprite) SetImage(image *ebiten.Image) {
+	if len(s.images) == 0 {
+		s.images = append(s.images, s.image)
+	} else {
+		s.images[s.frame] = s.image
+	}
 	s.image = image
 }
 
 func (s *Sprite) Image() *ebiten.Image {
 	return s.image
+}
+
+func (s *Sprite) Update() {
+	if s.Framerate > 0 && len(s.images) > 0 {
+		s.elapsed++
+		if s.elapsed >= s.Framerate {
+			s.elapsed = 0
+			if s.frame+1 >= len(s.images) {
+				if s.Loop {
+					s.frame = 0
+				} else {
+					return
+				}
+			} else {
+				s.frame++
+			}
+			s.image = s.images[s.frame]
+		}
+	}
 }
 
 func (s *Sprite) Draw(screen *ebiten.Image) {
