@@ -3,7 +3,6 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
-	"fmt"
 	"image/color"
 	"math"
 	"math/rand"
@@ -29,7 +28,7 @@ func (s *World) Init(ctx states.Context) error {
 		pc := s.NewPC(ctx)
 
 		// TODO: Read this in from the player's desired hat. Also, the hats should be dynamically built from the any hat- prefixed file in the manager's images.
-		hats := []string{"hat-ebiten", "hat-wizard", "hat-gopher", "hat-tux", "hat-max", "hat-pep"}
+		hats := []string{"hat-ebiten", "hat-wizard", "hat-gopher", "hat-tux", "hat-max", "hat-pep", "hat-nootnoot"}
 		pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", hats[rand.Int31n(int32(len(hats)))], (*ebiten.Image)(nil)).(*ebiten.Image))
 
 		p.SetActor(pc)
@@ -82,6 +81,7 @@ func (s *World) Update(ctx states.Context) error {
 				actor := actorAction.Actor
 				deflecting := false
 				reflecting := false
+				shielding := false
 				for _, action := range actorAction.Actions {
 					switch action := action.(type) {
 					case ActionMove:
@@ -107,13 +107,26 @@ func (s *World) Update(ctx states.Context) error {
 					case ActionDeflect:
 						deflecting = true
 						x, y, _, _ := actor.Bounds()
+						if !s.activeMap.DoesLineCollide(x, y, action.X, action.Y, s.activeMap.currentZ) {
+							bullets := s.IntersectingBullets(&CircleShape{
+								X:      action.X,
+								Y:      action.Y,
+								Radius: 20,
+							})
+							for _, bullet := range bullets {
+								bullet.Deflect(action.Direction)
+							}
+						}
+					case ActionShield:
+						shielding = true
+						x, y, _, _ := actor.Bounds()
 						bullets := s.IntersectingBullets(&CircleShape{
 							X:      x,
 							Y:      y,
 							Radius: 20,
 						})
 						for _, bullet := range bullets {
-							bullet.Deflect(action.Direction)
+							bullet.holdFor = 30
 						}
 					case ActionSpawnBullets:
 						s.activeMap.bullets = append(s.activeMap.bullets, action.Bullets...)
@@ -125,6 +138,8 @@ func (s *World) Update(ctx states.Context) error {
 						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-deflect", (*ebiten.Image)(nil)).(*ebiten.Image))
 					} else if reflecting {
 						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-reflect", (*ebiten.Image)(nil)).(*ebiten.Image))
+					} else if shielding {
+						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-shield", (*ebiten.Image)(nil)).(*ebiten.Image))
 					} else {
 						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
 					}
@@ -133,6 +148,10 @@ func (s *World) Update(ctx states.Context) error {
 			// Even more overkill for the bullets.
 			for _, bulletAction := range bulletActions {
 				bullet := bulletAction.Bullet
+				// FIXME: This is dumb.
+				if bullet.Destroyed {
+					continue
+				}
 				for _, action := range bulletAction.Actions {
 					switch action := action.(type) {
 					case ActionFindNearestActor:
@@ -162,10 +181,14 @@ func (s *World) Update(ctx states.Context) error {
 					continue
 				}
 				for _, actor := range s.activeMap.actors {
-					if _, ok := actor.(*PC); ok {
+					if p, ok := actor.(*PC); ok {
+						if p.InvulnerableTicks > 0 {
+							continue
+						}
 						if bullet.Shape.Collides(actor.Shape()) {
 							bullet.Destroyed = true
-							fmt.Println("TODO: bullet hit player!")
+							p.InvulnerableTicks = 180
+							p.Lives--
 							break
 						}
 					}
@@ -200,6 +223,10 @@ func (s *World) Draw(screen *ebiten.Image) {
 		if a, ok := p.Actor().(*PC); ok {
 			// Draw the hand's current energy.
 			resources.DrawArc(screen, a.Hand.Shape.X, a.Hand.Shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
+			// Also draw the energy around the player if they shielded.
+			if _, ok := a.previousInteraction.(ActionShield); ok {
+				resources.DrawArc(screen, a.shape.X, a.shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
+			}
 
 			// Old energy bar
 			/*w := 100

@@ -17,8 +17,11 @@ type PC struct {
 	Sprite                    *resources.Sprite
 	Phylactery                *resources.Sprite
 	Hat                       *resources.Sprite
+	Life                      *resources.Sprite
 	shape                     CircleShape
 	Hand                      Hand
+	Lives                     int
+	InvulnerableTicks         int // Ticks the player should be invulnerable for
 	TicksSinceLastInteraction int
 	Energy                    int
 	MaxEnergy                 int
@@ -34,9 +37,11 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		Sprite:            resources.NewSprite(ctx.Manager.GetAs("images", "player", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Phylactery:        resources.NewSprite(ctx.Manager.GetAs("images", "phylactery", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Arrow:             resources.NewSprite(ctx.Manager.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Life:              resources.NewSprite(ctx.Manager.GetAs("images", "life", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Energy:            100,
 		MaxEnergy:         100,
 		EnergyRestoreRate: 2,
+		Lives:             3,
 	}
 	pc.shape.Radius = 2
 	//pc.Sprite.Interpolate = true
@@ -95,8 +100,17 @@ func (p *PC) Update() (actions []Action) {
 				p.TicksSinceLastInteraction = 0
 				actions = append(actions, ActionDeflect{
 					Direction: math.Atan2(imp.Y-p.shape.Y, imp.X-p.shape.X),
+					X:         imp.X,
+					Y:         imp.Y,
 				})
 				p.previousInteraction = ActionDeflect{}
+			}
+		case ImpulseShield:
+			if p.HasEnergyFor(imp) {
+				p.Energy -= imp.Cost()
+				p.TicksSinceLastInteraction = 0
+				actions = append(actions, ActionShield{})
+				p.previousInteraction = ActionShield{}
 			}
 		default:
 			// Do nothing.
@@ -116,28 +130,48 @@ func (p *PC) SetImpulses(impulses ImpulseSet) {
 
 func (p *PC) Draw(screen *ebiten.Image) {
 	if _, ok := p.previousInteraction.(ActionDeflect); ok {
-		vector.DrawFilledCircle(screen, float32(p.shape.X), float32(p.shape.Y), 20, color.NRGBA{0x66, 0xff, 0x99, 0x33}, false)
+		vector.DrawFilledCircle(screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0xff, 0x66, 0x99, 0x33}, false)
 	} else if _, ok := p.previousInteraction.(ActionReflect); ok {
 		vector.DrawFilledCircle(screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0x66, 0x99, 0xff, 0x33}, false)
+	} else if _, ok := p.previousInteraction.(ActionShield); ok {
+		vector.DrawFilledCircle(screen, float32(p.shape.X), float32(p.shape.Y), 20, color.NRGBA{0x66, 0xff, 0x99, 0x33}, false)
 	}
 
-	p.Sprite.Draw(screen)
+	opts := &ebiten.DrawImageOptions{}
+
+	p.InvulnerableTicks--
+
 	p.Hand.Sprite.Draw(screen)
 
-	// Draw the player's phylactery (hit box representation).
-	opts := &ebiten.DrawImageOptions{}
-	opts.GeoM.Translate(p.shape.X-float64(int(p.Phylactery.Width())/2), p.shape.Y-float64(int(p.Phylactery.Height())/2))
-	opts.ColorScale.Scale(0.5, 0.5, 1.0, 1.0)
-	screen.DrawImage(p.Phylactery.Image(), opts)
+	if p.InvulnerableTicks <= 0 || p.InvulnerableTicks%20 >= 10 {
+		p.Sprite.Draw(screen)
 
-	// Draw the player's dumb hat.
-	opts = &ebiten.DrawImageOptions{}
-	if p.Sprite.Flipped {
-		opts.GeoM.Scale(-1, 1)
-		opts.GeoM.Translate(p.Hat.Width(), 0)
+		// Draw the player's phylactery (hit box representation). If the player has 0 lives, hide it, since it "broke"
+		if p.Lives > 0 {
+			opts.GeoM.Translate(p.shape.X-float64(int(p.Phylactery.Width())/2), p.shape.Y-float64(int(p.Phylactery.Height())/2))
+			opts.ColorScale.Scale(0.5, 0.5, 1.0, 1.0)
+			screen.DrawImage(p.Phylactery.Image(), opts)
+		}
+
+		// Draw the player's dumb hat.
+		opts = &ebiten.DrawImageOptions{}
+		if p.Sprite.Flipped {
+			opts.GeoM.Scale(-1, 1)
+			opts.GeoM.Translate(p.Hat.Width(), 0)
+		}
+		opts.GeoM.Translate(p.shape.X-float64(int(p.Hat.Width())/2), p.Sprite.Y-p.Sprite.Height()/2-p.Hat.Height()+3)
+		screen.DrawImage(p.Hat.Image(), opts)
 	}
-	opts.GeoM.Translate(p.shape.X-float64(int(p.Hat.Width())/2), p.Sprite.Y-p.Sprite.Height()/2-p.Hat.Height()+3)
-	screen.DrawImage(p.Hat.Image(), opts)
+
+	// Draw lives?
+	for i := 0; i < p.Lives; i++ {
+		opts = &ebiten.DrawImageOptions{}
+		x := -(float64(p.Lives) * (p.Life.Width() + 1)) / 2
+		x += p.Hand.Shape.X + float64(i)*(p.Life.Width()+1)
+		y := p.Hand.Shape.Y + p.Hand.Sprite.Height()/2 + 3
+		opts.GeoM.Translate(x, y)
+		screen.DrawImage(p.Life.Image(), opts)
+	}
 
 	r := math.Atan2(p.shape.Y-p.Hand.Shape.Y, p.shape.X-p.Hand.Shape.X)
 

@@ -22,7 +22,11 @@ type ActionReflect struct {
 }
 
 type ActionDeflect struct {
+	X, Y      float64
 	Direction float64
+}
+
+type ActionShield struct {
 }
 
 type ActionSpawnBullets struct {
