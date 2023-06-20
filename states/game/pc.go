@@ -19,6 +19,7 @@ type PC struct {
 	Hat                       *resources.Sprite
 	shape                     CircleShape
 	Hand                      Hand
+	InvulnerableTicks         int // Ticks the player should be invulnerable for
 	TicksSinceLastInteraction int
 	Energy                    int
 	MaxEnergy                 int
@@ -132,23 +133,30 @@ func (p *PC) Draw(screen *ebiten.Image) {
 		vector.DrawFilledCircle(screen, float32(p.shape.X), float32(p.shape.Y), 20, color.NRGBA{0x66, 0xff, 0x99, 0x33}, false)
 	}
 
-	p.Sprite.Draw(screen)
+	opts := &ebiten.DrawImageOptions{}
+
+	p.InvulnerableTicks--
+
 	p.Hand.Sprite.Draw(screen)
 
-	// Draw the player's phylactery (hit box representation).
-	opts := &ebiten.DrawImageOptions{}
-	opts.GeoM.Translate(p.shape.X-float64(int(p.Phylactery.Width())/2), p.shape.Y-float64(int(p.Phylactery.Height())/2))
-	opts.ColorScale.Scale(0.5, 0.5, 1.0, 1.0)
-	screen.DrawImage(p.Phylactery.Image(), opts)
+	if p.InvulnerableTicks <= 0 || p.InvulnerableTicks%20 >= 10 {
+		p.Sprite.Draw(screen)
 
-	// Draw the player's dumb hat.
-	opts = &ebiten.DrawImageOptions{}
-	if p.Sprite.Flipped {
-		opts.GeoM.Scale(-1, 1)
-		opts.GeoM.Translate(p.Hat.Width(), 0)
+		// Draw the player's phylactery (hit box representation).
+		opts.GeoM.Translate(p.shape.X-float64(int(p.Phylactery.Width())/2), p.shape.Y-float64(int(p.Phylactery.Height())/2))
+		opts.ColorScale.Scale(0.5, 0.5, 1.0, 1.0)
+		screen.DrawImage(p.Phylactery.Image(), opts)
+
+		// Draw the player's dumb hat.
+		opts = &ebiten.DrawImageOptions{}
+		if p.Sprite.Flipped {
+			opts.GeoM.Scale(-1, 1)
+			opts.GeoM.Translate(p.Hat.Width(), 0)
+		}
+		opts.GeoM.Translate(p.shape.X-float64(int(p.Hat.Width())/2), p.Sprite.Y-p.Sprite.Height()/2-p.Hat.Height()+3)
+		screen.DrawImage(p.Hat.Image(), opts)
+
 	}
-	opts.GeoM.Translate(p.shape.X-float64(int(p.Hat.Width())/2), p.Sprite.Y-p.Sprite.Height()/2-p.Hat.Height()+3)
-	screen.DrawImage(p.Hat.Image(), opts)
 
 	r := math.Atan2(p.shape.Y-p.Hand.Shape.Y, p.shape.X-p.Hand.Shape.X)
 
