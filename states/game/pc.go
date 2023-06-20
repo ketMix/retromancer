@@ -17,8 +17,10 @@ type PC struct {
 	Sprite                    *resources.Sprite
 	Phylactery                *resources.Sprite
 	Hat                       *resources.Sprite
+	Life                      *resources.Sprite
 	shape                     CircleShape
 	Hand                      Hand
+	Lives                     int
 	InvulnerableTicks         int // Ticks the player should be invulnerable for
 	TicksSinceLastInteraction int
 	Energy                    int
@@ -35,9 +37,11 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		Sprite:            resources.NewSprite(ctx.Manager.GetAs("images", "player", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Phylactery:        resources.NewSprite(ctx.Manager.GetAs("images", "phylactery", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Arrow:             resources.NewSprite(ctx.Manager.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Life:              resources.NewSprite(ctx.Manager.GetAs("images", "life", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Energy:            100,
 		MaxEnergy:         100,
 		EnergyRestoreRate: 2,
+		Lives:             3,
 	}
 	pc.shape.Radius = 2
 	//pc.Sprite.Interpolate = true
@@ -142,10 +146,12 @@ func (p *PC) Draw(screen *ebiten.Image) {
 	if p.InvulnerableTicks <= 0 || p.InvulnerableTicks%20 >= 10 {
 		p.Sprite.Draw(screen)
 
-		// Draw the player's phylactery (hit box representation).
-		opts.GeoM.Translate(p.shape.X-float64(int(p.Phylactery.Width())/2), p.shape.Y-float64(int(p.Phylactery.Height())/2))
-		opts.ColorScale.Scale(0.5, 0.5, 1.0, 1.0)
-		screen.DrawImage(p.Phylactery.Image(), opts)
+		// Draw the player's phylactery (hit box representation). If the player has 0 lives, hide it, since it "broke"
+		if p.Lives > 0 {
+			opts.GeoM.Translate(p.shape.X-float64(int(p.Phylactery.Width())/2), p.shape.Y-float64(int(p.Phylactery.Height())/2))
+			opts.ColorScale.Scale(0.5, 0.5, 1.0, 1.0)
+			screen.DrawImage(p.Phylactery.Image(), opts)
+		}
 
 		// Draw the player's dumb hat.
 		opts = &ebiten.DrawImageOptions{}
@@ -155,7 +161,16 @@ func (p *PC) Draw(screen *ebiten.Image) {
 		}
 		opts.GeoM.Translate(p.shape.X-float64(int(p.Hat.Width())/2), p.Sprite.Y-p.Sprite.Height()/2-p.Hat.Height()+3)
 		screen.DrawImage(p.Hat.Image(), opts)
+	}
 
+	// Draw lives?
+	for i := 0; i < p.Lives; i++ {
+		opts = &ebiten.DrawImageOptions{}
+		x := -(float64(p.Lives) * (p.Life.Width() + 1)) / 2
+		x += p.Hand.Shape.X + float64(i)*(p.Life.Width()+1)
+		y := p.Hand.Shape.Y + p.Hand.Sprite.Height()/2 + 3
+		opts.GeoM.Translate(x, y)
+		screen.DrawImage(p.Life.Image(), opts)
 	}
 
 	r := math.Atan2(p.shape.Y-p.Hand.Shape.Y, p.shape.X-p.Hand.Shape.X)

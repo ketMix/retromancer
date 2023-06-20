@@ -3,7 +3,6 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
-	"fmt"
 	"image/color"
 	"math"
 	"math/rand"
@@ -188,8 +187,8 @@ func (s *World) Update(ctx states.Context) error {
 						}
 						if bullet.Shape.Collides(actor.Shape()) {
 							bullet.Destroyed = true
-							p.InvulnerableTicks = 120
-							fmt.Println("TODO: bullet hit player!")
+							p.InvulnerableTicks = 180
+							p.Lives--
 							break
 						}
 					}
