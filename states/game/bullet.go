@@ -34,6 +34,7 @@ type Bullet struct {
 	aimTime         int       // How long the bullet should aim at player
 	reflected       bool      // If the bullet has been reflected
 	deflected       bool      // If the bullet has been deflected.
+	holdFor         int       // An amount of time to hold the bullet in place.
 	timeLine        []*Bullet // Positions the bullet has been in
 	sprite          *resources.Sprite
 	Destroyed       bool
@@ -99,6 +100,11 @@ func (b *Bullet) Update() (actions []Action) {
 		b.Acceleration = prevBullet.Acceleration
 		b.aimTime = prevBullet.aimTime
 		b.aimDelay = prevBullet.aimDelay
+	}
+
+	if b.holdFor > 0 {
+		b.holdFor--
+		return actions
 	}
 
 	if b.reflected && len(b.timeLine) > 0 {

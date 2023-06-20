@@ -28,3 +28,10 @@ type ImpulseDeflect struct {
 func (i ImpulseDeflect) Cost() int {
 	return 2
 }
+
+type ImpulseShield struct {
+}
+
+func (i ImpulseShield) Cost() int {
+	return 4
+}

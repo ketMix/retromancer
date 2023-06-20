@@ -95,8 +95,17 @@ func (p *PC) Update() (actions []Action) {
 				p.TicksSinceLastInteraction = 0
 				actions = append(actions, ActionDeflect{
 					Direction: math.Atan2(imp.Y-p.shape.Y, imp.X-p.shape.X),
+					X:         imp.X,
+					Y:         imp.Y,
 				})
 				p.previousInteraction = ActionDeflect{}
+			}
+		case ImpulseShield:
+			if p.HasEnergyFor(imp) {
+				p.Energy -= imp.Cost()
+				p.TicksSinceLastInteraction = 0
+				actions = append(actions, ActionShield{})
+				p.previousInteraction = ActionShield{}
 			}
 		default:
 			// Do nothing.
@@ -116,9 +125,11 @@ func (p *PC) SetImpulses(impulses ImpulseSet) {
 
 func (p *PC) Draw(screen *ebiten.Image) {
 	if _, ok := p.previousInteraction.(ActionDeflect); ok {
-		vector.DrawFilledCircle(screen, float32(p.shape.X), float32(p.shape.Y), 20, color.NRGBA{0x66, 0xff, 0x99, 0x33}, false)
+		vector.DrawFilledCircle(screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0xff, 0x66, 0x99, 0x33}, false)
 	} else if _, ok := p.previousInteraction.(ActionReflect); ok {
 		vector.DrawFilledCircle(screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0x66, 0x99, 0xff, 0x33}, false)
+	} else if _, ok := p.previousInteraction.(ActionShield); ok {
+		vector.DrawFilledCircle(screen, float32(p.shape.X), float32(p.shape.Y), 20, color.NRGBA{0x66, 0xff, 0x99, 0x33}, false)
 	}
 
 	p.Sprite.Draw(screen)

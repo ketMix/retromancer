@@ -45,7 +45,9 @@ func (p *LocalPlayer) Update() {
 		a.Hand.SetXY(float64(x), float64(y))
 	}
 
-	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+	if ebiten.IsKeyPressed(ebiten.KeySpace) {
+		p.impulses.Interaction = ImpulseShield{}
+	} else if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 		p.impulses.Interaction = ImpulseReflect{
 			X: float64(x),
 			Y: float64(y),

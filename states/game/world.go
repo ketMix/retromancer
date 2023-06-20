@@ -82,6 +82,7 @@ func (s *World) Update(ctx states.Context) error {
 				actor := actorAction.Actor
 				deflecting := false
 				reflecting := false
+				shielding := false
 				for _, action := range actorAction.Actions {
 					switch action := action.(type) {
 					case ActionMove:
@@ -107,13 +108,26 @@ func (s *World) Update(ctx states.Context) error {
 					case ActionDeflect:
 						deflecting = true
 						x, y, _, _ := actor.Bounds()
+						if !s.activeMap.DoesLineCollide(x, y, action.X, action.Y, s.activeMap.currentZ) {
+							bullets := s.IntersectingBullets(&CircleShape{
+								X:      action.X,
+								Y:      action.Y,
+								Radius: 20,
+							})
+							for _, bullet := range bullets {
+								bullet.Deflect(action.Direction)
+							}
+						}
+					case ActionShield:
+						shielding = true
+						x, y, _, _ := actor.Bounds()
 						bullets := s.IntersectingBullets(&CircleShape{
 							X:      x,
 							Y:      y,
 							Radius: 20,
 						})
 						for _, bullet := range bullets {
-							bullet.Deflect(action.Direction)
+							bullet.holdFor = 30
 						}
 					case ActionSpawnBullets:
 						s.activeMap.bullets = append(s.activeMap.bullets, action.Bullets...)
@@ -125,6 +139,8 @@ func (s *World) Update(ctx states.Context) error {
 						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-deflect", (*ebiten.Image)(nil)).(*ebiten.Image))
 					} else if reflecting {
 						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-reflect", (*ebiten.Image)(nil)).(*ebiten.Image))
+					} else if shielding {
+						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-shield", (*ebiten.Image)(nil)).(*ebiten.Image))
 					} else {
 						a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
 					}
@@ -133,6 +149,10 @@ func (s *World) Update(ctx states.Context) error {
 			// Even more overkill for the bullets.
 			for _, bulletAction := range bulletActions {
 				bullet := bulletAction.Bullet
+				// FIXME: This is dumb.
+				if bullet.Destroyed {
+					continue
+				}
 				for _, action := range bulletAction.Actions {
 					switch action := action.(type) {
 					case ActionFindNearestActor:
