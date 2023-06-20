@@ -220,6 +220,10 @@ func (s *World) Draw(screen *ebiten.Image) {
 		if a, ok := p.Actor().(*PC); ok {
 			// Draw the hand's current energy.
 			resources.DrawArc(screen, a.Hand.Shape.X, a.Hand.Shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
+			// Also draw the energy around the player if they shielded.
+			if _, ok := a.previousInteraction.(ActionShield); ok {
+				resources.DrawArc(screen, a.shape.X, a.shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
+			}
 
 			// Old energy bar
 			/*w := 100
