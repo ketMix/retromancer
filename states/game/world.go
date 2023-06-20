@@ -10,7 +10,6 @@ import (
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 type World struct {
@@ -193,19 +192,23 @@ func (s *World) Draw(screen *ebiten.Image) {
 	s.activeMap.Draw(screen)
 
 	for _, p := range s.Players {
-		y := screen.Bounds().Max.Y - 100
+		//y := screen.Bounds().Max.Y - 100
 		if _, ok := p.(*LocalPlayer); !ok {
 			continue
 		}
 		if a, ok := p.Actor().(*PC); ok {
-			w := 100
+			// Draw the hand's current energy.
+			resources.DrawArc(screen, a.Hand.Shape.X, a.Hand.Shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
+
+			// Old energy bar
+			/*w := 100
 			h := 5
 			x := screen.Bounds().Max.X/2 - w/2
 			vector.StrokeRect(screen, float32(x), float32(y), float32(w), float32(h), 1, color.White, false)
 			w2 := int(float32(w-3) * (float32(a.Energy) / float32(a.MaxEnergy)))
 			vector.DrawFilledRect(screen, float32(x+1), float32(y+1), float32(w2), float32(h-3), color.White, false)
 
-			y += h + 5
+			y += h + 5*/
 		}
 	}
 }
