@@ -29,7 +29,7 @@ func (s *World) Init(ctx states.Context) error {
 		pc := s.NewPC(ctx)
 
 		// TODO: Read this in from the player's desired hat. Also, the hats should be dynamically built from the any hat- prefixed file in the manager's images.
-		hats := []string{"hat-ebiten", "hat-wizard", "hat-gopher", "hat-tux", "hat-max"}
+		hats := []string{"hat-ebiten", "hat-wizard", "hat-gopher", "hat-tux", "hat-max", "hat-pep"}
 		pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", hats[rand.Int31n(int32(len(hats)))], (*ebiten.Image)(nil)).(*ebiten.Image))
 
 		p.SetActor(pc)
@@ -51,7 +51,7 @@ func (s *World) Update(ctx states.Context) error {
 			readyCount++
 		}
 	}
-	if s.ebitenTicks >= 3 { // Basically tick every 3 ebiten ticks.
+	if s.ebitenTicks >= 2 { // Basically tick every 3 ebiten ticks.
 		if readyCount == len(s.Players) {
 			s.tick++
 			// Process the players' current tick think -- this also sends impulses to their respective actors.
