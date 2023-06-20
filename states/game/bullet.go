@@ -20,13 +20,12 @@ const (
 
 type Bullet struct {
 	Shape           CircleShape
-	Type            BulletType
+	bulletType      BulletType
 	TargetActor     Actor   // Target actor to head towards
 	Speed           float64 // How fastum the bullet goes
 	Angle           float64 // What angle the bullet has
 	Acceleration    float64 // How fast the bullet accelerates
 	AccelAccel      float64 // How fast the bullet accelerates its acceleration
-	MinSpeed        float64 // Minimum speed of the bullet
 	MaxSpeed        float64 // Maximum speed of the bullet
 	AngularVelocity float64 // How fast the bullet rotates
 	Color           color.Color
@@ -43,17 +42,16 @@ type Bullet struct {
 func CreateBullet(
 	bulletType BulletType,
 	color color.Color,
-	x, y, radius, speed, angle, acceleration, accelAccel, minSpeed, maxSpeed, angularVelocity float64,
+	x, y, radius, speed, angle, acceleration, accelAccel, maxSpeed, angularVelocity float64,
 	aimTime, aimDelay int,
 ) *Bullet {
 	b := &Bullet{
 		Shape:           CircleShape{X: x, Y: y, Radius: radius},
-		Type:            bulletType,
+		bulletType:      bulletType,
 		Speed:           speed,
 		Acceleration:    acceleration,
 		AccelAccel:      accelAccel,
 		Angle:           angle,
-		MinSpeed:        minSpeed,
 		MaxSpeed:        maxSpeed,
 		AngularVelocity: angularVelocity,
 		Color:           color,
@@ -70,7 +68,7 @@ func CreateBullet(
 // Copy a bullet
 func BulletFromExisting(b *Bullet, angle float64) *Bullet {
 	bullet := CreateBullet(
-		b.Type,
+		b.bulletType,
 		b.Color,
 		b.Shape.X,
 		b.Shape.Y,
@@ -79,13 +77,79 @@ func BulletFromExisting(b *Bullet, angle float64) *Bullet {
 		angle,
 		b.Acceleration,
 		b.AccelAccel,
-		b.MinSpeed,
 		b.MaxSpeed,
 		b.AngularVelocity,
 		b.aimTime,
 		b.aimDelay,
 	)
 	return bullet
+}
+
+func CreateBulletFromDef(x, y float64, override, alias *resources.BulletDef) *Bullet {
+	// Create a bullet group from a bullet group definition
+	// Use override values if they exist
+	// TODO: maybe have default values if properties aren't present in alias or override
+
+	bulletType := *alias.BulletType
+	c := *alias.Color
+	radius := float64(*alias.Radius)
+	speed := float64(*alias.Speed)
+	acceleration := float64(*alias.Acceleration)
+	accelAccel := float64(*alias.AccelAccel)
+	maxSpeed := float64(*alias.MaxSpeed)
+	angularVelocity := float64(*alias.AngularVelocity)
+	aimTime := *alias.AimTime
+	aimDelay := *alias.AimDelay
+
+	if override != nil {
+		if override.BulletType != nil {
+			bulletType = *override.BulletType
+		}
+		if override.Color != nil {
+			c = *override.Color
+		}
+		if override.Radius != nil {
+			radius = float64(*override.Radius)
+		}
+		if override.Speed != nil {
+			speed = float64(*override.Speed)
+		}
+		if override.Acceleration != nil {
+			acceleration = float64(*override.Acceleration)
+		}
+		if override.AccelAccel != nil {
+			accelAccel = float64(*override.AccelAccel)
+		}
+		if override.MaxSpeed != nil {
+			maxSpeed = float64(*override.MaxSpeed)
+		}
+		if override.AngularVelocity != nil {
+			angularVelocity = float64(*override.AngularVelocity)
+		}
+		if override.AimTime != nil {
+			aimTime = *override.AimTime
+		}
+		if override.AimDelay != nil {
+			aimDelay = *override.AimDelay
+		}
+	}
+	color := color.RGBA{uint8(c[0]), uint8(c[1]), uint8(c[2]), uint8(c[3])}
+
+	return CreateBullet(
+		BulletType(bulletType),
+		color,
+		x,
+		y,
+		radius,
+		speed,
+		0,
+		acceleration,
+		accelAccel,
+		maxSpeed,
+		angularVelocity,
+		aimTime,
+		aimDelay,
+	)
 }
 
 // Update the bullet's position and speed
@@ -125,9 +189,6 @@ func (b *Bullet) Update() (actions []Action) {
 	b.Speed += b.Acceleration
 	b.Acceleration += b.AccelAccel
 
-	if b.Speed < b.MinSpeed {
-		b.Speed = b.MinSpeed
-	}
 	if b.Speed > b.MaxSpeed {
 		b.Speed = b.MaxSpeed
 	}
@@ -195,7 +256,7 @@ func (b *Bullet) Draw(screen *ebiten.Image) {
 	vector.DrawFilledCircle(screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius), b.Color, false)
 
 	// Draw the border depending on its type
-	switch b.Type {
+	switch b.bulletType {
 	case Circular:
 		// Draw circle border? Bit too visually noisy.
 		// vector.StrokeCircle(screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius)+2, 1, color.White, false)

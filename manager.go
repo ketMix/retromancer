@@ -74,6 +74,17 @@ func (m *ResourceManager) Load(category string, name string) (interface{}, error
 		}
 		group.data[strings.TrimSuffix(name, filepath.Ext(name))] = m
 		return m, nil
+	} else if category == "bullets" {
+		bytes, err := m.files.ReadFile(fmt.Sprintf("%s/%s", category, name))
+		if err != nil {
+			return nil, err
+		}
+		var bg *resources.BulletGroupDef
+		if err := yaml.Unmarshal(bytes, &bg); err != nil {
+			return nil, err
+		}
+		group.data[strings.TrimSuffix(name, filepath.Ext(name))] = bg
+		return bg, nil
 	}
 
 	return nil, ErrNoSuchCategory
@@ -101,7 +112,14 @@ func (m *ResourceManager) GetAs(category string, name string, target interface{}
 			return &resources.Map{} // FIXME: Use an actual fallback map.
 		}
 		return d
+	case *resources.BulletGroupDef:
+		d := m.Get(category, name)
+		if d == nil {
+			return &resources.BulletGroupDef{} // FIXME: Use an actual fallback bullet group.
+		}
+		return d
 	}
+
 	return nil
 }
 
@@ -117,6 +135,14 @@ func (m *ResourceManager) LoadAll() error {
 	m.files.Walk("maps/", func(path string, entry fs.DirEntry, err error) error {
 		if !entry.IsDir() {
 			if _, err := m.Load("maps", entry.Name()); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	m.files.Walk("bullets/", func(path string, entry fs.DirEntry, err error) error {
+		if !entry.IsDir() {
+			if _, err := m.Load("bullets", entry.Name()); err != nil {
 				return err
 			}
 		}

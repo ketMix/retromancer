@@ -1,0 +1,17 @@
+# Radially fired blue diamonds that aim at the player after a delay
+angle: radial
+bulletCount: 5
+spawnRate: 25
+loopCount: -1
+bullet: 
+  bulletType: directional
+  color: [0, 0, 255, 255]
+  radius: 3
+  speed: 1
+  acceleration: 0
+  accelAccel: 0.05
+  maxSpeed: 15
+  angularVelocity: 0
+  aimTime: 5
+  aimDelay: 15
+

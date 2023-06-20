@@ -1,0 +1,16 @@
+# Radial spinning purple vectors that aim at the player after a delay
+angle: radial
+bulletCount: 6
+spawnRate: 100
+loopCount: -1
+bullet: 
+  bulletType: vector
+  color: [255, 0, 255, 255]
+  radius: 4
+  speed: 5
+  acceleration: 0
+  accelAccel: 0
+  maxSpeed: 10
+  angularVelocity: 0.1
+  aimTime: 10
+  aimDelay: 60

@@ -61,7 +61,21 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	for _, a := range m.data.Actors {
 		switch a.Type {
 		case "spawner":
-			spawner := CreateSpawner(float64(a.Spawn[0])*16, float64(a.Spawn[1])*16)
+			x := float64(a.Spawn[0]) * 16
+			y := float64(a.Spawn[1]) * 16
+			bulletGroups := make([]*BulletGroup, 0)
+
+			// If we have bullet groups defined for the spawner, create them.
+			if len(a.BulletGroups) > 0 {
+				for _, bg := range a.BulletGroups {
+					bulletAlias := (*resources.BulletGroupDef)(nil)
+					if bg.Alias != nil {
+						bulletAlias = ctx.Manager.GetAs("bullets", *bg.Alias, (*resources.BulletGroupDef)(nil)).(*resources.BulletGroupDef)
+					}
+					bulletGroups = append(bulletGroups, CreateBulletGroupFromDef(x, y, bg, bulletAlias))
+				}
+			}
+			spawner := CreateSpawner(x, y, bulletGroups)
 			m.actors = append(m.actors, spawner)
 		}
 	}

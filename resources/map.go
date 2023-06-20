@@ -33,8 +33,9 @@ type Map struct {
 }
 
 type ActorSpawn struct {
-	Spawn [3]int `yaml:"spawn"`
-	Type  string `yaml:"type"`
+	Spawn        [3]int            `yaml:"spawn"`
+	Type         string            `yaml:"type"`
+	BulletGroups []*BulletGroupDef `yaml:"bullets,omitempty"`
 }
 
 func (m *Map) UnmarshalYAML(unmarshal func(interface{}) error) error {
