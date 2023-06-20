@@ -36,7 +36,7 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		Arrow:             resources.NewSprite(ctx.Manager.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Energy:            100,
 		MaxEnergy:         100,
-		EnergyRestoreRate: 1,
+		EnergyRestoreRate: 2,
 	}
 	pc.shape.Radius = 2
 	//pc.Sprite.Interpolate = true
