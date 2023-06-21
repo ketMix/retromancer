@@ -10,10 +10,12 @@ import (
 )
 
 var (
-	ErrMissingMap = errors.New("missing map")
+	ErrMissingMap  = errors.New("missing map")
+	ErrNoActiveMap = errors.New("no active map")
 )
 
 type Map struct {
+	filename string
 	data     *resources.Map
 	actors   []Actor
 	bullets  []*Bullet
@@ -27,7 +29,8 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	}
 
 	m := &Map{
-		data: mapData,
+		filename: mapName,
+		data:     mapData,
 	}
 
 	//wallH := 6
@@ -87,11 +90,28 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 	// Move players over to new map.
 	for _, p := range s.Players {
+		// Save actor right before entry.
+		p.Actor().Save()
+		// Position the actor and place them in the map.
 		p.Actor().SetXY(float64(m.data.Start[0]*16), float64(m.data.Start[1]*16))
 		m.actors = append(m.actors, p.Actor())
 	}
 
 	return nil
+}
+
+func (s *World) ResetActiveMap(ctx states.Context) error {
+	if s.activeMap == nil {
+		return ErrNoActiveMap
+	}
+
+	for _, p := range s.Players {
+		p.Actor().Restore()
+	}
+
+	s.activeMap.actors = make([]Actor, 0)
+	s.activeMap.bullets = make([]*Bullet, 0)
+	return s.TravelToMap(ctx, s.activeMap.filename)
 }
 
 func (m *Map) Draw(screen *ebiten.Image) {

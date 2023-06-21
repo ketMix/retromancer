@@ -209,6 +209,14 @@ func (s *World) Update(ctx states.Context) error {
 			}
 
 			s.HandleTrash()
+
+			if s.ArePlayersDead() {
+				if s.DoPlayersShareThought(ResetThought{}) {
+					s.ResetActiveMap(ctx)
+				} else if s.DoPlayersShareThought(QuitThought{}) {
+					ctx.StateMachine.PopState()
+				}
+			}
 		}
 		s.ebitenTicks = 0
 	}
@@ -243,6 +251,34 @@ func (s *World) Draw(screen *ebiten.Image) {
 			y += h + 5*/
 		}
 	}
+}
+
+func (s *World) ArePlayersDead() bool {
+	for _, p := range s.Players {
+		if a, ok := p.Actor().(*PC); ok {
+			if !a.Dead() {
+				return false
+			}
+		}
+	}
+	return true
+}
+
+func (s *World) DoPlayersShareThought(thought Thought) bool {
+	for _, p := range s.Players {
+		match := false
+		for _, t := range p.Thoughts() {
+			// More reflection, woo.
+			if reflect.TypeOf(t) == reflect.TypeOf(thought) {
+				match = true
+				break
+			}
+		}
+		if !match {
+			return false
+		}
+	}
+	return true
 }
 
 func (s *World) HandleTrash() {
