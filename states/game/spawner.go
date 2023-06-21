@@ -28,6 +28,8 @@ func (s *Spawner) Update() (actions []Action) {
 }
 
 func (s *Spawner) Shape() Shape                    { return &s.shape }
+func (s *Spawner) Save()                           {}
+func (s *Spawner) Restore()                        {}
 func (s *Spawner) Player() Player                  { return nil }
 func (s *Spawner) SetPlayer(p Player)              {}
 func (s *Spawner) SetImpulses(impulses ImpulseSet) {}

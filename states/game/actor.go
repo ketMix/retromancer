@@ -5,6 +5,8 @@ import (
 )
 
 type Actor interface {
+	Save()
+	Restore()
 	Dead() bool
 	Player() Player
 	SetPlayer(p Player)

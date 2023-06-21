@@ -13,6 +13,7 @@ import (
 
 type PC struct {
 	player Player
+	saved  *PC
 	//
 	Arrow                     *resources.Sprite
 	Sprite                    *resources.Sprite
@@ -61,6 +62,16 @@ func (s *World) NewPC(ctx states.Context) *PC {
 	pc.Hand.Sprite.Centered = true
 
 	return pc
+}
+
+func (p *PC) Save() {
+	saved := *p
+	saved.DeathSprite.Reset()
+	p.saved = &saved
+}
+
+func (p *PC) Restore() {
+	*p = *p.saved
 }
 
 func (p *PC) SetPlayer(player Player) {
