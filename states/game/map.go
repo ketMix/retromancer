@@ -14,6 +14,11 @@ var (
 	ErrNoActiveMap = errors.New("no active map")
 )
 
+const (
+	cellW = 16
+	cellH = 16
+)
+
 type Map struct {
 	filename string
 	data     *resources.Map
@@ -50,13 +55,13 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 					cell.Map = r.Map
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", r.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
 					cell.Sprite.SetXY(
-						16*float64(k)+xoffset,
-						16*float64(j)+yoffset,
+						cellW*float64(k)+xoffset,
+						cellH*float64(j)+yoffset,
 					)
 					// This is gross, but it visually allows the cell to be "isometric" without going the standard walls path.
 					if r.Isometric {
 						cell.Sprite.SetXY(
-							cell.Sprite.X-(16/4),
+							cell.Sprite.X-(cellW/4),
 							cell.Sprite.Y,
 						)
 					}
@@ -73,8 +78,8 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	for _, a := range m.data.Actors {
 		switch a.Type {
 		case "spawner":
-			x := float64(a.Spawn[0]) * 16
-			y := float64(a.Spawn[1]) * 16
+			x := float64(a.Spawn[0]) * cellW
+			y := float64(a.Spawn[1]) * cellH
 			bulletGroups := make([]*BulletGroup, 0)
 
 			// If we have bullet groups defined for the spawner, create them.
@@ -102,7 +107,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		// Save actor right before entry.
 		p.Actor().Save()
 		// Position the actor and place them in the map.
-		p.Actor().SetXY(float64(m.data.Start[0]*16), float64(m.data.Start[1]*16))
+		p.Actor().SetXY(float64(m.data.Start[0]*cellW), float64(m.data.Start[1]*cellH))
 		m.actors = append(m.actors, p.Actor())
 	}
 
@@ -188,8 +193,8 @@ type CellCollision struct {
 func (m *Map) Collides(s Shape) *CellCollision {
 	// Get nearest cell to shape coordinates and check adjacent cells for collisions.
 	x, y, _, _ := s.Bounds()
-	x /= 16
-	y /= 16
+	x /= cellW
+	y /= cellH
 	x = math.Round(x)
 	y = math.Round(y)
 	z := m.currentZ
@@ -245,10 +250,10 @@ func (m *Map) Collides(s Shape) *CellCollision {
 }
 
 func (m *Map) DoesLineCollide(fx1, fy1, fx2, fy2 float64, z int) bool {
-	x1 := int(math.Round(fx1 / 16))
-	y1 := int(math.Round(fy1 / 16))
-	x2 := int(math.Round(fx2 / 16))
-	y2 := int(math.Round(fy2 / 16))
+	x1 := int(math.Round(fx1 / cellW))
+	y1 := int(math.Round(fy1 / cellH))
+	x2 := int(math.Round(fx2 / cellW))
+	y2 := int(math.Round(fy2 / cellH))
 
 	// Bresenham's line algorithm.
 	dx := math.Abs(float64(x2 - x1))
