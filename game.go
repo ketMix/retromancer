@@ -32,6 +32,11 @@ func (g *Game) PopState() {
 	if len(g.States) == 0 {
 		return
 	}
+	g.States[len(g.States)-1].Finalize(states.Context{
+		Manager:      &g.Manager,
+		StateMachine: g,
+		Cursor:       &g.Cursor,
+	})
 	g.States = g.States[:len(g.States)-1]
 }
 

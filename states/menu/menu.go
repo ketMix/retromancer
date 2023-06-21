@@ -40,6 +40,10 @@ func (m *Menu) Init(ctx states.Context) error {
 	return nil
 }
 
+func (m *Menu) Finalize(ctx states.Context) error {
+	return nil
+}
+
 func (m *Menu) Update(ctx states.Context) error {
 	x, y := ebiten.CursorPosition()
 

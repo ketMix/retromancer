@@ -40,6 +40,12 @@ func (s *World) Init(ctx states.Context) error {
 	return nil
 }
 
+func (s *World) Finalize(ctx states.Context) error {
+	// Renable the global cursor.
+	ctx.Cursor.Enable()
+	return nil
+}
+
 func (s *World) Update(ctx states.Context) error {
 	s.ebitenTicks++
 	readyCount := 0
