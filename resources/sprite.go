@@ -39,6 +39,13 @@ func (s *Sprite) SetXY(x, y float64) {
 	s.Y = y
 }
 
+func (s *Sprite) Reset() {
+	if len(s.images) > 0 {
+		s.frame = 0
+		s.image = s.images[0]
+	}
+}
+
 func (s *Sprite) Frame() int {
 	return s.frame
 }
