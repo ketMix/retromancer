@@ -20,6 +20,11 @@ runes:
     sprite: dead-grass
   " ":
     sprite: empty
+  "D":
+    sprite: door
+    door: true
+    isometric: true
+    map: ballpit
 start: [8, 11, 0]
 actors:
   - spawn: [8, 3, 0]
@@ -31,7 +36,7 @@ actors:
           color: [0, 128, 255, 128]
 layers:
   - |
-   ^                ^.^
+   ^********D*******^.^
    ^                ^.^
    ^^               ^.^
    ^^^              ^.^

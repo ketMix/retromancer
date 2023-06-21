@@ -95,7 +95,7 @@ func (s *World) Update(ctx states.Context) error {
 						checkShape := actor.Shape().Clone().(*CircleShape)
 						checkShape.X = action.X
 						checkShape.Y = action.Y + 4 // Stupid -4 to make the visual offset look nicer when bumpin' walls
-						if !s.activeMap.Collides(checkShape) {
+						if collision := s.activeMap.Collides(checkShape); collision == nil || !collision.Cell.Blocks {
 							actor.SetXY(action.X, action.Y)
 						}
 					case ActionReflect:
@@ -187,7 +187,7 @@ func (s *World) Update(ctx states.Context) error {
 			// Okay, this probably isn't great, but let's check bullet collisions here.
 			for _, bullet := range s.activeMap.bullets {
 				// Check for bullet collisions with walls.
-				if s.activeMap.Collides(&bullet.Shape) {
+				if collision := s.activeMap.Collides(&bullet.Shape); collision != nil && collision.Cell.Blocks {
 					bullet.Destroyed = true
 					continue
 				}

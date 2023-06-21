@@ -5,18 +5,24 @@ import (
 )
 
 type RuneDef struct {
-	Sprite string `yaml:"sprite"`
-	Blocks bool   `yaml:"blocks"`
-	Wall   bool   `yaml:"wall"`
-	Floor  bool   `yaml:"floor"`
+	Sprite    string `yaml:"sprite"`
+	Blocks    bool   `yaml:"blocks"`
+	Wall      bool   `yaml:"wall"`
+	Floor     bool   `yaml:"floor"`
+	Door      bool   `yaml:"door"`
+	Isometric bool   `yaml:"isometric"`
+	Map       string `yaml:"map"`
 }
 
 type Cell struct {
-	Sprite *Sprite `yaml:"-"`
-	Type   rune    `yaml:"-"` // I guess using runes is okay.
-	Blocks bool    `yaml:"-"`
-	Wall   bool    `yaml:"-"`
-	Floor  bool    `yaml:"-"`
+	Sprite    *Sprite `yaml:"-"`
+	Type      rune    `yaml:"-"` // I guess using runes is okay.
+	Blocks    bool    `yaml:"-"`
+	Wall      bool    `yaml:"-"`
+	Floor     bool    `yaml:"-"`
+	Door      bool    `yaml:"-"`
+	Map       string  `yaml:"-"`
+	Isometric bool    `yaml:"-"`
 }
 
 type Layer struct {

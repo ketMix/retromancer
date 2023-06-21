@@ -46,11 +46,20 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 					cell.Blocks = r.Blocks
 					cell.Wall = r.Wall
 					cell.Floor = r.Floor
+					cell.Door = r.Door
+					cell.Map = r.Map
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", r.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
 					cell.Sprite.SetXY(
-						cell.Sprite.Width()*float64(k)+xoffset,
-						cell.Sprite.Height()*float64(j)+yoffset,
+						16*float64(k)+xoffset,
+						16*float64(j)+yoffset,
 					)
+					// This is gross, but it visually allows the cell to be "isometric" without going the standard walls path.
+					if r.Isometric {
+						cell.Sprite.SetXY(
+							cell.Sprite.X-(16/4),
+							cell.Sprite.Y,
+						)
+					}
 				}
 				//cell.Sprite.Centered = true
 				row[k] = cell
@@ -172,7 +181,11 @@ func (m *Map) GetCell(x, y, z int) (resources.Cell, error) {
 	return m.data.Layers[z].Cells[y][x], nil
 }
 
-func (m *Map) Collides(s Shape) bool {
+type CellCollision struct {
+	Cell resources.Cell
+}
+
+func (m *Map) Collides(s Shape) *CellCollision {
 	// Get nearest cell to shape coordinates and check adjacent cells for collisions.
 	x, y, _, _ := s.Bounds()
 	x /= 16
@@ -181,7 +194,7 @@ func (m *Map) Collides(s Shape) bool {
 	y = math.Round(y)
 	z := m.currentZ
 
-	check := func(x, y int) bool {
+	check := func(x, y int) *CellCollision {
 		if y >= 0 && int(y) < len(m.data.Layers[z].Cells) && x >= 0 && int(x) < len(m.data.Layers[z].Cells[int(y)]) {
 			if m.data.Layers[z].Cells[int(y)][int(x)].Blocks {
 				cell := m.data.Layers[z].Cells[int(y)][int(x)]
@@ -191,24 +204,44 @@ func (m *Map) Collides(s Shape) bool {
 					Width:  cell.Sprite.Width(),
 					Height: cell.Sprite.Height(),
 				}) {
-					return true
+					return &CellCollision{
+						Cell: cell,
+					}
 				}
 			}
 		}
-		return false
+		return nil
 	}
 
 	// TODO: Get whatever its called when you get the minimum distance to ensure contact but not intersection and return it so the caller can still potentially move.
-	// lol
-	return check(int(x), int(y)) ||
-		check(int(x), int(y+1)) ||
-		check(int(x), int(y-1)) ||
-		check(int(x-1), int(y)) ||
-		check(int(x-1), int(y+1)) ||
-		check(int(x-1), int(y-1)) ||
-		check(int(x+1), int(y)) ||
-		check(int(x+1), int(y+1)) ||
-		check(int(x+1), int(y-1))
+	// lol, this is bad
+	collision := check(int(x), int(y))
+	if collision == nil {
+		collision = check(int(x), int(y+1))
+	}
+	if collision == nil {
+		collision = check(int(x), int(y-1))
+	}
+	if collision == nil {
+		collision = check(int(x-1), int(y))
+	}
+	if collision == nil {
+		collision = check(int(x-1), int(y+1))
+	}
+	if collision == nil {
+		collision = check(int(x-1), int(y-1))
+	}
+	if collision == nil {
+		collision = check(int(x+1), int(y))
+	}
+	if collision == nil {
+		collision = check(int(x+1), int(y+1))
+	}
+	if collision == nil {
+		collision = check(int(x+1), int(y-1))
+	}
+
+	return collision
 }
 
 func (m *Map) DoesLineCollide(fx1, fy1, fx2, fy2 float64, z int) bool {
