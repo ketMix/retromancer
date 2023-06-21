@@ -12,6 +12,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/kettek/go-multipath/v2"
+	"github.com/tinne26/etxt/font"
+	"golang.org/x/image/font/sfnt"
 	"gopkg.in/yaml.v2"
 )
 
@@ -85,6 +87,22 @@ func (m *ResourceManager) Load(category string, name string) (interface{}, error
 		}
 		group.data[strings.TrimSuffix(name, filepath.Ext(name))] = bg
 		return bg, nil
+	} else if category == "fonts" {
+		if strings.HasSuffix(name, ".ttf") {
+			bytes, err := m.files.ReadFile(fmt.Sprintf("%s/%s", category, name))
+			if err != nil {
+				return nil, err
+			}
+
+			f, _, err := font.ParseFromBytes(bytes)
+			if err != nil {
+				return nil, err
+			}
+			group.data[strings.TrimSuffix(name, filepath.Ext(name))] = f
+			return f, nil
+		} else {
+			return nil, nil
+		}
 	}
 
 	return nil, ErrNoSuchCategory
@@ -118,6 +136,12 @@ func (m *ResourceManager) GetAs(category string, name string, target interface{}
 			return &resources.BulletGroupDef{} // FIXME: Use an actual fallback bullet group.
 		}
 		return d
+	case *sfnt.Font:
+		d := m.Get(category, name)
+		if d == nil {
+			return &sfnt.Font{} // FIXME: Use an actual fallback font.
+		}
+		return d
 	}
 
 	return nil
@@ -132,6 +156,7 @@ func (m *ResourceManager) LoadAll() error {
 		}
 		return nil
 	})
+	fmt.Println("loaded", len(m.groups["images"].data), "images")
 	m.files.Walk("maps/", func(path string, entry fs.DirEntry, err error) error {
 		if !entry.IsDir() {
 			if _, err := m.Load("maps", entry.Name()); err != nil {
@@ -140,6 +165,7 @@ func (m *ResourceManager) LoadAll() error {
 		}
 		return nil
 	})
+	fmt.Println("loaded", len(m.groups["maps"].data), "maps")
 	m.files.Walk("bullets/", func(path string, entry fs.DirEntry, err error) error {
 		if !entry.IsDir() {
 			if _, err := m.Load("bullets", entry.Name()); err != nil {
@@ -148,5 +174,15 @@ func (m *ResourceManager) LoadAll() error {
 		}
 		return nil
 	})
+	fmt.Println("loaded", len(m.groups["bullets"].data), "bullet groups")
+	m.files.Walk("fonts/", func(path string, entry fs.DirEntry, err error) error {
+		if !entry.IsDir() {
+			if _, err := m.Load("fonts", entry.Name()); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	fmt.Println("loaded", len(m.groups["fonts"].data), "fonts")
 	return nil
 }

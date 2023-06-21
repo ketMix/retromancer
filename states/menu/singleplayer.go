@@ -3,8 +3,6 @@ package menu
 import (
 	"ebijam23/states"
 	"ebijam23/states/game"
-
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type SinglePlayer struct {
@@ -29,5 +27,5 @@ func (s *SinglePlayer) Update(ctx states.Context) error {
 	return nil
 }
 
-func (s *SinglePlayer) Draw(screen *ebiten.Image) {
+func (s *SinglePlayer) Draw(ctx states.DrawContext) {
 }

@@ -75,9 +75,9 @@ func (m *Menu) Update(ctx states.Context) error {
 	return nil
 }
 
-func (m *Menu) Draw(screen *ebiten.Image) {
-	m.logo.Draw(screen)
+func (m *Menu) Draw(ctx states.DrawContext) {
+	m.logo.Draw(ctx.Screen)
 	for _, sprite := range m.sprites {
-		sprite.Draw(screen)
+		sprite.Draw(ctx.Screen)
 	}
 }

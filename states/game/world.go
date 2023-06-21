@@ -230,8 +230,8 @@ func (s *World) Update(ctx states.Context) error {
 	return nil
 }
 
-func (s *World) Draw(screen *ebiten.Image) {
-	s.activeMap.Draw(screen)
+func (s *World) Draw(ctx states.DrawContext) {
+	s.activeMap.Draw(ctx.Screen)
 
 	for _, p := range s.Players {
 		//y := screen.Bounds().Max.Y - 100
@@ -240,10 +240,10 @@ func (s *World) Draw(screen *ebiten.Image) {
 		}
 		if a, ok := p.Actor().(*PC); ok {
 			// Draw the hand's current energy.
-			resources.DrawArc(screen, a.Hand.Shape.X, a.Hand.Shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
+			resources.DrawArc(ctx.Screen, a.Hand.Shape.X, a.Hand.Shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
 			// Also draw the energy around the player if they shielded.
 			if _, ok := a.previousInteraction.(ActionShield); ok {
-				resources.DrawArc(screen, a.shape.X, a.shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
+				resources.DrawArc(ctx.Screen, a.shape.X, a.shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
 			}
 
 			// Old energy bar

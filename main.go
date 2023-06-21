@@ -9,6 +9,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/kettek/go-multipath/v2"
+	"golang.org/x/image/font/sfnt"
 )
 
 //go:embed assets/*
@@ -39,6 +40,14 @@ func main() {
 	// Initialize game fields as necessary.
 	if err := game.Init(); err != nil {
 		panic(err)
+	}
+
+	// Ensure we have our font.
+	if f := game.Manager.GetAs("fonts", "x12y16pxMaruMonica", (*sfnt.Font)(nil)).(*sfnt.Font); f == nil {
+		panic("missing font")
+	} else {
+		game.Text.SetFont(f)
+		game.Text.Utils().SetCache8MiB()
 	}
 
 	ebiten.SetWindowSize(1280, 720)

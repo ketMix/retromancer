@@ -3,8 +3,6 @@ package menu
 import (
 	"ebijam23/states"
 	"ebijam23/states/game"
-
-	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Ballpit struct {
@@ -30,5 +28,5 @@ func (s *Ballpit) Update(ctx states.Context) error {
 	return nil
 }
 
-func (s *Ballpit) Draw(screen *ebiten.Image) {
+func (s *Ballpit) Draw(ctx states.DrawContext) {
 }

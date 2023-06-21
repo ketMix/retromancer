@@ -7,10 +7,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/tinne26/etxt"
 )
 
 type Game struct {
 	States  []states.State
+	Text    *etxt.Renderer
 	Manager ResourceManager
 	Cursor  Cursor
 }
@@ -44,6 +46,8 @@ func (g *Game) Init() error {
 	g.Cursor.image = g.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image)
 	g.Cursor.Enable()
 
+	g.Text = etxt.NewRenderer()
+
 	return nil
 }
 
@@ -64,7 +68,10 @@ func (g *Game) Update() error {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	if state := g.State(); state != nil {
-		state.Draw(screen)
+		state.Draw(states.DrawContext{
+			Screen: screen,
+			Text:   g.Text,
+		})
 	}
 	if g.Cursor.Enabled() {
 		x, y := ebiten.CursorPosition()
