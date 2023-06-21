@@ -11,6 +11,7 @@ type RemotePlayer struct {
 	actor          Actor
 	impulses       ImpulseSet
 	queuedImpulses ImpulseSet
+	thoughts       []Thought
 }
 
 func (p *RemotePlayer) Update() {
@@ -29,6 +30,10 @@ func (p *RemotePlayer) QueueImpulses(impulses ImpulseSet) {
 
 func (p *RemotePlayer) ClearImpulses() {
 	p.impulses = ImpulseSet{}
+}
+
+func (p *RemotePlayer) Thoughts() []Thought {
+	return p.thoughts
 }
 
 func (p *RemotePlayer) Ready(nextTick int) bool {

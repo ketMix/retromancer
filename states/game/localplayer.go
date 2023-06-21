@@ -11,6 +11,7 @@ import (
 type LocalPlayer struct {
 	connection     net.ServerClient // Only used if the player is a server.
 	actor          Actor
+	thoughts       []Thought
 	impulses       ImpulseSet
 	queuedImpulses ImpulseSet
 }
@@ -60,6 +61,16 @@ func (p *LocalPlayer) Update() {
 	} else {
 		p.impulses.Interaction = nil
 	}
+
+	// Thoughts
+	p.thoughts = []Thought{}
+	if p.actor != nil && p.actor.Dead() {
+		if ebiten.IsKeyPressed(ebiten.KeyEnter) {
+			p.thoughts = append(p.thoughts, ResetThought{})
+		} else if ebiten.IsKeyPressed(ebiten.KeyEscape) {
+			p.thoughts = append(p.thoughts, QuitThought{})
+		}
+	}
 }
 
 // Tick is called on actual world tick.
@@ -81,6 +92,10 @@ func (p *LocalPlayer) QueueImpulses(impulses ImpulseSet) {
 
 func (p *LocalPlayer) ClearImpulses() {
 	p.impulses = ImpulseSet{}
+}
+
+func (p *LocalPlayer) Thoughts() []Thought {
+	return p.thoughts
 }
 
 func (p *LocalPlayer) Ready(nextTick int) bool {

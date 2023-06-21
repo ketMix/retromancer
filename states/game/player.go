@@ -11,4 +11,6 @@ type Player interface {
 	Impulses() ImpulseSet
 	ClearImpulses()
 	QueueImpulses(impulses ImpulseSet)
+	//
+	Thoughts() []Thought
 }
