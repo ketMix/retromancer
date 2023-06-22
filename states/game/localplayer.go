@@ -161,9 +161,9 @@ func (p *LocalPlayer) Update() {
 	// Thoughts
 	p.thoughts = []Thought{}
 	if p.actor != nil && p.actor.Dead() {
-		if ebiten.IsKeyPressed(ebiten.KeyEnter) || ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton0) {
+		if ebiten.IsKeyPressed(ebiten.KeyEnter) || ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton9) {
 			p.thoughts = append(p.thoughts, ResetThought{})
-		} else if ebiten.IsKeyPressed(ebiten.KeyEscape) || ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton1) {
+		} else if ebiten.IsKeyPressed(ebiten.KeyEscape) || ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton8) {
 			p.thoughts = append(p.thoughts, QuitThought{})
 		}
 	}
