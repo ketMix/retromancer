@@ -48,7 +48,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		for j, row := range l.Cells {
 			for k, cell := range row {
 				if r, ok := m.data.RuneMap[string(cell.Type)]; ok {
-					cell.ActorID = r.ActorID
+					cell.ID = r.ID
 					cell.Blocks = r.Blocks
 					cell.Wall = r.Wall
 					cell.Floor = r.Floor
@@ -75,7 +75,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 	// Create actors.
 	for _, a := range m.data.Actors {
-		cell, _ := m.FindCellByActorId(a.ID)
+		cell, _ := m.FindCellById(a.ID)
 		switch a.Type {
 		case "door":
 			// TODO: consolidate this junk elsewhere
@@ -259,11 +259,11 @@ func (m *Map) GetCell(x, y, z int) (resources.Cell, error) {
 	return m.data.Layers[z].Cells[y][x], nil
 }
 
-func (m *Map) FindCellByActorId(actorId string) (*resources.Cell, error) {
+func (m *Map) FindCellById(id string) (*resources.Cell, error) {
 	for z, layer := range m.data.Layers {
 		for y, row := range layer.Cells {
 			for x, cell := range row {
-				if cell.ActorID == actorId {
+				if cell.ID == id {
 					return &m.data.Layers[z].Cells[y][x], nil
 				}
 			}

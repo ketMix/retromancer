@@ -22,15 +22,15 @@ runes:
     sprite: empty
   "D":
     sprite: empty
-    actorId: door
+    id: door
     isometric: true
     blocks: true
   "C":
     sprite: empty
-    actorId: candle1
+    id: candle1
   "E":
     sprite: empty
-    actorId: candle2
+    id: candle2
 start: [8, 11, 0]
 actors:
   - spawn: [8, 3, 0]

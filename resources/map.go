@@ -10,7 +10,7 @@ type RuneDef struct {
 	Wall      bool   `yaml:"wall"`
 	Floor     bool   `yaml:"floor"`
 	Isometric bool   `yaml:"isometric"`
-	ActorID   string `yaml:"actorId,omitempty"`
+	ID        string `yaml:"id,omitempty"`
 }
 
 type Cell struct {
@@ -20,7 +20,7 @@ type Cell struct {
 	Wall      bool    `yaml:"-"`
 	Floor     bool    `yaml:"-"`
 	Isometric bool    `yaml:"-"`
-	ActorID   string  `yaml:"-"`
+	ID        string  `yaml:"-"`
 }
 
 type Layer struct {

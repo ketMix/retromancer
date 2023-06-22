@@ -247,7 +247,7 @@ func (s *World) Update(ctx states.Context) error {
 						}
 						if checkNum == checkedNum {
 							actor.SetActive(true)
-							cell, _ := s.activeMap.FindCellByActorId(actor.ID())
+							cell, _ := s.activeMap.FindCellById(actor.ID())
 							cell.Blocks = false // No
 						}
 					}
