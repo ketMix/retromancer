@@ -27,7 +27,11 @@ func (s *World) Init(ctx states.Context) error {
 	for _, p := range s.Players {
 		pc := s.NewPC(ctx)
 
-		pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
+		hat := p.Hat()
+		if hat == "" {
+			hat = "hat-"
+		}
+		pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", hat, (*ebiten.Image)(nil)).(*ebiten.Image))
 
 		p.SetActor(pc)
 	}
