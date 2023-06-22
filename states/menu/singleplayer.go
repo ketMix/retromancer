@@ -173,6 +173,7 @@ func (s *SinglePlayer) SyncController(ctx states.Context) {
 
 		s.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "controller").(*ebiten.Image))
 	} else {
+		s.localPlayers[0].GamepadID = 0
 		s.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "keyboard").(*ebiten.Image))
 	}
 }

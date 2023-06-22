@@ -29,7 +29,7 @@ var (
 
 func (p *LocalPlayer) Update() {
 	// FIXME: All of this is pretty rough, but I wanted to test controller usage.
-	if p.GamepadID != 0 && len(ebiten.GamepadIDs()) >= p.GamepadID {
+	if p.GamepadID > 0 && len(ebiten.GamepadIDs()) >= p.GamepadID {
 		lr := ebiten.GamepadAxisValue(ebiten.GamepadID(p.GamepadID), 0)
 		ud := ebiten.GamepadAxisValue(ebiten.GamepadID(p.GamepadID), 1)
 
