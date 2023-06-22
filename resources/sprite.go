@@ -157,6 +157,10 @@ func (s *Sprite) DrawWithOptions(screen *ebiten.Image, opts *ebiten.DrawImageOpt
 }
 
 func (s *Sprite) Hit(x, y float64) bool {
+	if s.Centered {
+		x += s.Width() / 2
+		y += s.Height() / 2
+	}
 	if x < s.X || x > s.X+s.Width() {
 		return false
 	}
