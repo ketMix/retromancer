@@ -18,6 +18,7 @@ type Sprite struct {
 	X, Y             float64
 	lastX, lastY     float64
 	interpX, interpY float64
+	Scale            float64
 	Flipped          bool
 	Interpolate      bool
 	Centered         bool
@@ -25,10 +26,16 @@ type Sprite struct {
 }
 
 func (s *Sprite) Width() float64 {
+	if s.Scale != 0 {
+		return float64(s.image.Bounds().Dx()) * s.Scale
+	}
 	return float64(s.image.Bounds().Dx())
 }
 
 func (s *Sprite) Height() float64 {
+	if s.Scale != 0 {
+		return float64(s.image.Bounds().Dy()) * s.Scale
+	}
 	return float64(s.image.Bounds().Dy())
 }
 
@@ -128,12 +135,16 @@ func (s *Sprite) DrawWithOptions(screen *ebiten.Image, opts *ebiten.DrawImageOpt
 		s.Options.GeoM.Translate(s.Width(), 0)
 	}
 
+	if s.Scale != 0 {
+		s.Options.GeoM.Scale(s.Scale, s.Scale)
+	}
+
 	if s.Centered {
 		s.Options.GeoM.Translate(s.interpX-s.Width()/2, s.interpY-s.Height()/2)
-
 	} else {
 		s.Options.GeoM.Translate(s.interpX, s.interpY)
 	}
+
 	s.Options.GeoM.Concat(opts.GeoM)
 
 	if opts.ColorScale.A() != 1 || opts.ColorScale.R() != 1 || opts.ColorScale.G() != 1 || opts.ColorScale.B() != 1 {
