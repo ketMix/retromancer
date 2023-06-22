@@ -104,6 +104,22 @@ func (m *ResourceManager) Load(category string, name string) (interface{}, error
 		} else {
 			return nil, nil
 		}
+	} else if category == "sounds" {
+		if strings.HasSuffix(name, ".ogg") {
+			bytes, err := m.files.ReadFile(fmt.Sprintf("%s/%s", category, name))
+			if err != nil {
+				return nil, err
+			}
+
+			snd, err := resources.NewSound(bytes)
+			if err != nil {
+				return nil, err
+			}
+			group.data[strings.TrimSuffix(name, filepath.Ext(name))] = snd
+			return snd, nil
+		} else {
+			return nil, nil
+		}
 	}
 
 	return nil, ErrNoSuchCategory
@@ -160,6 +176,12 @@ func (m *ResourceManager) GetAs(category string, name string, target interface{}
 			return &sfnt.Font{} // FIXME: Use an actual fallback font.
 		}
 		return d
+	case *resources.Sound:
+		d := m.Get(category, name)
+		if d == nil {
+			return &resources.Sound{} // FIXME: Use an actual fallback sound.
+		}
+		return d
 	}
 
 	return nil
@@ -202,5 +224,14 @@ func (m *ResourceManager) LoadAll() error {
 		return nil
 	})
 	fmt.Println("loaded", len(m.groups["fonts"].data), "fonts")
+	m.files.Walk("sounds/", func(path string, entry fs.DirEntry, err error) error {
+		if !entry.IsDir() {
+			if _, err := m.Load("sounds", entry.Name()); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	fmt.Println("loaded", len(m.groups["sounds"].data), "sounds")
 	return nil
 }
