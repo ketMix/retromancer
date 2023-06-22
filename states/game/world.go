@@ -12,6 +12,7 @@ import (
 )
 
 type World struct {
+	overlay     Overlay
 	Players     []Player // Exposed so singleplayer/multiplayer can set it.
 	tick        int      // tick represents the current processed game tick. This is used to lockstep the players.
 	ebitenTicks int      // Elapsed ebiten ticks.
@@ -22,6 +23,11 @@ type World struct {
 func (s *World) Init(ctx states.Context) error {
 	// Disable the global cursor.
 	ctx.Cursor.Disable()
+
+	// Init the overlay.
+	if err := s.overlay.Init(ctx); err != nil {
+		return err
+	}
 
 	// Create actors for our players.
 	for _, p := range s.Players {
@@ -45,6 +51,8 @@ func (s *World) Finalize(ctx states.Context) error {
 }
 
 func (s *World) Update(ctx states.Context) error {
+	s.overlay.Update(ctx)
+
 	s.ebitenTicks++
 	readyCount := 0
 	for _, player := range s.Players {
@@ -304,6 +312,8 @@ func (s *World) Draw(ctx states.DrawContext) {
 			ctx.Text.Draw(ctx.Screen, "<Escape> to quit", ctx.Screen.Bounds().Max.X/2, int(y))
 		}
 	}
+
+	s.overlay.Draw(ctx)
 }
 
 func (s *World) ArePlayersDead() bool {

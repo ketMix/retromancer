@@ -20,9 +20,11 @@ type SinglePlayer struct {
 	useController  bool
 	//
 	localPlayers []*game.LocalPlayer
+	overlay      game.Overlay
 }
 
 func (s *SinglePlayer) Init(ctx states.Context) error {
+	s.overlay.Init(ctx)
 	//
 	s.clickSound = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
@@ -193,6 +195,7 @@ func (s *SinglePlayer) Finalize(ctx states.Context) error {
 }
 
 func (s *SinglePlayer) Update(ctx states.Context) error {
+	s.overlay.Update(ctx)
 	x, y := ebiten.CursorPosition()
 	for _, m := range s.items {
 		m.CheckState(float64(x), float64(y))
@@ -213,4 +216,5 @@ func (s *SinglePlayer) Draw(ctx states.DrawContext) {
 	for _, m := range s.items {
 		m.Draw(ctx)
 	}
+	s.overlay.Draw(ctx)
 }

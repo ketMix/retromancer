@@ -3,6 +3,7 @@ package menu
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"ebijam23/states/game"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -12,9 +13,12 @@ type Menu struct {
 	logo, play, quit, ballpit *resources.Sprite
 	sprites                   resources.Sprites
 	click                     *resources.Sound
+	overlay                   game.Overlay
 }
 
 func (m *Menu) Init(ctx states.Context) error {
+	m.overlay.Init(ctx)
+
 	x := 320.0
 	y := 25.0
 	m.logo = resources.NewSprite(ctx.Manager.GetAs("images", "logo", (*ebiten.Image)(nil)).(*ebiten.Image))
@@ -73,6 +77,9 @@ func (m *Menu) Update(ctx states.Context) error {
 		}
 
 	}
+
+	m.overlay.Update(ctx)
+
 	return nil
 }
 
@@ -81,4 +88,6 @@ func (m *Menu) Draw(ctx states.DrawContext) {
 	for _, sprite := range m.sprites {
 		sprite.Draw(ctx.Screen)
 	}
+
+	m.overlay.Draw(ctx)
 }
