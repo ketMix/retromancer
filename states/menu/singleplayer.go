@@ -5,6 +5,7 @@ import (
 	"ebijam23/states"
 	"ebijam23/states/game"
 	"math/rand"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -16,6 +17,7 @@ type SinglePlayer struct {
 	hats           []string
 	hatIndex       int
 	hatItem        *resources.SpriteItem
+	hatText        *resources.TextItem
 	controllerItem *resources.SpriteItem
 	useController  bool
 	//
@@ -34,7 +36,6 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 	// Load in our hats.
 	s.hats = ctx.Manager.GetNamesWithPrefix("images", "hat-")
 	s.hatIndex = int(rand.Int31n(int32(len(s.hats))))
-	s.localPlayers[0].SetHat(s.hats[s.hatIndex])
 
 	centerX := 320.0
 	leftX := centerX - 50.0
@@ -63,8 +64,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 			if s.hatIndex < 0 {
 				s.hatIndex = len(s.hats) - 1
 			}
-			s.hatItem.Sprite.SetImage(ctx.Manager.Get("images", s.hats[s.hatIndex]).(*ebiten.Image))
-			s.localPlayers[0].SetHat(s.hats[s.hatIndex])
+			s.SyncHat(ctx)
 			return false
 		},
 	})
@@ -82,6 +82,18 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 	s.hatItem.Sprite.Centered = true
 	s.items[len(s.items)-1].(*resources.SpriteItem).Sprite.Scale = 2.0
 
+	s.items = append(s.items, &resources.TextItem{
+		X:    centerX,
+		Y:    y + 20,
+		Text: "",
+		Callback: func() bool {
+			return false
+		},
+	})
+	s.hatText = s.items[len(s.items)-1].(*resources.TextItem)
+
+	s.SyncHat(ctx)
+
 	s.items = append(s.items, &resources.SpriteItem{
 		X:      rightX,
 		Y:      y,
@@ -92,14 +104,13 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 			if s.hatIndex >= len(s.hats) {
 				s.hatIndex = 0
 			}
-			s.hatItem.Sprite.SetImage(ctx.Manager.Get("images", s.hats[s.hatIndex]).(*ebiten.Image))
-			s.localPlayers[0].SetHat(s.hats[s.hatIndex])
+			s.SyncHat(ctx)
 			return false
 		},
 	})
 	s.items[len(s.items)-1].(*resources.SpriteItem).Sprite.Centered = true
 
-	y += s.items[len(s.items)-1].(*resources.SpriteItem).Sprite.Height() + 20
+	y += s.items[len(s.items)-1].(*resources.SpriteItem).Sprite.Height() + 60
 
 	// Controller
 	s.items = append(s.items, &resources.TextItem{
@@ -172,6 +183,14 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 	y -= 50 + 16
 
 	return nil
+}
+
+func (s *SinglePlayer) SyncHat(ctx states.Context) {
+	s.hatItem.Sprite.SetImage(ctx.Manager.Get("images", s.hats[s.hatIndex]).(*ebiten.Image))
+
+	s.hatText.Text = strings.TrimPrefix(s.hats[s.hatIndex], "hat-")
+
+	s.localPlayers[0].SetHat(s.hats[s.hatIndex])
 }
 
 func (s *SinglePlayer) SyncController(ctx states.Context) {
