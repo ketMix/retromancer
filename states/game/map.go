@@ -77,6 +77,28 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	// Create actors.
 	for _, a := range m.data.Actors {
 		switch a.Type {
+		case "candle":
+			x := float64(a.Spawn[0]) * cellW
+			y := float64(a.Spawn[1]) * cellH
+			activeSpriteNames := ctx.Manager.GetNamesWithPrefix("images", "candle-active")
+			inactiveSpriteNames := ctx.Manager.GetNamesWithPrefix("images", "candle-inactive")
+			activeSprites := make([]*ebiten.Image, 0)
+			inactiveSprites := make([]*ebiten.Image, 0)
+			for _, s := range activeSpriteNames {
+				activeSprites = append(activeSprites, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+			}
+			for _, s := range inactiveSpriteNames {
+				inactiveSprites = append(inactiveSprites, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+			}
+			interactive := CreateInteractive(
+				x,
+				y,
+				a.ID,
+				a.Active,
+				activeSprites,
+				inactiveSprites,
+			)
+			m.actors = append(m.actors, interactive)
 		case "spawner":
 			x := float64(a.Spawn[0]) * cellW
 			y := float64(a.Spawn[1]) * cellH

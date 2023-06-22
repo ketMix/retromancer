@@ -34,6 +34,12 @@ actors:
         bulletCount: 3
         bullet:
           color: [0, 128, 255, 128]
+  - spawn: [7, 1, 0]
+    type: candle
+    active: true
+  - spawn: [11, 1, 0]
+    type: candle
+    active: false
 layers:
   - |
    ^********D*******^.^

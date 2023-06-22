@@ -39,8 +39,11 @@ type Map struct {
 }
 
 type ActorSpawn struct {
+	ID           string            `yaml:"id"`
 	Spawn        [3]int            `yaml:"spawn"`
 	Type         string            `yaml:"type"`
+	Active       bool              `yaml:"active"`
+	Conditions   []*ConditionDef   `yaml:"conditions,omitempty"`
 	BulletGroups []*BulletGroupDef `yaml:"bullets,omitempty"`
 }
 
