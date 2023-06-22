@@ -381,3 +381,13 @@ func (m *Map) DoesLineCollide(fx1, fy1, fx2, fy2 float64, z int) bool {
 
 	return false
 }
+
+func (m *Map) GetInteractiveActors() []*Interactive {
+	var actors []*Interactive
+	for _, a := range m.actors {
+		if a, ok := a.(*Interactive); ok {
+			actors = append(actors, a)
+		}
+	}
+	return actors
+}
