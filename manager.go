@@ -108,6 +108,20 @@ func (m *ResourceManager) Load(category string, name string) (interface{}, error
 	return nil, ErrNoSuchCategory
 }
 
+func (m *ResourceManager) GetNamesWithPrefix(category string, prefix string) []string {
+	if c, ok := m.groups[category]; !ok {
+		return nil
+	} else {
+		var names []string
+		for k := range c.data {
+			if strings.HasPrefix(k, prefix) {
+				names = append(names, k)
+			}
+		}
+		return names
+	}
+}
+
 func (m *ResourceManager) Get(category string, name string) interface{} {
 	if c, ok := m.groups[category]; !ok {
 		return nil
