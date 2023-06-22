@@ -12,6 +12,7 @@ type RemotePlayer struct {
 	impulses       ImpulseSet
 	queuedImpulses ImpulseSet
 	thoughts       []Thought
+	hat            string
 }
 
 func (p *RemotePlayer) Update() {
@@ -47,4 +48,12 @@ func (p *RemotePlayer) Actor() Actor {
 func (p *RemotePlayer) SetActor(actor Actor) {
 	p.actor = actor
 	actor.SetPlayer(p)
+}
+
+func (p *RemotePlayer) Hat() string {
+	return p.hat
+}
+
+func (p *RemotePlayer) SetHat(hat string) {
+	p.hat = hat
 }
