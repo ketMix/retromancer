@@ -77,6 +77,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		x, y := ebiten.CursorPosition()
 		opts := &ebiten.DrawImageOptions{}
 		opts.GeoM.Translate(float64(x), float64(y))
+		opts.GeoM.Translate(-float64(g.Cursor.image.Bounds().Dx())/2, -float64(g.Cursor.image.Bounds().Dy())/2)
 		screen.DrawImage(g.Cursor.image, opts)
 	}
 	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %0.2f TPS: %0.2f", ebiten.ActualFPS(), ebiten.ActualTPS()))
