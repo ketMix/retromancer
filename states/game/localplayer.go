@@ -16,16 +16,21 @@ type LocalPlayer struct {
 	queuedImpulses ImpulseSet
 	GamepadID      int // Target gamepad for this player to use.
 	hat            string
+	// controller vars
+	cx, cy, ca, cd  float64
+	handRotateSpeed float64
 }
 
-// TEMP: These need to be tied to a gamepad type or something.
-var (
-	cx              = 0.0
-	cy              = 0.0
-	ca              = math.Pi / 2
-	cd              = 40.0
-	handRotateSpeed = 0.075
-)
+func NewLocalPlayer() *LocalPlayer {
+	return &LocalPlayer{
+		impulses:        ImpulseSet{},
+		queuedImpulses:  ImpulseSet{},
+		ca:              math.Pi / 2,
+		cd:              40.0,
+		handRotateSpeed: 0.075,
+		hat:             "hat-",
+	}
+}
 
 func (p *LocalPlayer) Update() {
 	// FIXME: All of this is pretty rough, but I wanted to test controller usage.
@@ -44,7 +49,7 @@ func (p *LocalPlayer) Update() {
 			a := math.Atan2(r2, r1)
 
 			// Increment ca towards a in increments of 0.1 in the range [-pi, pi]:
-			d := a - ca
+			d := a - p.ca
 			if d > math.Pi {
 				d -= 2 * math.Pi
 			}
@@ -55,52 +60,52 @@ func (p *LocalPlayer) Update() {
 			if math.Abs(d) > 1 {
 				accel = math.Abs(d)
 			}
-			speed := handRotateSpeed
+			speed := p.handRotateSpeed
 
-			speed /= cd / 40.0
+			speed /= p.cd / 40.0
 
 			if d > speed {
-				ca += speed * accel
+				p.ca += speed * accel
 			}
 			if d < -speed {
-				ca -= speed * accel
+				p.ca -= speed * accel
 			}
 			if d > -speed && d < speed {
-				ca = a
+				p.ca = a
 			}
 		}
 
 		if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton5) {
-			cd += 3
-			if cd > 300 {
-				cd = 300
+			p.cd += 3
+			if p.cd > 300 {
+				p.cd = 300
 			}
 		} else if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton4) {
-			if cd-3 > 0 {
-				cd -= 3
+			if p.cd-3 > 0 {
+				p.cd -= 3
 			}
 		}
 
-		cx = math.Cos(ca) * cd
-		cy = math.Sin(ca) * cd
+		p.cx = math.Cos(p.ca) * p.cd
+		p.cy = math.Sin(p.ca) * p.cd
 
 		if a, ok := p.actor.(*PC); ok {
-			cx += float64(a.shape.X)
-			cy += float64(a.shape.Y)
-			a.Hand.SetXY(cx, cy)
+			p.cx += float64(a.shape.X)
+			p.cy += float64(a.shape.Y)
+			a.Hand.SetXY(p.cx, p.cy)
 		}
 
 		if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton1) {
 			p.impulses.Interaction = ImpulseShield{}
 		} else if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton7) {
 			p.impulses.Interaction = ImpulseReflect{
-				X: float64(cx),
-				Y: float64(cy),
+				X: float64(p.cx),
+				Y: float64(p.cy),
 			}
 		} else if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton6) {
 			p.impulses.Interaction = ImpulseDeflect{
-				X: float64(cx),
-				Y: float64(cy),
+				X: float64(p.cx),
+				Y: float64(p.cy),
 			}
 		} else {
 			p.impulses.Interaction = nil
