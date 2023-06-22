@@ -11,6 +11,7 @@ import (
 )
 
 type SinglePlayer struct {
+	clickSound     *resources.Sound
 	items          []resources.MenuItem
 	hats           []string
 	hatIndex       int
@@ -22,8 +23,12 @@ type SinglePlayer struct {
 }
 
 func (s *SinglePlayer) Init(ctx states.Context) error {
+	//
+	s.clickSound = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
+
 	// Set up local player.
 	s.localPlayers = append(s.localPlayers, game.NewLocalPlayer())
+
 	// Load in our hats.
 	s.hats = ctx.Manager.GetNamesWithPrefix("images", "hat-")
 	s.hatIndex = int(rand.Int31n(int32(len(s.hats))))
@@ -51,6 +56,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 		Y:      y,
 		Sprite: resources.NewSprite(ctx.Manager.Get("images", "arrow-left").(*ebiten.Image)),
 		Callback: func() bool {
+			s.clickSound.Play(1.0)
 			s.hatIndex--
 			if s.hatIndex < 0 {
 				s.hatIndex = len(s.hats) - 1
@@ -79,6 +85,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 		Y:      y,
 		Sprite: resources.NewSprite(ctx.Manager.Get("images", "arrow-right").(*ebiten.Image)),
 		Callback: func() bool {
+			s.clickSound.Play(1.0)
 			s.hatIndex++
 			if s.hatIndex >= len(s.hats) {
 				s.hatIndex = 0
@@ -109,6 +116,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 		Y:      y,
 		Sprite: resources.NewSprite(ctx.Manager.Get("images", "arrow-left").(*ebiten.Image)),
 		Callback: func() bool {
+			s.clickSound.Play(1.0)
 			s.useController = !s.useController
 			s.SyncController(ctx)
 			return false
@@ -132,6 +140,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 		Y:      y,
 		Sprite: resources.NewSprite(ctx.Manager.Get("images", "arrow-right").(*ebiten.Image)),
 		Callback: func() bool {
+			s.clickSound.Play(1.0)
 			s.useController = !s.useController
 			s.SyncController(ctx)
 			return false
@@ -147,6 +156,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 		Y:    y,
 		Text: "Start",
 		Callback: func() bool {
+			s.clickSound.Play(1.0)
 			ctx.StateMachine.PopState()
 			ctx.StateMachine.PushState(&game.World{
 				StartingMap: "start",

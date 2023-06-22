@@ -11,6 +11,7 @@ import (
 type Menu struct {
 	logo, play, quit, ballpit *resources.Sprite
 	sprites                   resources.Sprites
+	click                     *resources.Sound
 }
 
 func (m *Menu) Init(ctx states.Context) error {
@@ -33,6 +34,9 @@ func (m *Menu) Init(ctx states.Context) error {
 	m.ballpit.Y = y
 	y += m.ballpit.Height() + 16
 	m.sprites = append(m.sprites, m.play, m.quit, m.ballpit)
+
+	m.click = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
+
 	return nil
 }
 
@@ -58,10 +62,13 @@ func (m *Menu) Update(ctx states.Context) error {
 
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
 		if m.play.Hit(float64(x), float64(y)) {
+			m.click.Play(1.0)
 			ctx.StateMachine.PushState(&SinglePlayer{})
 		} else if m.quit.Hit(float64(x), float64(y)) {
+			m.click.Play(1.0)
 			return states.ErrQuitGame
 		} else if m.ballpit.Hit(float64(x), float64(y)) {
+			m.click.Play(1.0)
 			ctx.StateMachine.PushState(&Ballpit{})
 		}
 
