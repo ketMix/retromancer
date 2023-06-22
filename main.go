@@ -8,6 +8,7 @@ import (
 	"os"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/kettek/go-multipath/v2"
 	"golang.org/x/image/font/sfnt"
 )
@@ -49,6 +50,9 @@ func main() {
 		game.Text.SetFont(f)
 		game.Text.Utils().SetCache8MiB()
 	}
+
+	// Initialize audio.
+	audio.NewContext(44100)
 
 	ebiten.SetWindowSize(1280, 720)
 	ebiten.SetWindowTitle("ebijam23")
