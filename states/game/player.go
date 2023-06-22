@@ -13,4 +13,7 @@ type Player interface {
 	QueueImpulses(impulses ImpulseSet)
 	//
 	Thoughts() []Thought
+	//
+	SetHat(string)
+	Hat() string
 }
