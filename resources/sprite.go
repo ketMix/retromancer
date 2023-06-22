@@ -63,6 +63,7 @@ func (s *Sprite) SetFrame(frame int) {
 	} else if frame < 0 {
 		frame = 0
 	}
+	s.image = s.images[frame]
 	s.frame = frame
 }
 

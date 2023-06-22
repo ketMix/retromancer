@@ -2,6 +2,7 @@ package game
 
 import (
 	"ebijam23/resources"
+	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -20,6 +21,7 @@ func CreateInteractive(x, y float64, id string, active bool, activeImages, inact
 	if activationIdx < 0 {
 		activationIdx = 0
 	}
+	fmt.Println(activationIdx)
 	// Create the sprites
 	activeSprite := resources.NewAnimatedSprite(activeImages)
 	activeSprite.X = x
@@ -29,8 +31,8 @@ func CreateInteractive(x, y float64, id string, active bool, activeImages, inact
 	inactiveSprite := resources.NewAnimatedSprite(inactiveImages)
 	inactiveSprite.X = x
 	inactiveSprite.Y = y
-	inactiveSprite.SetFrame(activationIdx)
 	inactiveSprite.Framerate = 0
+	inactiveSprite.SetFrame(activationIdx)
 
 	return &Interactive{
 		ID:             id,
@@ -47,7 +49,9 @@ func CreateInteractive(x, y float64, id string, active bool, activeImages, inact
 
 func (i *Interactive) Update() []Action {
 	if !i.Active {
-		i.InactiveSprite.SetFrame(i.activationIdx)
+		if i.InactiveSprite.Frame() != i.activationIdx {
+			i.InactiveSprite.SetFrame(i.activationIdx)
+		}
 		i.InactiveSprite.Update()
 	} else {
 		i.ActiveSprite.Update()
