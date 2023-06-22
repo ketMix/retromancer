@@ -99,13 +99,25 @@ func (s *World) Update(ctx states.Context) error {
 						reflecting = true
 						x, y, _, _ := actor.Bounds()
 						if !s.activeMap.DoesLineCollide(x, y, action.X, action.Y, s.activeMap.currentZ) {
+
+							// Reflect bullets
 							bullets := s.IntersectingBullets(&CircleShape{
 								X:      action.X,
 								Y:      action.Y,
 								Radius: 20,
 							})
-							for _, bullet := range bullets {
-								bullet.Reflect()
+							for _, b := range bullets {
+								b.Reflect()
+							}
+
+							// Reverse actors
+							actors := s.IntersectingActors(&CircleShape{
+								X:      action.X,
+								Y:      action.Y,
+								Radius: 20,
+							})
+							for _, a := range actors {
+								a.Reverse()
 							}
 						}
 					case ActionDeflect:
@@ -340,4 +352,14 @@ func (s *World) IntersectingBullets(sh Shape) []*Bullet {
 		}
 	}
 	return bullets
+}
+
+func (s *World) IntersectingActors(sh Shape) []Actor {
+	var actors []Actor
+	for _, a := range s.activeMap.actors {
+		if a.Shape().Collides(sh) {
+			actors = append(actors, a)
+		}
+	}
+	return actors
 }

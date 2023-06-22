@@ -257,3 +257,5 @@ func (p *PC) SetXY(x, y float64) {
 func (p *PC) SetSize(r float64) {
 	p.shape.Radius = r
 }
+
+func (p *PC) Reverse() {}

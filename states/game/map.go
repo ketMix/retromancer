@@ -80,23 +80,23 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		case "candle":
 			x := float64(a.Spawn[0]) * cellW
 			y := float64(a.Spawn[1]) * cellH
-			activeSpriteNames := ctx.Manager.GetNamesWithPrefix("images", "candle-active")
-			inactiveSpriteNames := ctx.Manager.GetNamesWithPrefix("images", "candle-inactive")
-			activeSprites := make([]*ebiten.Image, 0)
-			inactiveSprites := make([]*ebiten.Image, 0)
-			for _, s := range activeSpriteNames {
-				activeSprites = append(activeSprites, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+			activeImageNames := ctx.Manager.GetNamesWithPrefix("images", "candle-active")
+			inactiveImageNames := ctx.Manager.GetNamesWithPrefix("images", "candle-inactive")
+			activeImages := make([]*ebiten.Image, 0)
+			inactiveImages := make([]*ebiten.Image, 0)
+			for _, s := range activeImageNames {
+				activeImages = append(activeImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 			}
-			for _, s := range inactiveSpriteNames {
-				inactiveSprites = append(inactiveSprites, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+			for _, s := range inactiveImageNames {
+				inactiveImages = append(inactiveImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 			}
 			interactive := CreateInteractive(
 				x,
 				y,
 				a.ID,
 				a.Active,
-				activeSprites,
-				inactiveSprites,
+				activeImages,
+				inactiveImages,
 			)
 			m.actors = append(m.actors, interactive)
 		case "spawner":

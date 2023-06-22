@@ -38,3 +38,4 @@ func (s *Spawner) Bounds() (x, y, w, h float64)    { return 0, 0, 0, 0 }
 func (s *Spawner) SetXY(x, y float64)              {}
 func (s *Spawner) SetSize(r float64)               {}
 func (s *Spawner) Dead() bool                      { return false }
+func (s *Spawner) Reverse()                        {}

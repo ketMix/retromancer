@@ -17,4 +17,5 @@ type Actor interface {
 	Bounds() (x, y, w, h float64)
 	SetXY(x, y float64)
 	SetSize(r float64)
+	Reverse()
 }
