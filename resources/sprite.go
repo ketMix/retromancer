@@ -57,6 +57,15 @@ func (s *Sprite) Frame() int {
 	return s.frame
 }
 
+func (s *Sprite) SetFrame(frame int) {
+	if frame >= len(s.images) {
+		frame = len(s.images) - 1
+	} else if frame < 0 {
+		frame = 0
+	}
+	s.frame = frame
+}
+
 func (s *Sprite) AddImage(image *ebiten.Image) {
 	s.images = append(s.images, image)
 }
@@ -173,5 +182,12 @@ func (s *Sprite) Hit(x, y float64) bool {
 func NewSprite(image *ebiten.Image) *Sprite {
 	return &Sprite{
 		image: image,
+	}
+}
+
+func NewAnimatedSprite(images []*ebiten.Image) *Sprite {
+	return &Sprite{
+		image:  images[0],
+		images: images,
 	}
 }
