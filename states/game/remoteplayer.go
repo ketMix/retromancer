@@ -15,6 +15,15 @@ type RemotePlayer struct {
 	hat            string
 }
 
+func NewRemotePlayer(conn *net.Conn) *RemotePlayer {
+	return &RemotePlayer{
+		connection:     conn,
+		impulses:       ImpulseSet{},
+		queuedImpulses: ImpulseSet{},
+		hat:            "hat-",
+	}
+}
+
 func (p *RemotePlayer) Update() {
 }
 
