@@ -7,78 +7,72 @@ import (
 )
 
 type Interactive struct {
-	ID               string // ID of the interactive object, used to identify it in the game for condition triggering
-	Active           bool
-	ActiveSprite     *resources.Sprite
-	InactiveSprite   *resources.Sprite
+	id               string // ID of the interactive object, used to identify it in the game for condition triggering
+	active           bool
+	activeSprite     *resources.Sprite
+	inactiveSprite   *resources.Sprite
+	conditions       []*resources.ConditionDef
 	shape            RectangleShape
+	reversable       bool
 	activationIdx    int // Holds the degree of activation
 	activateCooldown int // Holds the cooldown for activation, can only decrement activation when this is 0
 }
 
-func CreateInteractive(x, y float64, id string, active bool, activeImages, inactiveImages []*ebiten.Image) *Interactive {
+func CreateInteractive(x, y float64, id string, active, reversable bool, conditions []*resources.ConditionDef, activeSprite, inactiveSprite *resources.Sprite) *Interactive {
 	// Set activation index to fully inactive
-	activationIdx := len(inactiveImages) - 1
+	activationIdx := len(inactiveSprite.Images()) - 1
 	if activationIdx < 0 {
 		activationIdx = 0
 	}
-
-	// Create the active sprite
-	activeSprite := resources.NewAnimatedSprite(activeImages)
-	activeSprite.X = x
-	activeSprite.Y = y
-	activeSprite.Framerate = 5
-	activeSprite.Loop = true
-
-	// Create the inactive sprite
-	inactiveSprite := resources.NewAnimatedSprite(inactiveImages)
-	inactiveSprite.X = x
-	inactiveSprite.Y = y
-	inactiveSprite.Framerate = 0
 	inactiveSprite.SetFrame(activationIdx)
 
 	return &Interactive{
-		ID:             id,
-		Active:         active,
-		ActiveSprite:   activeSprite,
-		InactiveSprite: inactiveSprite,
+		id:             id,
+		active:         active,
+		activeSprite:   activeSprite,
+		inactiveSprite: inactiveSprite,
+		conditions:     conditions,
 		shape: RectangleShape{
 			X:      x,
 			Y:      y,
 			Width:  activeSprite.Width(),
 			Height: activeSprite.Height(),
 		},
+		reversable:    reversable,
 		activationIdx: activationIdx,
 	}
 }
 
 func (i *Interactive) Update() []Action {
-	if !i.Active {
+	if !i.active {
 		if i.activateCooldown > 0 {
 			i.activateCooldown--
 		}
-		if i.InactiveSprite.Frame() != i.activationIdx {
-			i.InactiveSprite.SetFrame(i.activationIdx)
+		if i.inactiveSprite.Frame() != i.activationIdx {
+			i.inactiveSprite.SetFrame(i.activationIdx)
 		}
-		i.InactiveSprite.Update()
+		i.inactiveSprite.Update()
 	} else {
-		i.ActiveSprite.Update()
+		i.activeSprite.Update()
 	}
 	return nil
 }
 
 func (i *Interactive) Draw(screen *ebiten.Image) {
-	if i.Active {
-		i.ActiveSprite.Draw(screen)
+	if i.active {
+		i.activeSprite.Draw(screen)
 	} else {
-		i.InactiveSprite.Draw(screen)
+		i.inactiveSprite.Draw(screen)
 	}
 }
 
 // Reverse the interactive object
 func (i *Interactive) Reverse() {
+	if !i.reversable {
+		return
+	}
 	// If already active or on cooldown, do nothing
-	if i.Active || i.activateCooldown > 0 {
+	if i.active || i.activateCooldown > 0 {
 		return
 	}
 	// Set the cooldown, decrement the activation index
@@ -88,10 +82,25 @@ func (i *Interactive) Reverse() {
 	// If the activation index is now negative, set it to 0 and activate the object
 	if i.activationIdx < 0 {
 		i.activationIdx = 0
-		i.Active = true
+		i.active = true
 	}
 }
 
+func (i *Interactive) Conditions() []*resources.ConditionDef {
+	return i.conditions
+}
+
+func (i *Interactive) Active() bool {
+	return i.active
+}
+
+func (i *Interactive) SetActive(active bool) {
+	i.active = active
+}
+
+func (i *Interactive) ID() string {
+	return i.id
+}
 func (i *Interactive) Shape() Shape                    { return &i.shape }
 func (i *Interactive) Save()                           {}
 func (i *Interactive) Restore()                        {}

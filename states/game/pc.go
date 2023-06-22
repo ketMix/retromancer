@@ -258,4 +258,8 @@ func (p *PC) SetSize(r float64) {
 	p.shape.Radius = r
 }
 
-func (p *PC) Reverse() {}
+func (p *PC) Reverse()                              {}
+func (p *PC) Conditions() []*resources.ConditionDef { return nil }
+func (p *PC) Active() bool                          { return false }
+func (p *PC) SetActive(bool)                        {}
+func (p *PC) ID() string                            { return "" }

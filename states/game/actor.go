@@ -1,6 +1,8 @@
 package game
 
 import (
+	"ebijam23/resources"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -18,4 +20,8 @@ type Actor interface {
 	SetXY(x, y float64)
 	SetSize(r float64)
 	Reverse()
+	Conditions() []*resources.ConditionDef
+	Active() bool
+	SetActive(bool)
+	ID() string
 }
