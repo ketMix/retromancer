@@ -7,6 +7,7 @@ import (
 	"image/color"
 	"io/fs"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -118,6 +119,9 @@ func (m *ResourceManager) GetNamesWithPrefix(category string, prefix string) []s
 				names = append(names, k)
 			}
 		}
+		sort.Slice(names, func(i, j int) bool {
+			return strings.Compare(names[i], names[j]) < 0
+		})
 		return names
 	}
 }
