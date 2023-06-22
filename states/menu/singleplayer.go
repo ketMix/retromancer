@@ -23,7 +23,7 @@ type SinglePlayer struct {
 
 func (s *SinglePlayer) Init(ctx states.Context) error {
 	// Set up local player.
-	s.localPlayers = append(s.localPlayers, &game.LocalPlayer{})
+	s.localPlayers = append(s.localPlayers, game.NewLocalPlayer())
 	// Load in our hats.
 	s.hats = ctx.Manager.GetNamesWithPrefix("images", "hat-")
 	s.hatIndex = int(rand.Int31n(int32(len(s.hats))))

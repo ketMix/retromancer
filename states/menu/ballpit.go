@@ -21,7 +21,7 @@ func (s *Ballpit) Update(ctx states.Context) error {
 	world := game.World{
 		StartingMap: "ballpit",
 		Players: []game.Player{
-			&game.LocalPlayer{},
+			game.NewLocalPlayer(),
 		},
 	}
 	ctx.StateMachine.PushState(&world)
