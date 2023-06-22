@@ -29,7 +29,8 @@ type ResourceManager struct {
 }
 
 var (
-	ErrNoSuchCategory = errors.New("no such category")
+	ErrNoSuchCategory   = errors.New("no such category")
+	ErrMissingDirectory = errors.New("missing directory")
 )
 
 func (m *ResourceManager) Setup() error {
@@ -225,6 +226,9 @@ func (m *ResourceManager) LoadAll() error {
 	})
 	fmt.Println("loaded", len(m.groups["fonts"].data), "fonts")
 	m.files.Walk("sounds/", func(path string, entry fs.DirEntry, err error) error {
+		if entry == nil {
+			return ErrMissingDirectory
+		}
 		if !entry.IsDir() {
 			if _, err := m.Load("sounds", entry.Name()); err != nil {
 				return err
