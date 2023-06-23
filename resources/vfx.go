@@ -19,6 +19,7 @@ type Fade struct {
 	elapsed      time.Duration
 	lastTime     time.Time
 	ApplyToImage bool
+	fadeInImage  *ebiten.Image
 }
 
 func (f *Fade) Process(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
@@ -36,7 +37,13 @@ func (f *Fade) Process(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
 	}
 
 	if f.ApplyToImage {
-		screen.Fill(color.NRGBA{R: 0, G: 0, B: 0, A: uint8(f.Alpha * m * 255)})
+		if f.fadeInImage == nil {
+			f.fadeInImage = ebiten.NewImage(screen.Bounds().Dx(), screen.Bounds().Dy())
+		}
+		f.fadeInImage.Fill(color.Black)
+		opts := &ebiten.DrawImageOptions{}
+		opts.ColorScale.ScaleAlpha(1 - float32(f.Alpha*m))
+		screen.DrawImage(f.fadeInImage, opts)
 	} else {
 		c := color.NRGBA{R: 255, G: 255, B: 255, A: uint8(f.Alpha * m * 255)}
 		opts.ColorScale.ScaleWithColor(c)

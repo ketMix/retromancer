@@ -310,7 +310,7 @@ func (s *World) Update(ctx states.Context) error {
 }
 
 func (s *World) Draw(ctx states.DrawContext) {
-	s.activeMap.Draw(ctx.Screen)
+	s.activeMap.Draw(ctx)
 
 	for _, p := range s.Players {
 		//y := screen.Bounds().Max.Y - 100
