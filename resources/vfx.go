@@ -9,21 +9,49 @@ import (
 	"github.com/tinne26/etxt"
 )
 
-type VFXList []VFX
+type VFXListMode int
+
+const (
+	Parallel VFXListMode = iota
+	Sequential
+)
+
+type VFXList struct {
+	items []VFX
+	mode  VFXListMode
+}
+
+func (v *VFXList) SetMode(mode VFXListMode) {
+	v.mode = mode
+}
 
 func (v *VFXList) Add(vfx VFX) {
-	*v = append(*v, vfx)
+	v.items = append(v.items, vfx)
 }
 
 func (v *VFXList) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
-	for i := 0; i < len(*v); i++ {
-		vfx := (*v)[i]
+	if v.mode == Sequential {
+		if len(v.items) > 0 {
+			vfx := v.items[0]
+			vfx.Process(ctx, opts)
+			if vfx.Done() {
+				v.items = v.items[1:]
+			}
+		}
+		return
+	}
+	for i := 0; i < len(v.items); i++ {
+		vfx := v.items[i]
 		vfx.Process(ctx, opts)
 		if vfx.Done() {
-			*v = append((*v)[:i], (*v)[i+1:]...)
+			v.items = append(v.items[:i], v.items[i+1:]...)
 			i--
 		}
 	}
+}
+
+func (v *VFXList) Empty() bool {
+	return len(v.items) == 0
 }
 
 type VFX interface {
@@ -42,6 +70,9 @@ type Fade struct {
 }
 
 func (f *Fade) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
+	if opts == nil {
+		opts = &ebiten.DrawImageOptions{}
+	}
 	t := time.Now()
 	if f.lastTime.IsZero() {
 		f.lastTime = t
