@@ -8,7 +8,6 @@ import (
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/tinne26/etxt"
 )
 
 type WorldStateLive struct {
@@ -228,13 +227,9 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	s.HandleTrash()
 
 	if s.ArePlayersDead() {
-		if s.DoPlayersShareThought(ResetThought{}) {
-			s.ResetActiveMap(ctx)
-		} else if s.DoPlayersShareThought(QuitThought{}) {
-			ctx.StateMachine.PopState()
-		}
+		s.PopState()
+		s.PushState(&WorldStateDead{})
 	}
-
 }
 
 func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
@@ -264,34 +259,4 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 			y += h + 5*/
 		}
 	}
-
-	if s.ArePlayersDead() {
-		ctx.Text.SetAlign(etxt.YCenter | etxt.XCenter)
-		x := ctx.Screen.Bounds().Max.X / 2
-		y := float64(ctx.Screen.Bounds().Max.Y / 2)
-		y -= ctx.Text.Utils().GetLineHeight() / 2
-		// Death title
-		{
-			ctx.Text.SetScale(2.0)
-			ctx.Text.SetColor(color.RGBA{0x00, 0x00, 0x00, 0xff})
-			resources.DrawTextOutline(ctx.Text, ctx.Screen, "Morte", x, int(y), 2)
-			ctx.Text.SetColor(color.RGBA{0xff, 0x00, 0x00, 0xff})
-			ctx.Text.Draw(ctx.Screen, "Morte", x, int(y))
-		}
-		y += ctx.Text.Utils().GetLineHeight()
-		// Subtitles
-		{
-			ctx.Text.SetScale(1.0)
-			ctx.Text.SetColor(color.Black)
-			resources.DrawTextOutline(ctx.Text, ctx.Screen, "<Enter> to restart room", x, int(y), 1)
-			ctx.Text.SetColor(color.White)
-			ctx.Text.Draw(ctx.Screen, "<Enter> to restart room", x, int(y))
-			y += ctx.Text.Utils().GetLineHeight()
-			ctx.Text.SetColor(color.Black)
-			resources.DrawTextOutline(ctx.Text, ctx.Screen, "<Escape> to quit", x, int(y), 1)
-			ctx.Text.SetColor(color.White)
-			ctx.Text.Draw(ctx.Screen, "<Escape> to quit", ctx.Screen.Bounds().Max.X/2, int(y))
-		}
-	}
-
 }
