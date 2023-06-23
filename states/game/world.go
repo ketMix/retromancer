@@ -72,6 +72,9 @@ func (s *World) Update(ctx states.Context) error {
 				if pc, ok := player.Actor().(*PC); ok {
 					hoveringInteractable := false
 					for _, a := range s.activeMap.GetInteractiveActors() {
+						if !a.Reverseable() {
+							continue
+						}
 						if a.shape.Collides(&CircleShape{
 							X:      pc.Hand.Shape.X,
 							Y:      pc.Hand.Shape.Y,

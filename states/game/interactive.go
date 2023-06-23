@@ -78,6 +78,17 @@ func (i *Interactive) Draw(screen *ebiten.Image) {
 	}
 }
 
+func (i *Interactive) Reverseable() bool {
+	if !i.reversable {
+		return false
+	}
+	if i.active {
+		return false
+	}
+
+	return true
+}
+
 // Reverse the interactive object
 func (i *Interactive) Reverse() {
 	if !i.reversable {
