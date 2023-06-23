@@ -5,6 +5,7 @@ import (
 	"ebijam23/states"
 	"errors"
 	"math"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -27,6 +28,7 @@ type Map struct {
 	conditions []*resources.ConditionDef
 	cleared    bool
 	currentZ   int // This isn't the right location for this, but we need to keep track of the current/active Z for rendering appropriate fading.
+	vfxs       []resources.VFX
 }
 
 func (s *World) TravelToMap(ctx states.Context, mapName string) error {
@@ -204,6 +206,13 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		m.actors = append(m.actors, p.Actor())
 	}
 
+	// Add fade in VFX.
+	m.vfxs = append(m.vfxs, &resources.Fade{
+		Alpha:        1,
+		Duration:     1 * time.Second,
+		ApplyToImage: true,
+	})
+
 	return nil
 }
 
@@ -221,7 +230,7 @@ func (s *World) ResetActiveMap(ctx states.Context) error {
 	return s.TravelToMap(ctx, s.activeMap.filename)
 }
 
-func (m *Map) Draw(screen *ebiten.Image) {
+func (m *Map) Draw(ctx states.DrawContext) {
 	wallH := 6
 
 	for z := len(m.data.Layers) - 1; z >= 0; z-- {
@@ -245,7 +254,7 @@ func (m *Map) Draw(screen *ebiten.Image) {
 						ds := 1 - float32(i)/float32(wallH/3)*float32(dz)
 						opts.ColorScale.Reset()
 						opts.ColorScale.Scale(ds, ds, ds, 1.0)
-						cell.Sprite.DrawWithOptions(screen, opts)
+						cell.Sprite.DrawWithOptions(ctx.Screen, opts)
 						opts.GeoM.Translate(-1, -2)
 					}
 				} else if cell.Wall {
@@ -255,20 +264,33 @@ func (m *Map) Draw(screen *ebiten.Image) {
 						ds := float32(i) / float32(wallH) * float32(dz)
 						opts.ColorScale.Reset()
 						opts.ColorScale.Scale(ds, ds, ds, 1.0)
-						cell.Sprite.DrawWithOptions(screen, opts)
+						cell.Sprite.DrawWithOptions(ctx.Screen, opts)
 						opts.GeoM.Translate(-1, -2)
 					}
 				} else {
-					cell.Sprite.Draw(screen)
+					cell.Sprite.Draw(ctx.Screen)
 				}
 			}
 		}
 	}
 	for _, a := range m.actors {
-		a.Draw(screen)
+		a.Draw(ctx.Screen)
 	}
 	for _, b := range m.bullets {
-		b.Draw(screen)
+		b.Draw(ctx.Screen)
+	}
+
+	m.ProcessVFX(ctx.Screen, nil)
+}
+
+func (m *Map) ProcessVFX(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
+	for i := 0; i < len(m.vfxs); i++ {
+		vfx := m.vfxs[i]
+		vfx.Process(screen, opts)
+		if vfx.Done() {
+			m.vfxs = append(m.vfxs[:i], m.vfxs[i+1:]...)
+			i--
+		}
 	}
 }
 
