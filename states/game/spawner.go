@@ -27,6 +27,7 @@ func (s *Spawner) Update() (actions []Action) {
 	return actions
 }
 
+func (s *Spawner) Destroyed() bool                 { return false }
 func (s *Spawner) Shape() Shape                    { return &s.shape }
 func (s *Spawner) Save()                           {}
 func (s *Spawner) Restore()                        {}

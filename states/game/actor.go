@@ -8,6 +8,7 @@ type Actor interface {
 	Save()
 	Restore()
 	Dead() bool
+	Destroyed() bool
 	Player() Player
 	SetPlayer(p Player)
 	SetImpulses(impulses ImpulseSet)

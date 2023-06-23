@@ -183,6 +183,23 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 		}
 	}
 
+	// Oh boy, yet another loop.
+	// Check for collisions between player characters and snaggables.
+	for _, pl := range s.Players {
+		if _, pc := pl.Actor().(*PC); pc {
+			for _, actor := range s.activeMap.actors {
+				if a, ok := actor.(*Snaggable); ok {
+					if a.shape.Collides(pl.Actor().Shape()) {
+						// Kinda wish this could be an action...
+						a.destroyed = true
+						// TODO: Bless the player with powers beyond their wildest imaginations (lives, power unlocks, etc.)
+						continue
+					}
+				}
+			}
+		}
+	}
+
 	// Check the our interactive actor conditions
 	interactiveActors := s.activeMap.GetInteractiveActors()
 	for _, actor := range interactiveActors {

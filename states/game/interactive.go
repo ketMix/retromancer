@@ -169,3 +169,4 @@ func (i *Interactive) Bounds() (x, y, w, h float64)    { return 0, 0, 0, 0 }
 func (i *Interactive) SetXY(x, y float64)              {}
 func (i *Interactive) SetSize(r float64)               {}
 func (i *Interactive) Dead() bool                      { return false }
+func (i *Interactive) Destroyed() bool                 { return false }

@@ -145,6 +145,13 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			}
 			spawner := CreateSpawner(x, y, bulletGroups)
 			m.actors = append(m.actors, spawner)
+		case "snaggable":
+			sprite := resources.NewSprite(ctx.Manager.GetAs("images", a.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
+			x := float64(a.Spawn[0]) * cellW
+			y := float64(a.Spawn[1]) * cellH
+			snaggable := CreateSnaggable(x, y, sprite)
+
+			m.actors = append(m.actors, snaggable)
 		}
 	}
 

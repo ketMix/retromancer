@@ -99,6 +99,9 @@ actors:
     degrade: true
     linked: 
       - candle3
+  - type: snaggable
+    sprite: item-life
+    spawn: [15, 5, 0]
 layers:
   - |
    ^********D*******^.^

@@ -151,6 +151,14 @@ func (s *World) DoPlayersShareThought(thought Thought) bool {
 }
 
 func (s *World) HandleTrash() {
+	newActors := s.activeMap.actors[:0]
+	for _, a := range s.activeMap.actors {
+		if !a.Destroyed() {
+			newActors = append(newActors, a)
+		}
+	}
+	s.activeMap.actors = newActors
+
 	newBullets := make([]*Bullet, 0)
 	for _, b := range s.activeMap.bullets {
 		if !b.OutOfBounds() && !b.Destroyed {
