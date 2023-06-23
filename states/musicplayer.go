@@ -12,4 +12,6 @@ type MusicPlayer interface {
 	Pause()
 	Loop() bool
 	SetLoop(loop bool)
+	Volume() float64
+	SetVolume(volume float64)
 }

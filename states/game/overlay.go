@@ -11,6 +11,7 @@ import (
 
 type Overlay struct {
 	soundButton *resources.Sprite
+	musicButton *resources.Sprite
 	localeIcon  *resources.Sprite
 }
 
@@ -19,9 +20,13 @@ func (o *Overlay) Init(ctx states.Context) error {
 	o.soundButton.X = 640 - o.soundButton.Width() - 8
 	o.soundButton.Y = 8
 
+	o.musicButton = resources.NewSprite(ctx.Manager.GetAs("images", "music-high", (*ebiten.Image)(nil)).(*ebiten.Image))
+	o.musicButton.X = 640 - o.musicButton.Width() - 8
+	o.musicButton.Y = 8 + o.soundButton.Height() + 8
+
 	o.localeIcon = resources.NewSprite(ctx.Manager.GetAs("images", fmt.Sprintf("flag-%s", ctx.Locale()), (*ebiten.Image)(nil)).(*ebiten.Image))
 	o.localeIcon.X = 640 - o.localeIcon.Width() - 8
-	o.localeIcon.Y = 8 + o.soundButton.Height() + 8
+	o.localeIcon.Y = 8 + o.soundButton.Height() + 8 + o.musicButton.Height() + 8
 
 	o.Sync(ctx)
 
@@ -30,6 +35,7 @@ func (o *Overlay) Init(ctx states.Context) error {
 
 func (o *Overlay) Draw(ctx states.DrawContext) {
 	o.soundButton.Draw(ctx)
+	o.musicButton.Draw(ctx)
 	o.localeIcon.Draw(ctx)
 }
 
@@ -40,6 +46,14 @@ func (o *Overlay) Sync(ctx states.Context) {
 		o.soundButton.SetImage(ctx.Manager.GetAs("images", "sound-low", (*ebiten.Image)(nil)).(*ebiten.Image))
 	} else {
 		o.soundButton.SetImage(ctx.Manager.GetAs("images", "sound-high", (*ebiten.Image)(nil)).(*ebiten.Image))
+	}
+
+	if ctx.MusicPlayer.Volume() == 0.0 {
+		o.musicButton.SetImage(ctx.Manager.GetAs("images", "music-none", (*ebiten.Image)(nil)).(*ebiten.Image))
+	} else if ctx.MusicPlayer.Volume() == 0.5 {
+		o.musicButton.SetImage(ctx.Manager.GetAs("images", "music-low", (*ebiten.Image)(nil)).(*ebiten.Image))
+	} else {
+		o.musicButton.SetImage(ctx.Manager.GetAs("images", "music-high", (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 
 	o.localeIcon.SetImage(ctx.Manager.GetAs("images", fmt.Sprintf("flag-%s", ctx.Locale()), (*ebiten.Image)(nil)).(*ebiten.Image))
@@ -56,6 +70,16 @@ func (o *Overlay) Update(ctx states.Context) error {
 				resources.Volume = 1.0
 			} else {
 				resources.Volume = 0.0
+			}
+		}
+		if o.musicButton.Hit(float64(x), float64(y)) {
+			// toggle 'em, gois
+			if ctx.MusicPlayer.Volume() == 0.0 {
+				ctx.MusicPlayer.SetVolume(0.5)
+			} else if ctx.MusicPlayer.Volume() == 0.5 {
+				ctx.MusicPlayer.SetVolume(1.0)
+			} else {
+				ctx.MusicPlayer.SetVolume(0.0)
 			}
 		}
 		if o.localeIcon.Hit(float64(x), float64(y)) {

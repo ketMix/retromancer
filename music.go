@@ -54,3 +54,14 @@ func (m *MusicPlayer) Loop() bool {
 func (m *MusicPlayer) SetLoop(loop bool) {
 	m.loop = loop
 }
+
+func (m *MusicPlayer) Volume() float64 {
+	if m.player == nil {
+		return 1.0
+	}
+	return m.player.Volume()
+}
+
+func (m *MusicPlayer) SetVolume(vol float64) {
+	m.player.SetVolume(vol)
+}
