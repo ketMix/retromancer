@@ -103,10 +103,12 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 				activeImages = append(activeImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 			}
 			activeSprite := resources.NewAnimatedSprite(activeImages)
-			activeSprite.X = x
-			activeSprite.Y = y
-			activeSprite.Framerate = 5
-			activeSprite.Loop = true
+			if activeSprite != nil {
+				activeSprite.X = x
+				activeSprite.Y = y
+				activeSprite.Framerate = 5
+				activeSprite.Loop = true
+			}
 
 			// Create the inactive sprite
 			inactiveImageNames := ctx.Manager.GetNamesWithPrefix("images", spritePrefix+"-inactive")

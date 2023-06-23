@@ -53,6 +53,9 @@ runes:
   "G":
     sprite: empty
     id: drawbridge
+  "W":
+    sprite: empty
+    id: wheel
 start: [8, 11, 0]
 actors:
   - id: spawner
@@ -80,7 +83,13 @@ actors:
   - id: drawbridge
     type: interactive
     sprite: drawbridge
+    reversable: false
+  - id: wheel
+    type: interactive
+    sprite: wheel
     degrade: true
+    linked:
+      - drawbridge
   - id: candle1
     type: interactive
     sprite: candle
@@ -112,7 +121,7 @@ layers:
    ^^               ^.^
    ^                ^.^
    ^  S             ^.^
-   ^^       G       ^.^
+   ^^       G   W   ^.^
    ^~~~~~~~~~~~~~~~~^.^
    ^^^^^,, ____     ^.^
    ^^^^,,,,,__      ^.^

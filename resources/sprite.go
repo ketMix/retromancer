@@ -197,6 +197,9 @@ func NewSprite(image *ebiten.Image) *Sprite {
 }
 
 func NewAnimatedSprite(images []*ebiten.Image) *Sprite {
+	if len(images) == 0 {
+		return nil
+	}
 	return &Sprite{
 		image:  images[0],
 		images: images,

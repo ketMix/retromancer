@@ -31,6 +31,15 @@ func CreateInteractive(x, y float64, id string, active, reversable bool, conditi
 	}
 	inactiveSprite.SetFrame(activationIdx)
 
+	width := 0.0
+	height := 0.0
+	if activeSprite != nil {
+		width = activeSprite.Width()
+		height = activeSprite.Height()
+	} else {
+		width = inactiveSprite.Width()
+		height = inactiveSprite.Height()
+	}
 	return &Interactive{
 		id:             id,
 		active:         active,
@@ -40,8 +49,8 @@ func CreateInteractive(x, y float64, id string, active, reversable bool, conditi
 		shape: RectangleShape{
 			X:      x,
 			Y:      y,
-			Width:  activeSprite.Width(),
-			Height: activeSprite.Height(),
+			Width:  width,
+			Height: height,
 		},
 		reversable:    reversable,
 		activationIdx: activationIdx,
@@ -100,12 +109,6 @@ func (i *Interactive) Reverse() {
 	// Set the cooldown, increase the activation
 	i.activateCooldown = ACTIVATE_COOLDOWN
 	i.IncreaseActivation(nil)
-
-	// If the activation index is now negative, set it to 0 and activate the object
-	if i.activationIdx < 0 {
-		i.activationIdx = 0
-		i.active = true
-	}
 }
 
 func (i *Interactive) Conditions() []*resources.ConditionDef {
@@ -124,10 +127,19 @@ func (i *Interactive) IncreaseActivation(parentIds []string) {
 		}
 	}
 	i.activationIdx--
-	if i.activationIdx < 0 {
-		i.activationIdx = 0
-		i.active = true
+
+	// If the activation index is now negative, and we have active sprite defined
+	// set it to 0 and activate the object
+	// otherwise reset the idx
+	if i.activationIdx <= 0 {
+		if i.activeSprite != nil {
+			i.activationIdx = 0
+			i.active = true
+		} else {
+			i.activationIdx = len(i.inactiveSprite.Images()) - 1
+		}
 	}
+
 	// Should we set linked to active if we're active?
 	for _, linked := range i.linkedInteractives {
 		linked.IncreaseActivation(append(parentIds, i.id))
