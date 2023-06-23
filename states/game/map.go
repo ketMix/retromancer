@@ -210,12 +210,12 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			Scale:        2.0,
 			X:            320,
 			Y:            320,
-			Delay:        1000 * time.Millisecond,
+			Delay:        400 * time.Millisecond,
 			Outline:      true,
 			OutlineColor: color.NRGBA{0x22, 0x8b, 0x22, 0xff},
 			InDuration:   500 * time.Millisecond,
-			HoldDuration: 3 * time.Second,
-			OutDuration:  1000 * time.Millisecond,
+			HoldDuration: 2 * time.Second,
+			OutDuration:  500 * time.Millisecond,
 		})
 
 	}
