@@ -8,11 +8,13 @@ runes:
     sprite: fire
   "*":
     sprite: wall
-    blocks: true
+    blockMove: true
+    blockView: true
     wall: true
   "^":
     sprite: wall2
-    blocks: true
+    blockMove: true
+    blockView: true
     wall: true
   ".":
     sprite: floor
@@ -20,6 +22,9 @@ runes:
   "_":
     sprite: dirt
     floor: true
+  "~":
+    sprite: water
+    blockMove: true
   ",":
     sprite: dead-grass
   " ":
@@ -28,7 +33,8 @@ runes:
     sprite: empty
     id: door
     isometric: true
-    blocks: true
+    blockMove: true
+    blockView: true
   "C":
     sprite: empty
     id: candle1
@@ -44,6 +50,9 @@ runes:
   "S":
     sprite: empty
     id: spawner
+  "G":
+    sprite: empty
+    id: drawbridge
 start: [8, 11, 0]
 actors:
   - id: spawner
@@ -54,29 +63,37 @@ actors:
         bullet:
           color: [0, 128, 255, 128]
   - id: door
-    type: door
+    type: interactive
+    sprite: door
     door: 
       map: ballpit
-      open: false
-      conditions:
-        - type: active
-          args:
-            - candle1
-            - candle2
-            - candle3
-            - candle4
+    conditions:
+      - type: active
+        args:
+          - candle1
+          - candle2
+          - candle3
+          - candle4
+  - id: drawbridge
+    type: interactive
+    sprite: drawbridge
+    degrade: true
   - id: candle1
-    type: candle
+    type: interactive
+    sprite: candle
     active: true
   - id: candle2
-    type: candle
+    type: interactive
+    sprite: candle
     degrade: true
   - id: candle3
-    type: candle
+    type: interactive
+    sprite: candle
     linked: 
       - candle4
   - id: candle4
-    type: candle
+    type: interactive
+    sprite: candle
     degrade: true
     linked: 
       - candle3
@@ -85,12 +102,12 @@ layers:
    ^********D*******^.^
    ^ B^ C      E  F ^.^
    ^  ^             ^.^
-   ^^^^             ^.^
+   ^^^^          ^^^^.^
    ^^               ^.^
    ^                ^.^
    ^        S       ^.^
-   ^^               ^.^
-   ^^^              ^.^
+   ^^       G       ^.^
+   ^~~~~~~~~~~~~~~~~^.^
    ^^^^^,, ____     ^.^
    ^^^^,,,,,__      ^.^
    ^^^,,,,,____     ^.^

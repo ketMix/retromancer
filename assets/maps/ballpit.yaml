@@ -16,7 +16,6 @@ actors:
         bullet:
           color: [255, 0, 0, 255]
       - alias: chakra
-        lastSpawnedAt: 50
         bulletCount: 50
         bullet:
           color: [0, 255, 0, 255]

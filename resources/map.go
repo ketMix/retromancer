@@ -6,7 +6,8 @@ import (
 
 type RuneDef struct {
 	Sprite    string `yaml:"sprite"`
-	Blocks    bool   `yaml:"blocks"`
+	BlockView bool   `yaml:"blockView"`
+	BlockMove bool   `yaml:"blockMove"`
 	Wall      bool   `yaml:"wall"`
 	Floor     bool   `yaml:"floor"`
 	Isometric bool   `yaml:"isometric"`
@@ -16,7 +17,8 @@ type RuneDef struct {
 type Cell struct {
 	Sprite    *Sprite `yaml:"-"`
 	Type      rune    `yaml:"-"` // I guess using runes is okay.
-	Blocks    bool    `yaml:"-"`
+	BlockView bool    `yaml:"-"`
+	BlockMove bool    `yaml:"-"`
 	Wall      bool    `yaml:"-"`
 	Floor     bool    `yaml:"-"`
 	Isometric bool    `yaml:"-"`
@@ -38,9 +40,7 @@ type Map struct {
 }
 
 type DoorDef struct {
-	Map        string          `yaml:"map"`
-	Open       bool            `yaml:"open"`
-	Conditions []*ConditionDef `yaml:"conditions,omitempty"`
+	Map string `yaml:"map"`
 }
 
 type ActorSpawn struct {
@@ -49,9 +49,11 @@ type ActorSpawn struct {
 	Type         string            `yaml:"type"`
 	Active       bool              `yaml:"active"`
 	Door         *DoorDef          `yaml:"door,omitempty"`
+	Condtions    []*ConditionDef   `yaml:"conditions,omitempty"`
 	BulletGroups []*BulletGroupDef `yaml:"bullets,omitempty"`
 	Linked       []string          `yaml:"linked,omitempty"`
 	Degrade      bool              `yaml:"degrade"`
+	Sprite       string            `yaml:"sprite"`
 }
 
 func (m *Map) UnmarshalYAML(unmarshal func(interface{}) error) error {

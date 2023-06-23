@@ -57,7 +57,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				checkShape := actor.Shape().Clone().(*CircleShape)
 				checkShape.X = action.X
 				checkShape.Y = action.Y + 4 // Stupid -4 to make the visual offset look nicer when bumpin' walls
-				if collision := s.activeMap.Collides(checkShape); collision == nil || !collision.Cell.Blocks {
+				if collision := s.activeMap.Collides(checkShape); collision == nil || !collision.Cell.BlockMove {
 					actor.SetXY(action.X, action.Y)
 				}
 			case ActionReflect:
@@ -164,7 +164,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	// Okay, this probably isn't great, but let's check bullet collisions here.
 	for _, bullet := range s.activeMap.bullets {
 		// Check for bullet collisions with walls.
-		if collision := s.activeMap.Collides(&bullet.Shape); collision != nil && collision.Cell.Blocks {
+		if collision := s.activeMap.Collides(&bullet.Shape); collision != nil && collision.Cell.BlockView {
 			bullet.Destroyed = true
 			continue
 		}
@@ -186,16 +186,19 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	// Check the our interactive actor conditions
 	interactiveActors := s.activeMap.GetInteractiveActors()
 	for _, actor := range interactiveActors {
-		conditions := actor.Conditions()
-		for _, condition := range conditions {
-			args := condition.Args
-			switch condition.Type {
-			case resources.Active:
-				if CheckActiveCondition(args, interactiveActors) {
-					actor.IncreaseActivation(nil)
-					cell := s.activeMap.FindCellById(actor.ID())
-					if cell != nil {
-						cell.Blocks = false // No
+		if !actor.active {
+			conditions := actor.Conditions()
+			for _, condition := range conditions {
+				args := condition.Args
+				switch condition.Type {
+				case resources.Active:
+					if CheckActiveCondition(args, interactiveActors) {
+						actor.IncreaseActivation(nil)
+						cell := s.activeMap.FindCellById(actor.ID())
+						if cell != nil {
+							cell.BlockMove = false // No
+							cell.BlockView = false // No
+						}
 					}
 				}
 			}

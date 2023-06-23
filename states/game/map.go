@@ -55,7 +55,8 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			for k, cell := range row {
 				if r, ok := m.data.RuneMap[string(cell.Type)]; ok {
 					cell.ID = r.ID
-					cell.Blocks = r.Blocks
+					cell.BlockMove = r.BlockMove
+					cell.BlockView = r.BlockView
 					cell.Wall = r.Wall
 					cell.Floor = r.Floor
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", r.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
@@ -92,36 +93,10 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			y = float64(cell.Sprite.Y)
 		}
 		switch a.Type {
-		case "door":
+		case "interactive":
+			spritePrefix := a.Sprite
 			// Create the active sprite
-			activeImages := make([]*ebiten.Image, 0)
-			activeImages = append(activeImages, ctx.Manager.GetAs("images", "door", (*ebiten.Image)(nil)).(*ebiten.Image))
-			activeSprite := resources.NewAnimatedSprite(activeImages)
-			activeSprite.X = x
-			activeSprite.Y = y
-
-			// Create the inactive sprite
-			inactiveImages := make([]*ebiten.Image, 0)
-			inactiveImages = append(inactiveImages, ctx.Manager.GetAs("images", "door-locked", (*ebiten.Image)(nil)).(*ebiten.Image))
-			inactiveSprite := resources.NewAnimatedSprite(inactiveImages)
-			inactiveSprite.X = x
-			inactiveSprite.Y = y
-			interactive := CreateInteractive(
-				x,
-				y,
-				a.ID,
-				a.Door.Open,
-				false,
-				a.Door.Conditions,
-				activeSprite,
-				inactiveSprite,
-			)
-			interactive.degrade = a.Degrade
-			m.actors = append(m.actors, interactive)
-			interactiveMap[a.ID] = interactive
-		case "candle":
-			// Create the active sprite
-			activeImageNames := ctx.Manager.GetNamesWithPrefix("images", "candle-active")
+			activeImageNames := ctx.Manager.GetNamesWithPrefix("images", spritePrefix+"-active")
 			activeImages := make([]*ebiten.Image, 0)
 			for _, s := range activeImageNames {
 				activeImages = append(activeImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
@@ -133,7 +108,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			activeSprite.Loop = true
 
 			// Create the inactive sprite
-			inactiveImageNames := ctx.Manager.GetNamesWithPrefix("images", "candle-inactive")
+			inactiveImageNames := ctx.Manager.GetNamesWithPrefix("images", spritePrefix+"-inactive")
 			inactiveImages := make([]*ebiten.Image, 0)
 			for _, s := range inactiveImageNames {
 				inactiveImages = append(inactiveImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
@@ -148,7 +123,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 				a.ID,
 				a.Active,
 				true,
-				nil,
+				a.Condtions,
 				activeSprite,
 				inactiveSprite,
 			)
@@ -336,7 +311,7 @@ func (m *Map) Collides(s Shape) *CellCollision {
 
 	check := func(x, y int) *CellCollision {
 		if y >= 0 && int(y) < len(m.data.Layers[z].Cells) && x >= 0 && int(x) < len(m.data.Layers[z].Cells[int(y)]) {
-			if m.data.Layers[z].Cells[int(y)][int(x)].Blocks {
+			if m.data.Layers[z].Cells[int(y)][int(x)].BlockMove {
 				cell := m.data.Layers[z].Cells[int(y)][int(x)]
 				if s.Collides(&RectangleShape{
 					X:      cell.Sprite.X,
@@ -410,7 +385,7 @@ func (m *Map) DoesLineCollide(fx1, fy1, fx2, fy2 float64, z int) bool {
 
 	for {
 		if cell, er := m.GetCell(x1, y1, z); er == nil {
-			if cell.Blocks {
+			if cell.BlockView {
 				return true
 			}
 		}
