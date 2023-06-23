@@ -253,6 +253,9 @@ func (m *ResourceManager) GetAs(category string, name string, target interface{}
 
 func (m *ResourceManager) LoadAll() error {
 	m.files.Walk("images/", func(path string, entry fs.DirEntry, err error) error {
+		if entry == nil {
+			return ErrMissingDirectory
+		}
 		if !entry.IsDir() {
 			if _, err := m.Load("images", entry.Name()); err != nil {
 				return err
@@ -262,6 +265,9 @@ func (m *ResourceManager) LoadAll() error {
 	})
 	fmt.Println("loaded", len(m.groups["images"].data), "images")
 	m.files.Walk("maps/", func(path string, entry fs.DirEntry, err error) error {
+		if entry == nil {
+			return ErrMissingDirectory
+		}
 		if !entry.IsDir() {
 			if _, err := m.Load("maps", entry.Name()); err != nil {
 				return err
@@ -271,6 +277,9 @@ func (m *ResourceManager) LoadAll() error {
 	})
 	fmt.Println("loaded", len(m.groups["maps"].data), "maps")
 	m.files.Walk("bullets/", func(path string, entry fs.DirEntry, err error) error {
+		if entry == nil {
+			return ErrMissingDirectory
+		}
 		if !entry.IsDir() {
 			if _, err := m.Load("bullets", entry.Name()); err != nil {
 				return err
@@ -280,6 +289,9 @@ func (m *ResourceManager) LoadAll() error {
 	})
 	fmt.Println("loaded", len(m.groups["bullets"].data), "bullet groups")
 	m.files.Walk("fonts/", func(path string, entry fs.DirEntry, err error) error {
+		if entry == nil {
+			return ErrMissingDirectory
+		}
 		if !entry.IsDir() {
 			if _, err := m.Load("fonts", entry.Name()); err != nil {
 				return err
