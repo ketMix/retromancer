@@ -25,7 +25,7 @@ type Sprite struct {
 	Centered         bool
 	Hidden           bool
 	Options          ebiten.DrawImageOptions
-	vfx              VFXList
+	VFX              VFXList
 }
 
 func (s *Sprite) Width() float64 {
@@ -117,7 +117,7 @@ func (s *Sprite) Draw(ctx states.DrawContext) {
 }
 
 func (s *Sprite) DrawWithOptions(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
-	s.vfx.Process(ctx, opts)
+	s.VFX.Process(ctx, opts)
 	// hmmmmm
 	/*lx := (s.X * (1.0 - 0.1)) + (s.interpX * 0.1)
 	ly := (s.Y * (1.0 - 0.1)) + (s.interpY * 0.1)
