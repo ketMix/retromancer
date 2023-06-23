@@ -3,6 +3,7 @@ package resources
 import (
 	"ebijam23/states"
 	"image/color"
+	"math"
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -163,4 +164,19 @@ func (v *Text) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 
 func (v *Text) Done() bool {
 	return v.elapsed >= v.InDuration+v.HoldDuration+v.OutDuration
+}
+
+type Hover struct {
+	elapsed   time.Duration
+	Intensity float64
+	Rate      float64
+}
+
+func (h *Hover) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
+	h.elapsed += time.Duration(float64(time.Second/60) * h.Rate)
+	opts.GeoM.Translate(0, h.Intensity*math.Sin(float64(h.elapsed.Seconds())))
+}
+
+func (h *Hover) Done() bool {
+	return false
 }
