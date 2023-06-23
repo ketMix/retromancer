@@ -9,9 +9,8 @@ type RuneDef struct {
 	Blocks    bool   `yaml:"blocks"`
 	Wall      bool   `yaml:"wall"`
 	Floor     bool   `yaml:"floor"`
-	Door      bool   `yaml:"door"`
 	Isometric bool   `yaml:"isometric"`
-	Map       string `yaml:"map"`
+	ID        string `yaml:"id,omitempty"`
 }
 
 type Cell struct {
@@ -20,9 +19,8 @@ type Cell struct {
 	Blocks    bool    `yaml:"-"`
 	Wall      bool    `yaml:"-"`
 	Floor     bool    `yaml:"-"`
-	Door      bool    `yaml:"-"`
-	Map       string  `yaml:"-"`
 	Isometric bool    `yaml:"-"`
+	ID        string  `yaml:"-"`
 }
 
 type Layer struct {
@@ -38,12 +36,18 @@ type Map struct {
 	Actors       []ActorSpawn       `yaml:"actors"`
 }
 
+type DoorDef struct {
+	Map        string          `yaml:"map"`
+	Open       bool            `yaml:"open"`
+	Conditions []*ConditionDef `yaml:"conditions,omitempty"`
+}
+
 type ActorSpawn struct {
 	ID           string            `yaml:"id"`
-	Spawn        [3]int            `yaml:"spawn"`
+	Spawn        [3]int            `yaml:"spawn,omitempty"`
 	Type         string            `yaml:"type"`
 	Active       bool              `yaml:"active"`
-	Conditions   []*ConditionDef   `yaml:"conditions,omitempty"`
+	Door         *DoorDef          `yaml:"door,omitempty"`
 	BulletGroups []*BulletGroupDef `yaml:"bullets,omitempty"`
 }
 

@@ -9,6 +9,6 @@ const (
 )
 
 type ConditionDef struct {
-	Type string `yaml:"type"`
-	Args []int  `yaml:"args"`
+	Type string   `yaml:"type"`
+	Args []string `yaml:"args"`
 }

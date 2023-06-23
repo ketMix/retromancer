@@ -48,11 +48,10 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		for j, row := range l.Cells {
 			for k, cell := range row {
 				if r, ok := m.data.RuneMap[string(cell.Type)]; ok {
+					cell.ID = r.ID
 					cell.Blocks = r.Blocks
 					cell.Wall = r.Wall
 					cell.Floor = r.Floor
-					cell.Door = r.Door
-					cell.Map = r.Map
 					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", r.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
 					cell.Sprite.SetXY(
 						cellW*float64(k)+xoffset,
@@ -76,27 +75,79 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 	// Create actors.
 	for _, a := range m.data.Actors {
+		cell, _ := m.FindCellById(a.ID)
 		switch a.Type {
-		case "candle":
+		case "door":
+			// TODO: consolidate this junk elsewhere
 			x := float64(a.Spawn[0]) * cellW
 			y := float64(a.Spawn[1]) * cellH
-			activeImageNames := ctx.Manager.GetNamesWithPrefix("images", "candle-active")
-			inactiveImageNames := ctx.Manager.GetNamesWithPrefix("images", "candle-inactive")
+			if cell != nil {
+				x = float64(cell.Sprite.X)
+				y = float64(cell.Sprite.Y)
+			}
+			// Create the active sprite
 			activeImages := make([]*ebiten.Image, 0)
+			activeImages = append(activeImages, ctx.Manager.GetAs("images", "door", (*ebiten.Image)(nil)).(*ebiten.Image))
+			activeSprite := resources.NewAnimatedSprite(activeImages)
+			activeSprite.X = x
+			activeSprite.Y = y
+
+			// Create the inactive sprite
 			inactiveImages := make([]*ebiten.Image, 0)
+			inactiveImages = append(inactiveImages, ctx.Manager.GetAs("images", "door-locked", (*ebiten.Image)(nil)).(*ebiten.Image))
+			inactiveSprite := resources.NewAnimatedSprite(inactiveImages)
+			inactiveSprite.X = x
+			inactiveSprite.Y = y
+			interactive := CreateInteractive(
+				x,
+				y,
+				a.ID,
+				a.Door.Open,
+				false,
+				a.Door.Conditions,
+				activeSprite,
+				inactiveSprite,
+			)
+			m.actors = append(m.actors, interactive)
+		case "candle":
+			// TODO: consolidate this junk elsewhere
+			x := float64(a.Spawn[0]) * cellW
+			y := float64(a.Spawn[1]) * cellH
+			if cell != nil {
+				x = float64(cell.Sprite.X)
+				y = float64(cell.Sprite.Y)
+			}
+			// Create the active sprite
+			activeImageNames := ctx.Manager.GetNamesWithPrefix("images", "candle-active")
+			activeImages := make([]*ebiten.Image, 0)
 			for _, s := range activeImageNames {
 				activeImages = append(activeImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 			}
+			activeSprite := resources.NewAnimatedSprite(activeImages)
+			activeSprite.X = x
+			activeSprite.Y = y
+			activeSprite.Framerate = 5
+			activeSprite.Loop = true
+
+			// Create the inactive sprite
+			inactiveImageNames := ctx.Manager.GetNamesWithPrefix("images", "candle-inactive")
+			inactiveImages := make([]*ebiten.Image, 0)
 			for _, s := range inactiveImageNames {
 				inactiveImages = append(inactiveImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 			}
+			inactiveSprite := resources.NewAnimatedSprite(inactiveImages)
+			inactiveSprite.X = x
+			inactiveSprite.Y = y
+
 			interactive := CreateInteractive(
 				x,
 				y,
 				a.ID,
 				a.Active,
-				activeImages,
-				inactiveImages,
+				true,
+				nil,
+				activeSprite,
+				inactiveSprite,
 			)
 			m.actors = append(m.actors, interactive)
 		case "spawner":
@@ -208,6 +259,19 @@ func (m *Map) GetCell(x, y, z int) (resources.Cell, error) {
 	return m.data.Layers[z].Cells[y][x], nil
 }
 
+func (m *Map) FindCellById(id string) (*resources.Cell, error) {
+	for z, layer := range m.data.Layers {
+		for y, row := range layer.Cells {
+			for x, cell := range row {
+				if cell.ID == id {
+					return &m.data.Layers[z].Cells[y][x], nil
+				}
+			}
+		}
+	}
+	return &resources.Cell{}, errors.New("no such cell")
+}
+
 type CellCollision struct {
 	Cell resources.Cell
 }
@@ -316,4 +380,14 @@ func (m *Map) DoesLineCollide(fx1, fy1, fx2, fy2 float64, z int) bool {
 	}
 
 	return false
+}
+
+func (m *Map) GetInteractiveActors() []*Interactive {
+	var actors []*Interactive
+	for _, a := range m.actors {
+		if a, ok := a.(*Interactive); ok {
+			actors = append(actors, a)
+		}
+	}
+	return actors
 }

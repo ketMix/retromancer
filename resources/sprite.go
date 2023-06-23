@@ -83,6 +83,9 @@ func (s *Sprite) SetImage(image *ebiten.Image) {
 func (s *Sprite) Image() *ebiten.Image {
 	return s.image
 }
+func (s *Sprite) Images() []*ebiten.Image {
+	return s.images
+}
 
 func (s *Sprite) Update() {
 	if s.Framerate > 0 && len(s.images) > 0 {

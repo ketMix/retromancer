@@ -21,10 +21,16 @@ runes:
   " ":
     sprite: empty
   "D":
-    sprite: door
-    door: true
+    sprite: empty
+    id: door
     isometric: true
-    map: ballpit
+    blocks: true
+  "C":
+    sprite: empty
+    id: candle1
+  "E":
+    sprite: empty
+    id: candle2
 start: [8, 11, 0]
 actors:
   - spawn: [8, 3, 0]
@@ -34,16 +40,26 @@ actors:
         bulletCount: 3
         bullet:
           color: [0, 128, 255, 128]
-  - spawn: [7, 1, 0]
+  - id: door
+    type: door
+    door: 
+      map: ballpit
+      open: false
+      conditions:
+        - type: active
+          args:
+            - candle1
+            - candle2
+  - id: candle1
     type: candle
     active: true
-  - spawn: [11, 1, 0]
+  - id: candle2
     type: candle
     active: false
 layers:
   - |
    ^********D*******^.^
-   ^                ^.^
+   ^    C      E    ^.^
    ^^               ^.^
    ^^^              ^.^
    ^^               ^.^

@@ -124,8 +124,11 @@ func (s *World) Update(ctx states.Context) error {
 								Y:      action.Y,
 								Radius: 20,
 							})
+							// Reverse interactive actors.
 							for _, a := range actors {
-								a.Reverse()
+								if a, ok := a.(*Interactive); ok {
+									a.Reverse()
+								}
 							}
 						}
 					case ActionDeflect:
@@ -223,6 +226,33 @@ func (s *World) Update(ctx states.Context) error {
 				}
 			}
 
+			// Check the our interactive actor conditions
+			interactiveActors := s.activeMap.GetInteractiveActors()
+			for _, actor := range interactiveActors {
+				conditions := actor.Conditions()
+				for _, condition := range conditions {
+					args := condition.Args
+					switch condition.Type {
+					case resources.Active:
+						checkNum := len(args)
+						checkedNum := 0
+						// Check all actor ids in args are active
+						for _, a := range interactiveActors {
+							for _, arg := range args {
+								// Find actor by id within actor array
+								if a.ID() == arg && a.Active() {
+									checkedNum++
+								}
+							}
+						}
+						if checkNum == checkedNum {
+							actor.SetActive(true)
+							cell, _ := s.activeMap.FindCellById(actor.ID())
+							cell.Blocks = false // No
+						}
+					}
+				}
+			}
 			// Queue up the local player's impulses for the next tick!
 			for _, player := range s.Players {
 				if _, ok := player.(*LocalPlayer); ok {
