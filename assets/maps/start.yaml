@@ -59,8 +59,10 @@ actors:
     type: spawner
     bullets: 
       - alias: daggers
-        bulletCount: 3
+        bulletCount: 1
+        spawnRate: 20
         bullet:
+          aimDelay: 0
           color: [0, 128, 255, 128]
   - id: door
     type: interactive
@@ -105,7 +107,7 @@ layers:
    ^^^^          ^^^^.^
    ^^               ^.^
    ^                ^.^
-   ^        S       ^.^
+   ^  S             ^.^
    ^^       G       ^.^
    ^~~~~~~~~~~~~~~~~^.^
    ^^^^^,, ____     ^.^
