@@ -65,6 +65,12 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				if collision := s.activeMap.Collides(checkShape); collision == nil || !collision.Cell.BlockMove {
 					actor.SetXY(action.X, action.Y)
 				}
+				// forgive me.
+				if s.tick%4 == 0 {
+					if pc, ok := actor.(*PC); ok {
+						s.SpawnParticle(ctx, "puff", action.X, action.Y+pc.Sprite.Height()/2-2, 0, 0, 10)
+					}
+				}
 			case ActionReflect:
 				reflecting = true
 				x, y, _, _ := actor.Bounds()
