@@ -17,6 +17,9 @@ type WorldStateLive struct {
 func (w *WorldStateLive) Enter(s *World) {
 }
 
+func (w *WorldStateLive) Leave(s *World) {
+}
+
 func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	var actorActions []ActorActions
 	for _, actor := range s.activeMap.actors {
@@ -291,7 +294,4 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 		}
 	}
 
-}
-
-func (w *WorldStateLive) Leave(s *World) {
 }
