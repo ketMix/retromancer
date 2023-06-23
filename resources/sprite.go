@@ -22,6 +22,7 @@ type Sprite struct {
 	Flipped          bool
 	Interpolate      bool
 	Centered         bool
+	Hidden           bool
 	Options          ebiten.DrawImageOptions
 }
 
@@ -107,6 +108,9 @@ func (s *Sprite) Update() {
 }
 
 func (s *Sprite) Draw(screen *ebiten.Image) {
+	if s.Hidden {
+		return
+	}
 	s.DrawWithOptions(screen, &ebiten.DrawImageOptions{})
 }
 
