@@ -63,5 +63,7 @@ func (m *MusicPlayer) Volume() float64 {
 
 func (m *MusicPlayer) SetVolume(vol float64) {
 	m.volume = vol
-	m.player.SetVolume(m.volume)
+	if m.player != nil {
+		m.player.SetVolume(m.volume)
+	}
 }

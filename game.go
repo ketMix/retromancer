@@ -12,6 +12,7 @@ import (
 
 type Game struct {
 	States      []states.State
+	Flags       Flags
 	Text        *etxt.Renderer
 	Manager     ResourceManager
 	Localizer   Localizer
