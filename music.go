@@ -10,6 +10,7 @@ type MusicPlayer struct {
 	player *audio.Player
 	song   states.Song
 	loop   bool
+	volume float64
 }
 
 func (m *MusicPlayer) Play(s states.Song) (err error) {
@@ -22,6 +23,7 @@ func (m *MusicPlayer) Play(s states.Song) (err error) {
 	if err != nil {
 		return
 	}
+	m.player.SetVolume(m.volume)
 	m.player.Play()
 	m.song = s
 	return
@@ -56,12 +58,10 @@ func (m *MusicPlayer) SetLoop(loop bool) {
 }
 
 func (m *MusicPlayer) Volume() float64 {
-	if m.player == nil {
-		return 1.0
-	}
-	return m.player.Volume()
+	return m.volume
 }
 
 func (m *MusicPlayer) SetVolume(vol float64) {
-	m.player.SetVolume(vol)
+	m.volume = vol
+	m.player.SetVolume(m.volume)
 }

@@ -57,6 +57,7 @@ func main() {
 
 	// Initialize audio.
 	audio.NewContext(44100)
+	game.MusicPlayer.volume = 1.0
 
 	ebiten.SetWindowSize(1280, 720)
 	ebiten.SetWindowTitle("ebijam23")
