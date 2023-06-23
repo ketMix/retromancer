@@ -163,8 +163,8 @@ func (b *Bullet) Update() (actions []Action) {
 		b.Speed = prevBullet.Speed
 		b.Angle = prevBullet.Angle
 		b.Acceleration = prevBullet.Acceleration
-		b.aimTime = prevBullet.aimTime
-		b.aimDelay = prevBullet.aimDelay
+		b.AngularVelocity = prevBullet.AngularVelocity
+		b.reflected = false
 	}
 
 	if b.holdFor > 0 {
@@ -183,16 +183,15 @@ func (b *Bullet) Update() (actions []Action) {
 		// Move bullet towards previous position, but keep it facing the same direction as previous bullet
 		movementAngle := math.Atan2(prevBullet.Shape.Y-b.Shape.Y, prevBullet.Shape.X-b.Shape.X)
 		b.Angle = prevBullet.Angle
+		b.aimTime = prevBullet.aimTime
+		b.aimDelay = prevBullet.aimDelay
 		b.Shape.X += b.Speed * math.Cos(movementAngle)
 		b.sprite.X = b.Shape.X
 		b.Shape.Y += b.Speed * math.Sin(movementAngle)
 		b.sprite.Y = b.Shape.Y
 		return actions
 	}
-	if len(b.timeLine) == 0 {
-		// Stop reflecting
-		b.reflected = false
-	}
+
 	b.Speed += b.Acceleration
 	b.Acceleration += b.AccelAccel
 
@@ -240,9 +239,6 @@ func (b *Bullet) Reflect() {
 		return
 	}
 	// Stop aiming the bullet if it was aimed. Perhaps this should deflect the bullet towards the spawner that created it.
-	b.aimTime = 0
-	// b.Angle = math.Mod(b.Angle+math.Pi, 2*math.Pi)
-	// b.AngularVelocity = 0
 	b.reflected = true
 }
 
