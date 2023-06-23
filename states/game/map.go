@@ -254,7 +254,7 @@ func (m *Map) Draw(ctx states.DrawContext) {
 						ds := 1 - float32(i)/float32(wallH/3)*float32(dz)
 						opts.ColorScale.Reset()
 						opts.ColorScale.Scale(ds, ds, ds, 1.0)
-						cell.Sprite.DrawWithOptions(ctx.Screen, opts)
+						cell.Sprite.DrawWithOptions(ctx, opts)
 						opts.GeoM.Translate(-1, -2)
 					}
 				} else if cell.Wall {
@@ -264,29 +264,29 @@ func (m *Map) Draw(ctx states.DrawContext) {
 						ds := float32(i) / float32(wallH) * float32(dz)
 						opts.ColorScale.Reset()
 						opts.ColorScale.Scale(ds, ds, ds, 1.0)
-						cell.Sprite.DrawWithOptions(ctx.Screen, opts)
+						cell.Sprite.DrawWithOptions(ctx, opts)
 						opts.GeoM.Translate(-1, -2)
 					}
 				} else {
-					cell.Sprite.Draw(ctx.Screen)
+					cell.Sprite.Draw(ctx)
 				}
 			}
 		}
 	}
 	for _, a := range m.actors {
-		a.Draw(ctx.Screen)
+		a.Draw(ctx)
 	}
 	for _, b := range m.bullets {
-		b.Draw(ctx.Screen)
+		b.Draw(ctx)
 	}
 
-	m.ProcessVFX(ctx.Screen, nil)
+	m.ProcessVFX(ctx, nil)
 }
 
-func (m *Map) ProcessVFX(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
+func (m *Map) ProcessVFX(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 	for i := 0; i < len(m.vfxs); i++ {
 		vfx := m.vfxs[i]
-		vfx.Process(screen, opts)
+		vfx.Process(ctx, opts)
 		if vfx.Done() {
 			m.vfxs = append(m.vfxs[:i], m.vfxs[i+1:]...)
 			i--

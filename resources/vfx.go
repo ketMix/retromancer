@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"ebijam23/states"
 	"image/color"
 	"time"
 
@@ -8,7 +9,7 @@ import (
 )
 
 type VFX interface {
-	Process(screen *ebiten.Image, opts *ebiten.DrawImageOptions)
+	Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions)
 	Done() bool
 }
 
@@ -22,7 +23,7 @@ type Fade struct {
 	fadeInImage  *ebiten.Image
 }
 
-func (f *Fade) Process(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
+func (f *Fade) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 	t := time.Now()
 	if f.lastTime.IsZero() {
 		f.lastTime = t
@@ -38,12 +39,12 @@ func (f *Fade) Process(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
 
 	if f.ApplyToImage {
 		if f.fadeInImage == nil {
-			f.fadeInImage = ebiten.NewImage(screen.Bounds().Dx(), screen.Bounds().Dy())
+			f.fadeInImage = ebiten.NewImage(ctx.Screen.Bounds().Dx(), ctx.Screen.Bounds().Dy())
 		}
 		f.fadeInImage.Fill(color.Black)
 		opts := &ebiten.DrawImageOptions{}
 		opts.ColorScale.ScaleAlpha(1 - float32(f.Alpha*m))
-		screen.DrawImage(f.fadeInImage, opts)
+		ctx.Screen.DrawImage(f.fadeInImage, opts)
 	} else {
 		c := color.NRGBA{R: 255, G: 255, B: 255, A: uint8(f.Alpha * m * 255)}
 		opts.ColorScale.ScaleWithColor(c)

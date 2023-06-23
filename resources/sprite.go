@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"ebijam23/states"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -108,15 +109,15 @@ func (s *Sprite) Update() {
 	}
 }
 
-func (s *Sprite) Draw(screen *ebiten.Image) {
+func (s *Sprite) Draw(ctx states.DrawContext) {
 	if s.Hidden {
 		return
 	}
-	s.DrawWithOptions(screen, &ebiten.DrawImageOptions{})
+	s.DrawWithOptions(ctx, &ebiten.DrawImageOptions{})
 }
 
-func (s *Sprite) DrawWithOptions(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
-	s.ProcessVFX(screen, opts)
+func (s *Sprite) DrawWithOptions(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
+	s.ProcessVFX(ctx, opts)
 	// hmmmmm
 	/*lx := (s.X * (1.0 - 0.1)) + (s.interpX * 0.1)
 	ly := (s.Y * (1.0 - 0.1)) + (s.interpY * 0.1)
@@ -172,7 +173,7 @@ func (s *Sprite) DrawWithOptions(screen *ebiten.Image, opts *ebiten.DrawImageOpt
 		s.Options.ColorScale.Reset()
 	}
 
-	screen.DrawImage(s.image, &s.Options)
+	ctx.Screen.DrawImage(s.image, &s.Options)
 }
 
 func (s *Sprite) Hit(x, y float64) bool {
@@ -193,10 +194,10 @@ func (s *Sprite) AddVFX(vfx VFX) {
 	s.vfxs = append(s.vfxs, vfx)
 }
 
-func (s *Sprite) ProcessVFX(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
+func (s *Sprite) ProcessVFX(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 	for i := 0; i < len(s.vfxs); i++ {
 		vfx := s.vfxs[i]
-		vfx.Process(screen, opts)
+		vfx.Process(ctx, opts)
 		if vfx.Done() {
 			s.vfxs = append(s.vfxs[:i], s.vfxs[i+1:]...)
 			i--

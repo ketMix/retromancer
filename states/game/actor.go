@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
+	"ebijam23/states"
 )
 
 type Actor interface {
@@ -12,7 +12,7 @@ type Actor interface {
 	SetPlayer(p Player)
 	SetImpulses(impulses ImpulseSet)
 	Update() []Action
-	Draw(screen *ebiten.Image)
+	Draw(ctx states.DrawContext)
 	Shape() Shape
 	Bounds() (x, y, w, h float64)
 	SetXY(x, y float64)

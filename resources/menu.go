@@ -37,7 +37,7 @@ func (s *SpriteItem) Activate() bool {
 func (s *SpriteItem) Draw(ctx states.DrawContext) {
 	s.Sprite.X = s.X
 	s.Sprite.Y = s.Y
-	s.Sprite.Draw(ctx.Screen)
+	s.Sprite.Draw(ctx)
 }
 
 type TextItem struct {

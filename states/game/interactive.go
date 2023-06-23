@@ -2,8 +2,7 @@ package game
 
 import (
 	"ebijam23/resources"
-
-	"github.com/hajimehoshi/ebiten/v2"
+	"ebijam23/states"
 )
 
 // Default cooldown for interactive activation + degradation
@@ -70,11 +69,11 @@ func (i *Interactive) Update() []Action {
 
 // If the interactive object is active, draw the active sprite
 // otherwise draw the inactive sprite
-func (i *Interactive) Draw(screen *ebiten.Image) {
+func (i *Interactive) Draw(ctx states.DrawContext) {
 	if i.active {
-		i.activeSprite.Draw(screen)
+		i.activeSprite.Draw(ctx)
 	} else {
-		i.inactiveSprite.Draw(screen)
+		i.inactiveSprite.Draw(ctx)
 	}
 }
 

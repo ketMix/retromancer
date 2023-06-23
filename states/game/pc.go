@@ -174,11 +174,11 @@ func (p *PC) DrawHat(screen *ebiten.Image, x, y float64) {
 	screen.DrawImage(p.Hat.Image(), opts)
 }
 
-func (p *PC) Draw(screen *ebiten.Image) {
+func (p *PC) Draw(ctx states.DrawContext) {
 	if p.Dead() {
 		// Hackiness ahoy. This is hard coded to the exact death sprite frames and positions.
 		p.DeathSprite.SetXY(p.Sprite.X, p.Sprite.Y)
-		p.DeathSprite.Draw(screen)
+		p.DeathSprite.Draw(ctx)
 		y := 0.0
 		switch p.DeathSprite.Frame() {
 		case 9:
@@ -186,34 +186,34 @@ func (p *PC) Draw(screen *ebiten.Image) {
 		case 10:
 			y = 8
 		}
-		p.DrawHat(screen, 0, 3+y)
+		p.DrawHat(ctx.Screen, 0, 3+y)
 		return
 	}
 
 	if _, ok := p.previousInteraction.(ActionDeflect); ok {
-		vector.DrawFilledCircle(screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0xff, 0x66, 0x99, 0x33}, false)
+		vector.DrawFilledCircle(ctx.Screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0xff, 0x66, 0x99, 0x33}, false)
 	} else if _, ok := p.previousInteraction.(ActionReflect); ok {
-		vector.DrawFilledCircle(screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0x66, 0x99, 0xff, 0x33}, false)
+		vector.DrawFilledCircle(ctx.Screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0x66, 0x99, 0xff, 0x33}, false)
 	} else if _, ok := p.previousInteraction.(ActionShield); ok {
-		vector.DrawFilledCircle(screen, float32(p.shape.X), float32(p.shape.Y), 20, color.NRGBA{0x66, 0xff, 0x99, 0x33}, false)
+		vector.DrawFilledCircle(ctx.Screen, float32(p.shape.X), float32(p.shape.Y), 20, color.NRGBA{0x66, 0xff, 0x99, 0x33}, false)
 	}
 
 	opts := &ebiten.DrawImageOptions{}
 
-	p.Hand.Sprite.Draw(screen)
-	p.Hand.HoverSprite.Draw(screen)
+	p.Hand.Sprite.Draw(ctx)
+	p.Hand.HoverSprite.Draw(ctx)
 
 	if p.InvulnerableTicks <= 0 || p.InvulnerableTicks%6 >= 3 {
-		p.Sprite.Draw(screen)
+		p.Sprite.Draw(ctx)
 
 		// Draw the player's phylactery (hit box representation). If the player has 0 lives, hide it, since it "broke"
 		if p.Lives > 0 {
 			opts.GeoM.Translate(p.shape.X-float64(int(p.Phylactery.Width())/2), p.shape.Y-float64(int(p.Phylactery.Height())/2))
 			opts.ColorScale.Scale(0.5, 0.5, 1.0, 1.0)
-			screen.DrawImage(p.Phylactery.Image(), opts)
+			ctx.Screen.DrawImage(p.Phylactery.Image(), opts)
 		}
 
-		p.DrawHat(screen, 0, 3)
+		p.DrawHat(ctx.Screen, 0, 3)
 	}
 
 	// Draw lives?
@@ -223,7 +223,7 @@ func (p *PC) Draw(screen *ebiten.Image) {
 		x += p.Hand.Shape.X + float64(i)*(p.Life.Width()+1)
 		y := p.Hand.Shape.Y + p.Hand.Sprite.Height()/2 + 3
 		opts.GeoM.Translate(x, y)
-		screen.DrawImage(p.Life.Image(), opts)
+		ctx.Screen.DrawImage(p.Life.Image(), opts)
 	}
 
 	r := math.Atan2(p.shape.Y-p.Hand.Shape.Y, p.shape.X-p.Hand.Shape.X)
@@ -238,7 +238,7 @@ func (p *PC) Draw(screen *ebiten.Image) {
 	//opts.GeoM.Translate(p.Arrow.Width()/2, p.Arrow.Height()/2)
 	opts.GeoM.Translate(p.shape.X, p.shape.Y)
 	// Draw from center.
-	screen.DrawImage(p.Arrow.Image(), opts)
+	ctx.Screen.DrawImage(p.Arrow.Image(), opts)
 }
 
 func (p *PC) Bounds() (x, y, w, h float64) {

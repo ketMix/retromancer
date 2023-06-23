@@ -23,7 +23,7 @@ func (o *Overlay) Init(ctx states.Context) error {
 }
 
 func (o *Overlay) Draw(ctx states.DrawContext) {
-	o.soundButton.Draw(ctx.Screen)
+	o.soundButton.Draw(ctx)
 }
 
 func (o *Overlay) Sync(ctx states.Context) {

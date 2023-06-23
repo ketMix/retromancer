@@ -2,6 +2,7 @@ package game
 
 import (
 	"ebijam23/resources"
+	"ebijam23/states"
 	"image/color"
 	"math"
 
@@ -257,9 +258,9 @@ func (b *Bullet) Deflect(angle float64) {
 }
 
 // Draw the bullet
-func (b *Bullet) Draw(screen *ebiten.Image) {
+func (b *Bullet) Draw(ctx states.DrawContext) {
 	// Draw base bullet
-	vector.DrawFilledCircle(screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius), b.Color, false)
+	vector.DrawFilledCircle(ctx.Screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius), b.Color, false)
 
 	// Draw the border depending on its type
 	switch b.bulletType {
@@ -270,7 +271,7 @@ func (b *Bullet) Draw(screen *ebiten.Image) {
 	case Directional:
 		// Draw V shape on both ends
 		vector.StrokeLine(
-			screen,
+			ctx.Screen,
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*2),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*2),
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)+b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
@@ -280,7 +281,7 @@ func (b *Bullet) Draw(screen *ebiten.Image) {
 			false,
 		)
 		vector.StrokeLine(
-			screen,
+			ctx.Screen,
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*2),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*2),
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)-b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
@@ -290,7 +291,7 @@ func (b *Bullet) Draw(screen *ebiten.Image) {
 			false,
 		)
 		vector.StrokeLine(
-			screen,
+			ctx.Screen,
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*-2),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*-2),
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)+b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
@@ -300,7 +301,7 @@ func (b *Bullet) Draw(screen *ebiten.Image) {
 			false,
 		)
 		vector.StrokeLine(
-			screen,
+			ctx.Screen,
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*-2),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*-2),
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)-b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
@@ -313,7 +314,7 @@ func (b *Bullet) Draw(screen *ebiten.Image) {
 		// Draw V shape
 		// Should be drawn on the edge in the direction of the bullet's angle
 		vector.StrokeLine(
-			screen,
+			ctx.Screen,
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*2),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*2),
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)+b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
@@ -323,7 +324,7 @@ func (b *Bullet) Draw(screen *ebiten.Image) {
 			false,
 		)
 		vector.StrokeLine(
-			screen,
+			ctx.Screen,
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*2),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*2),
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)-b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),

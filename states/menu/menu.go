@@ -84,9 +84,9 @@ func (m *Menu) Update(ctx states.Context) error {
 }
 
 func (m *Menu) Draw(ctx states.DrawContext) {
-	m.logo.Draw(ctx.Screen)
+	m.logo.Draw(ctx)
 	for _, sprite := range m.sprites {
-		sprite.Draw(ctx.Screen)
+		sprite.Draw(ctx)
 	}
 
 	m.overlay.Draw(ctx)

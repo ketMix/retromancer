@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/hajimehoshi/ebiten/v2"
+	"ebijam23/states"
 )
 
 // This can probably be attached to an actor instead being its own actor
@@ -33,7 +33,7 @@ func (s *Spawner) Restore()                        {}
 func (s *Spawner) Player() Player                  { return nil }
 func (s *Spawner) SetPlayer(p Player)              {}
 func (s *Spawner) SetImpulses(impulses ImpulseSet) {}
-func (s *Spawner) Draw(screen *ebiten.Image)       {}
+func (s *Spawner) Draw(states.DrawContext)         {}
 func (s *Spawner) Bounds() (x, y, w, h float64)    { return 0, 0, 0, 0 }
 func (s *Spawner) SetXY(x, y float64)              {}
 func (s *Spawner) SetSize(r float64)               {}
