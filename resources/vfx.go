@@ -79,8 +79,6 @@ func (v *Text) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 	v.elapsed += t.Sub(v.lastTime)
 	v.lastTime = t
 
-	m := float64(v.elapsed)
-
 	if !v.hasDelayed {
 		if v.elapsed < v.Delay {
 			return
@@ -88,6 +86,8 @@ func (v *Text) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 		v.hasDelayed = true
 		v.elapsed = 0
 	}
+
+	m := float64(v.elapsed)
 
 	if v.elapsed < v.InDuration {
 		m /= float64(v.InDuration)
