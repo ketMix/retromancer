@@ -338,14 +338,6 @@ func (s *World) Draw(ctx states.DrawContext) {
 	}
 
 	if s.ArePlayersDead() {
-		// :)
-		poorMansOutline := func(text string, x, y int, scale int) {
-			ctx.Text.Draw(ctx.Screen, text, x-scale, y)
-			ctx.Text.Draw(ctx.Screen, text, x+scale, y)
-			ctx.Text.Draw(ctx.Screen, text, x, y-scale)
-			ctx.Text.Draw(ctx.Screen, text, x, y+scale)
-		}
-
 		ctx.Text.SetAlign(etxt.YCenter | etxt.XCenter)
 		x := ctx.Screen.Bounds().Max.X / 2
 		y := float64(ctx.Screen.Bounds().Max.Y / 2)
@@ -354,7 +346,7 @@ func (s *World) Draw(ctx states.DrawContext) {
 		{
 			ctx.Text.SetScale(2.0)
 			ctx.Text.SetColor(color.RGBA{0x00, 0x00, 0x00, 0xff})
-			poorMansOutline("Morte", x, int(y), 2)
+			resources.DrawTextOutline(ctx.Text, ctx.Screen, "Morte", x, int(y), 2)
 			ctx.Text.SetColor(color.RGBA{0xff, 0x00, 0x00, 0xff})
 			ctx.Text.Draw(ctx.Screen, "Morte", x, int(y))
 		}
@@ -363,12 +355,12 @@ func (s *World) Draw(ctx states.DrawContext) {
 		{
 			ctx.Text.SetScale(1.0)
 			ctx.Text.SetColor(color.Black)
-			poorMansOutline("<Enter> to restart room", x, int(y), 1)
+			resources.DrawTextOutline(ctx.Text, ctx.Screen, "<Enter> to restart room", x, int(y), 1)
 			ctx.Text.SetColor(color.White)
 			ctx.Text.Draw(ctx.Screen, "<Enter> to restart room", x, int(y))
 			y += ctx.Text.Utils().GetLineHeight()
 			ctx.Text.SetColor(color.Black)
-			poorMansOutline("<Escape> to quit", x, int(y), 1)
+			resources.DrawTextOutline(ctx.Text, ctx.Screen, "<Escape> to quit", x, int(y), 1)
 			ctx.Text.SetColor(color.White)
 			ctx.Text.Draw(ctx.Screen, "<Escape> to quit", ctx.Screen.Bounds().Max.X/2, int(y))
 		}

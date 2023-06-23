@@ -5,6 +5,7 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/tinne26/etxt"
 )
 
 // This isn't a resources, but whatever.
@@ -19,4 +20,12 @@ func DrawArc(screen *ebiten.Image, posX, posY float64, radius float64, start, en
 		y := math.Sin(i)*radius + posY
 		screen.Set(int(x), int(y), color)
 	}
+}
+
+func DrawTextOutline(text *etxt.Renderer, screen *ebiten.Image, str string, x, y int, scale int) {
+	// :)
+	text.Draw(screen, str, x-scale, y)
+	text.Draw(screen, str, x+scale, y)
+	text.Draw(screen, str, x, y-scale)
+	text.Draw(screen, str, x, y+scale)
 }

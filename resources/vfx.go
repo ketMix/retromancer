@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/tinne26/etxt"
 )
 
 type VFX interface {
@@ -53,4 +54,55 @@ func (f *Fade) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 
 func (f *Fade) Done() bool {
 	return f.elapsed >= f.Duration
+}
+
+type Text struct {
+	Text         string
+	X, Y         float64
+	Scale        float64
+	Outline      bool
+	OutlineColor color.NRGBA
+	InDuration   time.Duration
+	HoldDuration time.Duration
+	OutDuration  time.Duration
+	elapsed      time.Duration
+	lastTime     time.Time
+}
+
+func (v *Text) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
+	t := time.Now()
+	if v.lastTime.IsZero() {
+		v.lastTime = t
+	}
+	v.elapsed += t.Sub(v.lastTime)
+	v.lastTime = t
+
+	m := float64(v.elapsed)
+
+	if v.elapsed < v.InDuration {
+		m /= float64(v.InDuration)
+	} else if v.elapsed < v.InDuration+v.HoldDuration {
+		m = 1.0
+	} else if v.elapsed < v.OutDuration+v.InDuration+v.HoldDuration {
+		m -= float64(v.InDuration + v.HoldDuration)
+		m /= float64(v.OutDuration)
+		m = 1.0 - m
+	}
+
+	if v.Scale != 0 {
+		ctx.Text.SetScale(v.Scale)
+	}
+
+	if v.Outline {
+		ctx.Text.SetColor(color.NRGBA{R: v.OutlineColor.R, G: v.OutlineColor.G, B: v.OutlineColor.B, A: uint8(float64(v.OutlineColor.A) * m)})
+		DrawTextOutline(ctx.Text, ctx.Screen, v.Text, int(v.X), int(v.Y), int(v.Scale))
+	}
+
+	ctx.Text.SetAlign(etxt.XCenter | etxt.YCenter)
+	ctx.Text.SetColor(color.NRGBA{R: 255, G: 255, B: 255, A: uint8(255 * m)})
+	ctx.Text.Draw(ctx.Screen, v.Text, int(v.X), int(v.Y))
+}
+
+func (v *Text) Done() bool {
+	return v.elapsed >= v.InDuration+v.HoldDuration+v.OutDuration
 }

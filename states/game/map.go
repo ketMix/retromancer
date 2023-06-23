@@ -4,6 +4,7 @@ import (
 	"ebijam23/resources"
 	"ebijam23/states"
 	"errors"
+	"image/color"
 	"math"
 	"time"
 
@@ -211,6 +212,19 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		Alpha:        1,
 		Duration:     1 * time.Second,
 		ApplyToImage: true,
+	})
+
+	// Add map title VFX.
+	m.vfxs = append(m.vfxs, &resources.Text{
+		Text:         m.data.Title,
+		Scale:        2.0,
+		X:            320,
+		Y:            320,
+		Outline:      true,
+		OutlineColor: color.NRGBA{0x22, 0x8b, 0x22, 0xff},
+		InDuration:   500 * time.Millisecond,
+		HoldDuration: 3 * time.Second,
+		OutDuration:  1000 * time.Millisecond,
 	})
 
 	return nil
