@@ -1,4 +1,8 @@
 title: Resurrection
+conditions:
+  - type: active
+    args:
+      - door
 runes:
   "f":
     sprite: fire
