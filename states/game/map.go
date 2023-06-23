@@ -196,6 +196,30 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	// Set proper active layer.
 	m.currentZ = m.data.Start[2]
 
+	// Only add fade and title VFX if this map is not the same as the previous one.
+	if s.activeMap == nil || s.activeMap.data != m.data {
+		// Add fade in VFX.
+		m.vfxs = append(m.vfxs, &resources.Fade{
+			Alpha:        1,
+			Duration:     1 * time.Second,
+			ApplyToImage: true,
+		})
+		// Add map title VFX.
+		m.vfxs = append(m.vfxs, &resources.Text{
+			Text:         m.data.Title,
+			Scale:        2.0,
+			X:            320,
+			Y:            320,
+			Delay:        1000 * time.Millisecond,
+			Outline:      true,
+			OutlineColor: color.NRGBA{0x22, 0x8b, 0x22, 0xff},
+			InDuration:   500 * time.Millisecond,
+			HoldDuration: 3 * time.Second,
+			OutDuration:  1000 * time.Millisecond,
+		})
+
+	}
+
 	s.activeMap = m
 
 	// Move players over to new map.
@@ -206,26 +230,6 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		p.Actor().SetXY(float64(m.data.Start[0]*cellW), float64(m.data.Start[1]*cellH))
 		m.actors = append(m.actors, p.Actor())
 	}
-
-	// Add fade in VFX.
-	m.vfxs = append(m.vfxs, &resources.Fade{
-		Alpha:        1,
-		Duration:     1 * time.Second,
-		ApplyToImage: true,
-	})
-
-	// Add map title VFX.
-	m.vfxs = append(m.vfxs, &resources.Text{
-		Text:         m.data.Title,
-		Scale:        2.0,
-		X:            320,
-		Y:            320,
-		Outline:      true,
-		OutlineColor: color.NRGBA{0x22, 0x8b, 0x22, 0xff},
-		InDuration:   500 * time.Millisecond,
-		HoldDuration: 3 * time.Second,
-		OutDuration:  1000 * time.Millisecond,
-	})
 
 	return nil
 }

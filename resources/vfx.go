@@ -62,6 +62,8 @@ type Text struct {
 	Scale        float64
 	Outline      bool
 	OutlineColor color.NRGBA
+	Delay        time.Duration
+	hasDelayed   bool
 	InDuration   time.Duration
 	HoldDuration time.Duration
 	OutDuration  time.Duration
@@ -78,6 +80,14 @@ func (v *Text) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 	v.lastTime = t
 
 	m := float64(v.elapsed)
+
+	if !v.hasDelayed {
+		if v.elapsed < v.Delay {
+			return
+		}
+		v.hasDelayed = true
+		v.elapsed = 0
+	}
 
 	if v.elapsed < v.InDuration {
 		m /= float64(v.InDuration)
