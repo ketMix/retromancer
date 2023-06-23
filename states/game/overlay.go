@@ -3,6 +3,7 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
@@ -10,12 +11,17 @@ import (
 
 type Overlay struct {
 	soundButton *resources.Sprite
+	localeIcon  *resources.Sprite
 }
 
 func (o *Overlay) Init(ctx states.Context) error {
 	o.soundButton = resources.NewSprite(ctx.Manager.GetAs("images", "sound-high", (*ebiten.Image)(nil)).(*ebiten.Image))
 	o.soundButton.X = 640 - o.soundButton.Width() - 8
 	o.soundButton.Y = 8
+
+	o.localeIcon = resources.NewSprite(ctx.Manager.GetAs("images", fmt.Sprintf("flag-%s", ctx.Locale()), (*ebiten.Image)(nil)).(*ebiten.Image))
+	o.localeIcon.X = 640 - o.localeIcon.Width() - 8
+	o.localeIcon.Y = 8 + o.soundButton.Height() + 8
 
 	o.Sync(ctx)
 
@@ -24,6 +30,7 @@ func (o *Overlay) Init(ctx states.Context) error {
 
 func (o *Overlay) Draw(ctx states.DrawContext) {
 	o.soundButton.Draw(ctx)
+	o.localeIcon.Draw(ctx)
 }
 
 func (o *Overlay) Sync(ctx states.Context) {
@@ -34,6 +41,8 @@ func (o *Overlay) Sync(ctx states.Context) {
 	} else {
 		o.soundButton.SetImage(ctx.Manager.GetAs("images", "sound-high", (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
+
+	o.localeIcon.SetImage(ctx.Manager.GetAs("images", fmt.Sprintf("flag-%s", ctx.Locale()), (*ebiten.Image)(nil)).(*ebiten.Image))
 }
 
 func (o *Overlay) Update(ctx states.Context) error {
@@ -48,6 +57,22 @@ func (o *Overlay) Update(ctx states.Context) error {
 			} else {
 				resources.Volume = 0.0
 			}
+		}
+		if o.localeIcon.Hit(float64(x), float64(y)) {
+			locales := ctx.Manager.GetNamesWithPrefix("locales", "")
+			var localeIndex int
+			for i, l := range locales {
+				if l == ctx.Locale() {
+					localeIndex = i
+					break
+				}
+			}
+			if localeIndex+1 >= len(locales) {
+				localeIndex = 0
+			} else {
+				localeIndex++
+			}
+			ctx.SetLocale(locales[localeIndex])
 		}
 		o.Sync(ctx)
 	}

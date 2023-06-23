@@ -6,14 +6,18 @@ import (
 )
 
 type DrawContext struct {
-	Screen *ebiten.Image
-	Text   *etxt.Renderer
-	L      func(key string) string
+	Screen    *ebiten.Image
+	Text      *etxt.Renderer
+	L         func(key string) string
+	Locale    func() string
+	SetLocale func(loc string)
 }
 
 type Context struct {
 	Manager      ResourceManager
 	StateMachine StateMachine
 	L            func(key string) string
+	Locale       func() string
+	SetLocale    func(loc string)
 	Cursor       Cursor
 }

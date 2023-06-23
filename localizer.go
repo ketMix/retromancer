@@ -9,6 +9,10 @@ type Localizer struct {
 	backupLocale  *resources.Locale
 }
 
+func (l *Localizer) Locale() string {
+	return l.locale
+}
+
 func (l *Localizer) SetLocale(loc string) {
 	l.locale = loc
 	l.backupLocale = l.manager.GetAs("locales", "en", (*resources.Locale)(nil)).(*resources.Locale)

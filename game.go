@@ -27,6 +27,8 @@ func (g *Game) PushState(state states.State) {
 	state.Init(states.Context{
 		Manager:      &g.Manager,
 		L:            g.Localizer.Get,
+		Locale:       g.Localizer.Locale,
+		SetLocale:    g.Localizer.SetLocale,
 		StateMachine: g,
 		Cursor:       &g.Cursor,
 	})
@@ -39,6 +41,8 @@ func (g *Game) PopState() {
 	g.States[len(g.States)-1].Finalize(states.Context{
 		Manager:      &g.Manager,
 		L:            g.Localizer.Get,
+		Locale:       g.Localizer.Locale,
+		SetLocale:    g.Localizer.SetLocale,
 		StateMachine: g,
 		Cursor:       &g.Cursor,
 	})
@@ -63,6 +67,8 @@ func (g *Game) Update() error {
 		return state.Update(states.Context{
 			Manager:      &g.Manager,
 			L:            g.Localizer.Get,
+			Locale:       g.Localizer.Locale,
+			SetLocale:    g.Localizer.SetLocale,
 			StateMachine: g,
 			Cursor:       &g.Cursor,
 		})
@@ -73,9 +79,11 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	if state := g.State(); state != nil {
 		state.Draw(states.DrawContext{
-			L:      g.Localizer.Get,
-			Screen: screen,
-			Text:   g.Text,
+			L:         g.Localizer.Get,
+			Locale:    g.Localizer.Locale,
+			SetLocale: g.Localizer.SetLocale,
+			Screen:    screen,
+			Text:      g.Text,
 		})
 	}
 	if g.Cursor.Enabled() {
