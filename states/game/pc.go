@@ -90,6 +90,8 @@ func (p *PC) Update() (actions []Action) {
 		return
 	}
 
+	p.InvulnerableTicks--
+
 	p.TicksSinceLastInteraction++
 	if p.TicksSinceLastInteraction > 20 {
 		if p.Energy+p.EnergyRestoreRate <= p.MaxEnergy {
@@ -198,12 +200,10 @@ func (p *PC) Draw(screen *ebiten.Image) {
 
 	opts := &ebiten.DrawImageOptions{}
 
-	p.InvulnerableTicks--
-
 	p.Hand.Sprite.Draw(screen)
 	p.Hand.HoverSprite.Draw(screen)
 
-	if p.InvulnerableTicks <= 0 || p.InvulnerableTicks%20 >= 10 {
+	if p.InvulnerableTicks <= 0 || p.InvulnerableTicks%6 >= 3 {
 		p.Sprite.Draw(screen)
 
 		// Draw the player's phylactery (hit box representation). If the player has 0 lives, hide it, since it "broke"

@@ -243,7 +243,7 @@ func (s *World) Update(ctx states.Context) error {
 						}
 						if bullet.Shape.Collides(actor.Shape()) {
 							bullet.Destroyed = true
-							p.InvulnerableTicks = 180
+							p.InvulnerableTicks = 40
 							p.Lives--
 							break
 						}
