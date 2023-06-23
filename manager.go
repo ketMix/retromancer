@@ -121,6 +121,22 @@ func (m *ResourceManager) Load(category string, name string) (interface{}, error
 		} else {
 			return nil, nil
 		}
+	} else if category == "locales" {
+		if strings.HasSuffix(name, ".yaml") {
+			bytes, err := m.files.ReadFile(fmt.Sprintf("%s/%s", category, name))
+			if err != nil {
+				return nil, err
+			}
+
+			var l *resources.Locale
+			if err := yaml.Unmarshal(bytes, &l); err != nil {
+				return nil, err
+			}
+			group.data[strings.TrimSuffix(name, filepath.Ext(name))] = l
+			return l, nil
+		} else {
+			return nil, nil
+		}
 	}
 
 	return nil, ErrNoSuchCategory
@@ -141,6 +157,22 @@ func (m *ResourceManager) GetNamesWithPrefix(category string, prefix string) []s
 		})
 		return names
 	}
+}
+
+func (m *ResourceManager) GetWithPrefix(category string, prefix string) (items []interface{}) {
+	names := m.GetNamesWithPrefix(category, prefix)
+	for _, name := range names {
+		items = append(items, m.Get(category, name))
+	}
+	return
+}
+
+func (m *ResourceManager) GetAsWithPrefix(category string, prefix string, target interface{}) (items []interface{}) {
+	names := m.GetNamesWithPrefix(category, prefix)
+	for _, name := range names {
+		items = append(items, m.GetAs(category, name, target))
+	}
+	return
 }
 
 func (m *ResourceManager) Get(category string, name string) interface{} {
@@ -181,6 +213,15 @@ func (m *ResourceManager) GetAs(category string, name string, target interface{}
 		d := m.Get(category, name)
 		if d == nil {
 			return &resources.Sound{} // FIXME: Use an actual fallback sound.
+		}
+		return d
+	case *resources.Locale:
+		d := m.Get(category, name)
+		if d == nil {
+			d = m.Get("locales", "en.yaml")
+			if d == nil {
+				return &resources.Locale{} // This shouldn't be reached.
+			}
 		}
 		return d
 	}
@@ -237,5 +278,17 @@ func (m *ResourceManager) LoadAll() error {
 		return nil
 	})
 	fmt.Println("loaded", len(m.groups["sounds"].data), "sounds")
+	m.files.Walk("locales/", func(path string, entry fs.DirEntry, err error) error {
+		if entry == nil {
+			return ErrMissingDirectory
+		}
+		if !entry.IsDir() {
+			if _, err := m.Load("locales", entry.Name()); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	fmt.Println("loaded", len(m.groups["locales"].data), "locales")
 	return nil
 }

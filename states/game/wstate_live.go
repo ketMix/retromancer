@@ -13,10 +13,10 @@ import (
 type WorldStateLive struct {
 }
 
-func (w *WorldStateLive) Enter(s *World) {
+func (w *WorldStateLive) Enter(s *World, ctx states.Context) {
 }
 
-func (w *WorldStateLive) Leave(s *World) {
+func (w *WorldStateLive) Leave(s *World, ctx states.Context) {
 }
 
 func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
@@ -230,8 +230,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	s.HandleTrash()
 
 	if s.ArePlayersDead() {
-		s.PopState()
-		s.PushState(&WorldStateDead{})
+		s.PopState(ctx)
+		s.PushState(&WorldStateDead{}, ctx)
 	}
 }
 

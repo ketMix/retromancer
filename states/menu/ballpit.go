@@ -24,7 +24,7 @@ func (s *Ballpit) Update(ctx states.Context) error {
 			game.NewLocalPlayer(),
 		},
 	}
-	world.PushState(&game.WorldStateLive{}) // Skip to actual gameplay state.
+	world.PushState(&game.WorldStateLive{}, ctx) // Skip to actual gameplay state.
 	ctx.StateMachine.PushState(&world)
 	return nil
 }

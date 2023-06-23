@@ -8,10 +8,12 @@ import (
 type DrawContext struct {
 	Screen *ebiten.Image
 	Text   *etxt.Renderer
+	L      func(key string) string
 }
 
 type Context struct {
 	Manager      ResourceManager
 	StateMachine StateMachine
+	L            func(key string) string
 	Cursor       Cursor
 }

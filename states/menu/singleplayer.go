@@ -46,7 +46,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 	s.items = append(s.items, &resources.TextItem{
 		X:    centerX,
 		Y:    y,
-		Text: "Hat",
+		Text: ctx.L("Hat"),
 		Callback: func() bool {
 			return false
 		},
@@ -116,7 +116,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 	s.items = append(s.items, &resources.TextItem{
 		X:    centerX,
 		Y:    y,
-		Text: "Input",
+		Text: ctx.L("Input"),
 		Callback: func() bool {
 			return false
 		},
@@ -167,7 +167,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 	s.items = append(s.items, &resources.TextItem{
 		X:    x,
 		Y:    y,
-		Text: "Start",
+		Text: ctx.L("Start"),
 		Callback: func() bool {
 			s.clickSound.Play(1.0)
 			ctx.StateMachine.PopState()

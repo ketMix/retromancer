@@ -5,8 +5,8 @@ import (
 )
 
 type WorldState interface {
-	Enter(w *World)
+	Enter(w *World, ctx states.Context)
+	Leave(w *World, ctx states.Context)
 	Tick(w *World, ctx states.Context)
 	Draw(w *World, ctx states.DrawContext)
-	Leave(w *World)
 }

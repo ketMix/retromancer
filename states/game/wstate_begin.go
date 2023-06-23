@@ -11,7 +11,7 @@ type WorldStateBegin struct {
 	vfx resources.VFXList
 }
 
-func (w *WorldStateBegin) Enter(s *World) {
+func (w *WorldStateBegin) Enter(s *World, ctx states.Context) {
 	w.vfx.SetMode(resources.Sequential)
 	w.vfx.Add(&resources.Fade{
 		Duration: 1 * time.Second,
@@ -20,7 +20,7 @@ func (w *WorldStateBegin) Enter(s *World) {
 	y := 200.0
 	// TODO: Make this text actually good.
 	w.vfx.Add(&resources.Text{
-		Text:         "Beneaf the wisper of time...",
+		Text:         ctx.L("Intro1"),
 		InDuration:   1 * time.Second,
 		HoldDuration: 2 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -28,7 +28,7 @@ func (w *WorldStateBegin) Enter(s *World) {
 		Y:            y,
 	})
 	w.vfx.Add(&resources.Text{
-		Text:         "da forgetne echo has tarted to",
+		Text:         ctx.L("Intro2"),
 		InDuration:   1 * time.Second,
 		HoldDuration: 1 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -36,7 +36,7 @@ func (w *WorldStateBegin) Enter(s *World) {
 		Y:            y,
 	})
 	w.vfx.Add(&resources.Text{
-		Text:         "ripl agin",
+		Text:         ctx.L("Intro3"),
 		InDuration:   1 * time.Second,
 		HoldDuration: 2 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -44,7 +44,7 @@ func (w *WorldStateBegin) Enter(s *World) {
 		Y:            y,
 	})
 	w.vfx.Add(&resources.Text{
-		Text:         "... u wakem ups",
+		Text:         ctx.L("Intro4"),
 		InDuration:   1 * time.Second,
 		HoldDuration: 2 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -54,7 +54,7 @@ func (w *WorldStateBegin) Enter(s *World) {
 
 }
 
-func (w *WorldStateBegin) Leave(s *World) {
+func (w *WorldStateBegin) Leave(s *World, ctx states.Context) {
 }
 
 func (w *WorldStateBegin) Tick(s *World, ctx states.Context) {
@@ -68,13 +68,13 @@ func (w *WorldStateBegin) Tick(s *World, ctx states.Context) {
 		return
 	}
 
-	s.PopState()
-	s.PushState(&WorldStateLive{})
+	s.PopState(ctx)
+	s.PushState(&WorldStateLive{}, ctx)
 }
 
 func (w *WorldStateBegin) Draw(s *World, ctx states.DrawContext) {
 	w.vfx.Process(ctx, nil)
 
 	ctx.Text.SetColor(color.NRGBA{0xff, 0xff, 0xff, 0x66})
-	ctx.Text.Draw(ctx.Screen, "Press <Enter> or <Escape> to skip", ctx.Screen.Bounds().Max.X/2, ctx.Screen.Bounds().Max.Y-int(ctx.Text.Utils().GetLineHeight()))
+	ctx.Text.Draw(ctx.Screen, ctx.L("SkipIntro"), ctx.Screen.Bounds().Max.X/2, ctx.Screen.Bounds().Max.Y-int(ctx.Text.Utils().GetLineHeight()))
 }

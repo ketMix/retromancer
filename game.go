@@ -11,10 +11,11 @@ import (
 )
 
 type Game struct {
-	States  []states.State
-	Text    *etxt.Renderer
-	Manager ResourceManager
-	Cursor  Cursor
+	States    []states.State
+	Text      *etxt.Renderer
+	Manager   ResourceManager
+	Localizer Localizer
+	Cursor    Cursor
 }
 
 func (g *Game) State() states.State {
@@ -25,6 +26,7 @@ func (g *Game) PushState(state states.State) {
 	g.States = append(g.States, state)
 	state.Init(states.Context{
 		Manager:      &g.Manager,
+		L:            g.Localizer.Get,
 		StateMachine: g,
 		Cursor:       &g.Cursor,
 	})
@@ -36,6 +38,7 @@ func (g *Game) PopState() {
 	}
 	g.States[len(g.States)-1].Finalize(states.Context{
 		Manager:      &g.Manager,
+		L:            g.Localizer.Get,
 		StateMachine: g,
 		Cursor:       &g.Cursor,
 	})
@@ -59,6 +62,7 @@ func (g *Game) Update() error {
 	if state := g.State(); state != nil {
 		return state.Update(states.Context{
 			Manager:      &g.Manager,
+			L:            g.Localizer.Get,
 			StateMachine: g,
 			Cursor:       &g.Cursor,
 		})
@@ -69,6 +73,7 @@ func (g *Game) Update() error {
 func (g *Game) Draw(screen *ebiten.Image) {
 	if state := g.State(); state != nil {
 		state.Draw(states.DrawContext{
+			L:      g.Localizer.Get,
 			Screen: screen,
 			Text:   g.Text,
 		})
