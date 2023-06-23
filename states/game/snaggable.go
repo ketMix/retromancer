@@ -12,8 +12,13 @@ type Snaggable struct {
 }
 
 func CreateSnaggable(x, y float64, sprite *resources.Sprite) *Snaggable {
+	sprite.VFX.Add(&resources.Hover{
+		Intensity: 2.0,
+		Rate:      1.25,
+	})
+	sprite.Centered = true
 	return &Snaggable{
-		shape:  CircleShape{X: x, Y: y, Radius: 2}, // FIXME: don't hardcode radius
+		shape:  CircleShape{X: x, Y: y, Radius: 3}, // FIXME: don't hardcode radius
 		sprite: sprite,
 	}
 }
