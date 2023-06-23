@@ -29,7 +29,7 @@ type Map struct {
 	conditions []*resources.ConditionDef
 	cleared    bool
 	currentZ   int // This isn't the right location for this, but we need to keep track of the current/active Z for rendering appropriate fading.
-	vfxs       []resources.VFX
+	vfx        resources.VFXList
 }
 
 func (s *World) TravelToMap(ctx states.Context, mapName string) error {
@@ -199,13 +199,13 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	// Only add fade and title VFX if this map is not the same as the previous one.
 	if s.activeMap == nil || s.activeMap.data != m.data {
 		// Add fade in VFX.
-		m.vfxs = append(m.vfxs, &resources.Fade{
+		m.vfx.Add(&resources.Fade{
 			Alpha:        1,
 			Duration:     1 * time.Second,
 			ApplyToImage: true,
 		})
 		// Add map title VFX.
-		m.vfxs = append(m.vfxs, &resources.Text{
+		m.vfx.Add(&resources.Text{
 			Text:         m.data.Title,
 			Scale:        2.0,
 			X:            320,
@@ -298,18 +298,7 @@ func (m *Map) Draw(ctx states.DrawContext) {
 		b.Draw(ctx)
 	}
 
-	m.ProcessVFX(ctx, nil)
-}
-
-func (m *Map) ProcessVFX(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
-	for i := 0; i < len(m.vfxs); i++ {
-		vfx := m.vfxs[i]
-		vfx.Process(ctx, opts)
-		if vfx.Done() {
-			m.vfxs = append(m.vfxs[:i], m.vfxs[i+1:]...)
-			i--
-		}
-	}
+	m.vfx.Process(ctx, nil)
 }
 
 func (m *Map) GetCell(x, y, z int) (resources.Cell, error) {

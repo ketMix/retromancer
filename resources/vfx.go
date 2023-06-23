@@ -9,6 +9,23 @@ import (
 	"github.com/tinne26/etxt"
 )
 
+type VFXList []VFX
+
+func (v *VFXList) Add(vfx VFX) {
+	*v = append(*v, vfx)
+}
+
+func (v *VFXList) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
+	for i := 0; i < len(*v); i++ {
+		vfx := (*v)[i]
+		vfx.Process(ctx, opts)
+		if vfx.Done() {
+			*v = append((*v)[:i], (*v)[i+1:]...)
+			i--
+		}
+	}
+}
+
 type VFX interface {
 	Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions)
 	Done() bool
