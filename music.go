@@ -15,6 +15,10 @@ type MusicPlayer struct {
 
 func (m *MusicPlayer) Play(s states.Song) (err error) {
 	if m.player != nil {
+		// Do nothing if the song is already playing
+		if m.song == s && m.player.IsPlaying() {
+			return
+		}
 		m.player.Pause()
 		m.player.Close()
 	}
@@ -24,6 +28,8 @@ func (m *MusicPlayer) Play(s states.Song) (err error) {
 		return
 	}
 	m.player.SetVolume(m.volume)
+	// Seek to 0 in case the underlying song was partially played.
+	m.player.Seek(0)
 	m.player.Play()
 	m.song = s
 	return
