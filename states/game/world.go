@@ -166,6 +166,14 @@ func (s *World) HandleTrash() {
 		}
 	}
 	s.activeMap.bullets = newBullets
+
+	newParticles := s.activeMap.particles[:0]
+	for _, p := range s.activeMap.particles {
+		if !p.Dead() {
+			newParticles = append(newParticles, p)
+		}
+	}
+	s.activeMap.particles = newParticles
 }
 
 func (s *World) IntersectingBullets(sh Shape) []*Bullet {

@@ -45,6 +45,11 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 		})
 	}
 
+	// Process particles
+	for _, p := range s.activeMap.particles {
+		p.Update()
+	}
+
 	// Okay, this is very likely overkill to process actions entirely separately, but whatever.
 	for _, actorAction := range actorActions {
 		actor := actorAction.Actor
@@ -114,6 +119,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				}
 			case ActionSpawnBullets:
 				s.activeMap.bullets = append(s.activeMap.bullets, action.Bullets...)
+			case ActionSpawnParticle:
+				s.SpawnParticle(ctx, action.Img, action.X, action.Y, action.Angle, action.Speed, action.Life)
 			}
 		}
 		if a, ok := actor.(*PC); ok {

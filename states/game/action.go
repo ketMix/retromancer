@@ -36,3 +36,11 @@ type ActionSpawnBullets struct {
 type ActionFindNearestActor struct {
 	Actor Actor
 }
+
+type ActionSpawnParticle struct {
+	Img   string
+	X, Y  float64
+	Angle float64
+	Speed float64
+	Life  int
+}

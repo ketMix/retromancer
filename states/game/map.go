@@ -30,6 +30,7 @@ type Map struct {
 	cleared    bool
 	currentZ   int // This isn't the right location for this, but we need to keep track of the current/active Z for rendering appropriate fading.
 	vfx        resources.VFXList
+	particles  []*Particle
 }
 
 func (s *World) TravelToMap(ctx states.Context, mapName string) error {
@@ -273,6 +274,11 @@ func (m *Map) Draw(ctx states.DrawContext) {
 			}
 		}
 	}
+
+	for _, p := range m.particles {
+		p.Draw(ctx)
+	}
+
 	for _, a := range m.actors {
 		a.Draw(ctx)
 	}
