@@ -31,9 +31,18 @@ runes:
   "E":
     sprite: empty
     id: candle2
+  "B":
+    sprite: empty
+    id: candle3
+  "F":
+    sprite: empty
+    id: candle4
+  "S":
+    sprite: empty
+    id: spawner
 start: [8, 11, 0]
 actors:
-  - spawn: [8, 3, 0]
+  - id: spawner
     type: spawner
     bullets: 
       - alias: daggers
@@ -50,21 +59,32 @@ actors:
           args:
             - candle1
             - candle2
+            - candle3
+            - candle4
   - id: candle1
     type: candle
     active: true
   - id: candle2
     type: candle
-    active: false
+    degrade: true
+  - id: candle3
+    type: candle
+    linked: 
+      - candle4
+  - id: candle4
+    type: candle
+    degrade: true
+    linked: 
+      - candle3
 layers:
   - |
    ^********D*******^.^
-   ^    C      E    ^.^
-   ^^               ^.^
-   ^^^              ^.^
+   ^ B^ C      E  F ^.^
+   ^  ^             ^.^
+   ^^^^             ^.^
    ^^               ^.^
    ^                ^.^
-   ^                ^.^
+   ^        S       ^.^
    ^^               ^.^
    ^^^              ^.^
    ^^^^^,, ____     ^.^

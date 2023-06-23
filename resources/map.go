@@ -49,6 +49,8 @@ type ActorSpawn struct {
 	Active       bool              `yaml:"active"`
 	Door         *DoorDef          `yaml:"door,omitempty"`
 	BulletGroups []*BulletGroupDef `yaml:"bullets,omitempty"`
+	Linked       []string          `yaml:"linked,omitempty"`
+	Degrade      bool              `yaml:"degrade"`
 }
 
 func (m *Map) UnmarshalYAML(unmarshal func(interface{}) error) error {

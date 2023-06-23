@@ -74,17 +74,19 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	}
 
 	// Create actors.
+	// Create map of actor IDs to actors
+	interactiveMap := make(map[string]*Interactive)
 	for _, a := range m.data.Actors {
 		cell, _ := m.FindCellById(a.ID)
+		// TODO: consolidate this junk elsewhere
+		x := float64(a.Spawn[0]) * cellW
+		y := float64(a.Spawn[1]) * cellH
+		if cell != nil {
+			x = float64(cell.Sprite.X)
+			y = float64(cell.Sprite.Y)
+		}
 		switch a.Type {
 		case "door":
-			// TODO: consolidate this junk elsewhere
-			x := float64(a.Spawn[0]) * cellW
-			y := float64(a.Spawn[1]) * cellH
-			if cell != nil {
-				x = float64(cell.Sprite.X)
-				y = float64(cell.Sprite.Y)
-			}
 			// Create the active sprite
 			activeImages := make([]*ebiten.Image, 0)
 			activeImages = append(activeImages, ctx.Manager.GetAs("images", "door", (*ebiten.Image)(nil)).(*ebiten.Image))
@@ -108,15 +110,10 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 				activeSprite,
 				inactiveSprite,
 			)
+			interactive.degrade = a.Degrade
 			m.actors = append(m.actors, interactive)
+			interactiveMap[a.ID] = interactive
 		case "candle":
-			// TODO: consolidate this junk elsewhere
-			x := float64(a.Spawn[0]) * cellW
-			y := float64(a.Spawn[1]) * cellH
-			if cell != nil {
-				x = float64(cell.Sprite.X)
-				y = float64(cell.Sprite.Y)
-			}
 			// Create the active sprite
 			activeImageNames := ctx.Manager.GetNamesWithPrefix("images", "candle-active")
 			activeImages := make([]*ebiten.Image, 0)
@@ -149,10 +146,10 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 				activeSprite,
 				inactiveSprite,
 			)
+			interactive.degrade = a.Degrade
 			m.actors = append(m.actors, interactive)
+			interactiveMap[a.ID] = interactive
 		case "spawner":
-			x := float64(a.Spawn[0]) * cellW
-			y := float64(a.Spawn[1]) * cellH
 			bulletGroups := make([]*BulletGroup, 0)
 
 			// If we have bullet groups defined for the spawner, create them.
@@ -167,6 +164,26 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			}
 			spawner := CreateSpawner(x, y, bulletGroups)
 			m.actors = append(m.actors, spawner)
+		}
+	}
+
+	// After creating the actors, link them up
+	for _, a := range m.data.Actors {
+		if a.Linked != nil {
+			// Find the actor in the map
+			i := interactiveMap[a.ID]
+			if i == nil {
+				continue
+			}
+
+			// Find the linked actors in the map and link them up
+			for _, b := range a.Linked {
+				childActor := interactiveMap[b]
+				if childActor == nil {
+					continue
+				}
+				i.AddLinkedInteractive(childActor)
+			}
 		}
 	}
 
