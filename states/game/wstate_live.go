@@ -174,6 +174,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 					}
 				}
 				bullet.TargetActor = closestActor
+			case ActionSpawnParticle:
+				s.SpawnParticle(ctx, action.Img, action.X, action.Y, action.Angle, action.Speed, action.Life)
 			}
 		}
 	}

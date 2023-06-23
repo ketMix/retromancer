@@ -36,6 +36,7 @@ type Bullet struct {
 	deflected       bool      // If the bullet has been deflected.
 	holdFor         int       // An amount of time to hold the bullet in place.
 	timeLine        []*Bullet // Positions the bullet has been in
+	nextParticle    int       // Next particle to spawn (negative upwards)
 	sprite          *resources.Sprite
 	Destroyed       bool
 }
@@ -202,6 +203,21 @@ func (b *Bullet) Update() (actions []Action) {
 	b.sprite.X = b.Shape.X
 	b.Shape.Y += b.Speed * math.Sin(b.Angle)
 	b.sprite.Y = b.Shape.Y
+
+	// Spawn a lil particle.
+	b.nextParticle++
+	if b.nextParticle >= 0 {
+		actions = append(actions, ActionSpawnParticle{
+			X:     b.Shape.X,
+			Y:     b.Shape.Y,
+			Angle: b.Angle + math.Pi,
+			Speed: 0.05,
+			Img:   "bullet",
+			Life:  20,
+		})
+
+		b.nextParticle = -2
+	}
 
 	// Decrement delay
 	if b.aimDelay > 0 {
