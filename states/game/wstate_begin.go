@@ -3,6 +3,7 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"image/color"
 	"time"
 )
 
@@ -73,4 +74,7 @@ func (w *WorldStateBegin) Tick(s *World, ctx states.Context) {
 
 func (w *WorldStateBegin) Draw(s *World, ctx states.DrawContext) {
 	w.vfx.Process(ctx, nil)
+
+	ctx.Text.SetColor(color.NRGBA{0xff, 0xff, 0xff, 0x66})
+	ctx.Text.Draw(ctx.Screen, "Press <Enter> or <Escape> to skip", ctx.Screen.Bounds().Max.X/2, ctx.Screen.Bounds().Max.Y-int(ctx.Text.Utils().GetLineHeight()))
 }
