@@ -20,9 +20,14 @@ type World struct {
 
 func (s *World) PushState(state WorldState) {
 	s.states = append(s.states, state)
+	state.Enter(s)
 }
 
 func (s *World) PopState() {
+	if len(s.states) == 0 {
+		return
+	}
+	s.states[len(s.states)-1].Leave(s)
 	s.states = s.states[:len(s.states)-1]
 }
 
@@ -49,7 +54,9 @@ func (s *World) Init(ctx states.Context) error {
 	}
 
 	// Set our starting state.
-	s.PushState(&WorldStateLive{})
+	if len(s.states) == 0 {
+		s.PushState(&WorldStateBegin{})
+	}
 
 	// Travel to the starting map.
 	s.TravelToMap(ctx, s.StartingMap)
