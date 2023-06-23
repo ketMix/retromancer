@@ -57,9 +57,16 @@ func (w *WorldStateBegin) Leave(s *World) {
 }
 
 func (w *WorldStateBegin) Tick(s *World, ctx states.Context) {
-	if !w.vfx.Empty() {
+	skip := false
+
+	if s.DoPlayersShareThought(ResetThought{}) || s.DoPlayersShareThought(QuitThought{}) {
+		skip = true
+	}
+
+	if !skip && !w.vfx.Empty() {
 		return
 	}
+
 	s.PopState()
 	s.PushState(&WorldStateLive{})
 }
