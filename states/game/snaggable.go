@@ -3,12 +3,15 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"math"
+	"math/rand"
 )
 
 type Snaggable struct {
-	shape     CircleShape
-	sprite    *resources.Sprite
-	destroyed bool
+	shape        CircleShape
+	sprite       *resources.Sprite
+	destroyed    bool
+	nextParticle int
 }
 
 func CreateSnaggable(x, y float64, sprite *resources.Sprite) *Snaggable {
@@ -24,7 +27,19 @@ func CreateSnaggable(x, y float64, sprite *resources.Sprite) *Snaggable {
 }
 
 func (s *Snaggable) Update() (actions []Action) {
-	return nil
+	s.nextParticle++
+	if s.nextParticle >= 0 {
+		actions = append(actions, ActionSpawnParticle{
+			Img:   "life",
+			X:     s.shape.X,
+			Y:     s.shape.Y,
+			Angle: math.Pi + rand.Float64()*math.Pi,
+			Speed: rand.Float64() * 0.5,
+			Life:  40,
+		})
+		s.nextParticle = -10
+	}
+	return
 }
 
 func (s *Snaggable) Draw(ctx states.DrawContext) {
