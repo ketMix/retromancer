@@ -433,3 +433,11 @@ func (m *Map) GetInteractiveActors() []*Interactive {
 	}
 	return actors
 }
+
+func (m *Map) OutOfBounds(s Shape) bool {
+	x, y, w, h := s.Bounds()
+	if x < 0 || y < 0 || x+w > float64(m.data.Width*cellW) || y+h > float64(m.data.Height*cellH) {
+		return true
+	}
+	return false
+}

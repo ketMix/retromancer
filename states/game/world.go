@@ -166,7 +166,7 @@ func (s *World) HandleTrash() {
 
 	newBullets := make([]*Bullet, 0)
 	for _, b := range s.activeMap.bullets {
-		if !b.OutOfBounds() && !b.Destroyed {
+		if !s.activeMap.OutOfBounds(&b.Shape) && !b.Destroyed {
 			newBullets = append(newBullets, b)
 		}
 	}

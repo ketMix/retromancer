@@ -34,6 +34,8 @@ type Map struct {
 	Conditions   []*ConditionDef    `yaml:"conditions"`
 	RuneMap      map[string]RuneDef `yaml:"runes"`
 	Layers       []Layer            `yaml:"-"`
+	Width        int                `yaml:"width"`
+	Height       int                `yaml:"height"`
 	SourceLayers []string           `yaml:"layers"`
 	Start        [3]int             `yaml:"start"`
 	Actors       []ActorSpawn       `yaml:"actors"`
@@ -67,8 +69,14 @@ func (m *Map) UnmarshalYAML(unmarshal func(interface{}) error) error {
 		var l Layer
 
 		rows := strings.Split(layer, "\n")
+		if len(rows) > m.Height {
+			m.Height = len(rows)
+		}
 		for _, row := range rows {
 			l.Cells = append(l.Cells, []Cell{})
+			if len(row) > m.Width {
+				m.Width = len(row)
+			}
 			for _, cell := range row {
 				l.Cells[len(l.Cells)-1] = append(l.Cells[len(l.Cells)-1], Cell{
 					Type: rune(cell),

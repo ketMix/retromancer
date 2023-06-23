@@ -347,8 +347,3 @@ func (b *Bullet) Draw(ctx states.DrawContext) {
 		)
 	}
 }
-
-func (b *Bullet) OutOfBounds() bool {
-	w, h := ebiten.WindowSize()
-	return b.Shape.X < 0 || b.Shape.X > float64(w) || b.Shape.Y < 0 || b.Shape.Y > float64(h)
-}
