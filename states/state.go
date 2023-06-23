@@ -3,6 +3,7 @@ package states
 type State interface {
 	Init(ctx Context) error
 	Finalize(ctx Context) error
+	Enter(ctx Context) error
 	Update(ctx Context) error
 	Draw(ctx DrawContext)
 }

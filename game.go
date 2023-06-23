@@ -26,7 +26,7 @@ func (g *Game) State() states.State {
 
 func (g *Game) PushState(state states.State) {
 	g.States = append(g.States, state)
-	state.Init(states.Context{
+	ctx := states.Context{
 		Manager:      &g.Manager,
 		L:            g.Localizer.Get,
 		Locale:       g.Localizer.Locale,
@@ -34,14 +34,16 @@ func (g *Game) PushState(state states.State) {
 		StateMachine: g,
 		Cursor:       &g.Cursor,
 		MusicPlayer:  &g.MusicPlayer,
-	})
+	}
+	state.Init(ctx)
+	state.Enter(ctx)
 }
 
 func (g *Game) PopState() {
 	if len(g.States) == 0 {
 		return
 	}
-	g.States[len(g.States)-1].Finalize(states.Context{
+	ctx := states.Context{
 		Manager:      &g.Manager,
 		L:            g.Localizer.Get,
 		Locale:       g.Localizer.Locale,
@@ -49,8 +51,10 @@ func (g *Game) PopState() {
 		StateMachine: g,
 		Cursor:       &g.Cursor,
 		MusicPlayer:  &g.MusicPlayer,
-	})
+	}
+	g.States[len(g.States)-1].Finalize(ctx)
 	g.States = g.States[:len(g.States)-1]
+	g.States[len(g.States)-1].Enter(ctx)
 }
 
 func (g *Game) Init() error {

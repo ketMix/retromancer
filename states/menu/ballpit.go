@@ -16,6 +16,10 @@ func (s *Ballpit) Finalize(ctx states.Context) error {
 	return nil
 }
 
+func (s *Ballpit) Enter(ctx states.Context) error {
+	return nil
+}
+
 func (s *Ballpit) Update(ctx states.Context) error {
 	ctx.StateMachine.PopState()
 	world := game.World{

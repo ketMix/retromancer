@@ -213,6 +213,10 @@ func (s *SinglePlayer) Finalize(ctx states.Context) error {
 	return nil
 }
 
+func (s *SinglePlayer) Enter(ctx states.Context) error {
+	return nil
+}
+
 func (s *SinglePlayer) Update(ctx states.Context) error {
 	s.overlay.Update(ctx)
 	x, y := ebiten.CursorPosition()

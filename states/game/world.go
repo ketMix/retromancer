@@ -70,6 +70,10 @@ func (s *World) Finalize(ctx states.Context) error {
 	return nil
 }
 
+func (s *World) Enter(ctx states.Context) error {
+	return nil
+}
+
 func (s *World) Update(ctx states.Context) error {
 	s.overlay.Update(ctx)
 

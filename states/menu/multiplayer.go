@@ -16,6 +16,10 @@ func (s *MultiPlayer) Finalize(ctx states.Context) error {
 	return nil
 }
 
+func (s *MultiPlayer) Enter(ctx states.Context) error {
+	return nil
+}
+
 func (s *MultiPlayer) Update(ctx states.Context) error {
 	ctx.StateMachine.PopState()
 	ctx.StateMachine.PushState(&game.World{
