@@ -88,6 +88,13 @@ func (s *World) Update(ctx states.Context) error {
 			// Process the world!!!
 			var actorActions []ActorActions
 			for _, actor := range s.activeMap.actors {
+				// Don't process spawners if the map is cleared.
+				if _, ok := actor.(*Spawner); ok {
+					if s.activeMap.cleared {
+						continue
+					}
+				}
+
 				actorActions = append(actorActions, ActorActions{
 					Actor:   actor,
 					Actions: actor.Update(),
@@ -249,18 +256,7 @@ func (s *World) Update(ctx states.Context) error {
 					args := condition.Args
 					switch condition.Type {
 					case resources.Active:
-						checkNum := len(args)
-						checkedNum := 0
-						// Check all actor ids in args are active
-						for _, a := range interactiveActors {
-							for _, arg := range args {
-								// Find actor by id within actor array
-								if a.ID() == arg && a.Active() {
-									checkedNum++
-								}
-							}
-						}
-						if checkNum == checkedNum {
+						if CheckActiveCondition(args, interactiveActors) {
 							actor.IncreaseActivation(nil)
 							cell, _ := s.activeMap.FindCellById(actor.ID())
 							cell.Blocks = false // No
@@ -268,6 +264,21 @@ func (s *World) Update(ctx states.Context) error {
 					}
 				}
 			}
+
+			// Check our map conditions if not yet cleared
+			if !s.activeMap.cleared {
+				conditions := s.activeMap.conditions
+				for _, condition := range conditions {
+					args := condition.Args
+					switch condition.Type {
+					case resources.Active:
+						if CheckActiveCondition(args, interactiveActors) {
+							s.activeMap.cleared = true
+						}
+					}
+				}
+			}
+
 			// Queue up the local player's impulses for the next tick!
 			for _, player := range s.Players {
 				if _, ok := player.(*LocalPlayer); ok {

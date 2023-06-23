@@ -20,11 +20,13 @@ const (
 )
 
 type Map struct {
-	filename string
-	data     *resources.Map
-	actors   []Actor
-	bullets  []*Bullet
-	currentZ int // This isn't the right location for this, but we need to keep track of the current/active Z for rendering appropriate fading.
+	filename   string
+	data       *resources.Map
+	actors     []Actor
+	bullets    []*Bullet
+	conditions []*resources.ConditionDef
+	cleared    bool
+	currentZ   int // This isn't the right location for this, but we need to keep track of the current/active Z for rendering appropriate fading.
 }
 
 func (s *World) TravelToMap(ctx states.Context, mapName string) error {
@@ -34,8 +36,9 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	}
 
 	m := &Map{
-		filename: mapName,
-		data:     mapData,
+		filename:   mapName,
+		data:       mapData,
+		conditions: mapData.Conditions,
 	}
 
 	//wallH := 6
