@@ -82,7 +82,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	// Create map of actor IDs to actors
 	interactiveMap := make(map[string]*Interactive)
 	for _, a := range m.data.Actors {
-		cell, _ := m.FindCellById(a.ID)
+		cell := m.FindCellById(a.ID)
 		// TODO: consolidate this junk elsewhere
 		x := float64(a.Spawn[0]) * cellW
 		y := float64(a.Spawn[1]) * cellH
@@ -301,17 +301,17 @@ func (m *Map) GetCell(x, y, z int) (resources.Cell, error) {
 	return m.data.Layers[z].Cells[y][x], nil
 }
 
-func (m *Map) FindCellById(id string) (*resources.Cell, error) {
+func (m *Map) FindCellById(id string) *resources.Cell {
 	for z, layer := range m.data.Layers {
 		for y, row := range layer.Cells {
 			for x, cell := range row {
 				if cell.ID == id {
-					return &m.data.Layers[z].Cells[y][x], nil
+					return &m.data.Layers[z].Cells[y][x]
 				}
 			}
 		}
 	}
-	return &resources.Cell{}, errors.New("no such cell")
+	return nil
 }
 
 type CellCollision struct {
