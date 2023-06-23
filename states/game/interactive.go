@@ -6,8 +6,8 @@ import (
 )
 
 // Default cooldown for interactive activation + degradation
-const ACTIVATE_COOLDOWN = 30
-const DEGRADE_COOLDOWN = ACTIVATE_COOLDOWN * 2
+const ACTIVATE_COOLDOWN = 5
+const DEGRADE_COOLDOWN = ACTIVATE_COOLDOWN * 10
 
 type Interactive struct {
 	id                 string         // ID of the interactive object, used to identify it in the game for condition triggering
