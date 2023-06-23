@@ -261,8 +261,10 @@ func (s *World) Update(ctx states.Context) error {
 					case resources.Active:
 						if CheckActiveCondition(args, interactiveActors) {
 							actor.IncreaseActivation(nil)
-							cell, _ := s.activeMap.FindCellById(actor.ID())
-							cell.Blocks = false // No
+							cell := s.activeMap.FindCellById(actor.ID())
+							if cell != nil {
+								cell.Blocks = false // No
+							}
 						}
 					}
 				}
