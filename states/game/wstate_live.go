@@ -5,6 +5,7 @@ import (
 	"ebijam23/states"
 	"image/color"
 	"math"
+	"math/rand"
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -95,7 +96,10 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 					// Reverse interactive actors.
 					for _, a := range actors {
 						if a, ok := a.(*Interactive); ok {
-							a.Reverse()
+							if a.Reverseable() {
+								a.Reverse()
+								s.SpawnParticle(ctx, "reverse", action.X, action.Y, rand.Float64()*math.Pi*2, rand.Float64()*2.0, 30)
+							}
 						}
 					}
 				}
@@ -187,6 +191,10 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 					continue
 				}
 				if bullet.Shape.Collides(actor.Shape()) {
+					x, y, _, _ := actor.Bounds()
+					for i := 0; i < 6; i++ {
+						s.SpawnParticle(ctx, "hurt", x, y, rand.Float64()*math.Pi*2, rand.Float64()*2.0, 30)
+					}
 					bullet.Destroyed = true
 					p.InvulnerableTicks = 40
 					p.Lives--
@@ -272,8 +280,6 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			// TODO: Send network message to peers with our impulses!
 		}
 	}
-
-	s.HandleTrash()
 
 	if s.ArePlayersDead() {
 		s.PopState(ctx)

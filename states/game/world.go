@@ -110,6 +110,7 @@ func (s *World) Update(ctx states.Context) error {
 
 			// Process the world!!!
 			s.CurrentState().Tick(s, ctx)
+			s.HandleTrash()
 		}
 		s.ebitenTicks = 0
 	}

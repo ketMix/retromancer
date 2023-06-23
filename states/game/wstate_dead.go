@@ -22,6 +22,11 @@ func (w *WorldStateDead) Tick(s *World, ctx states.Context) {
 		actor.Update()
 	}
 
+	// Might as well still process particles.
+	for _, p := range s.activeMap.particles {
+		p.Update()
+	}
+
 	if s.DoPlayersShareThought(ResetThought{}) {
 		s.PopState(ctx)
 		s.PushState(&WorldStateLive{}, ctx)
