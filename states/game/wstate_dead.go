@@ -1,0 +1,63 @@
+package game
+
+import (
+	"ebijam23/resources"
+	"ebijam23/states"
+	"image/color"
+
+	"github.com/tinne26/etxt"
+)
+
+type WorldStateDead struct {
+}
+
+func (w *WorldStateDead) Enter(s *World) {
+}
+
+func (w *WorldStateDead) Leave(s *World) {
+}
+
+func (w *WorldStateDead) Tick(s *World, ctx states.Context) {
+	for _, actor := range s.activeMap.actors {
+		actor.Update()
+	}
+
+	if s.DoPlayersShareThought(ResetThought{}) {
+		s.PopState()
+		s.PushState(&WorldStateLive{})
+		s.ResetActiveMap(ctx)
+	} else if s.DoPlayersShareThought(QuitThought{}) {
+		ctx.StateMachine.PopState()
+	}
+}
+
+func (w *WorldStateDead) Draw(s *World, ctx states.DrawContext) {
+	s.activeMap.Draw(ctx)
+
+	ctx.Text.SetAlign(etxt.YCenter | etxt.XCenter)
+	x := ctx.Screen.Bounds().Max.X / 2
+	y := float64(ctx.Screen.Bounds().Max.Y / 2)
+	y -= ctx.Text.Utils().GetLineHeight() / 2
+	// Death title
+	{
+		ctx.Text.SetScale(2.0)
+		ctx.Text.SetColor(color.RGBA{0x00, 0x00, 0x00, 0xff})
+		resources.DrawTextOutline(ctx.Text, ctx.Screen, "Morte", x, int(y), 2)
+		ctx.Text.SetColor(color.RGBA{0xff, 0x00, 0x00, 0xff})
+		ctx.Text.Draw(ctx.Screen, "Morte", x, int(y))
+	}
+	y += ctx.Text.Utils().GetLineHeight()
+	// Subtitles
+	{
+		ctx.Text.SetScale(1.0)
+		ctx.Text.SetColor(color.Black)
+		resources.DrawTextOutline(ctx.Text, ctx.Screen, "<Enter> to restart room", x, int(y), 1)
+		ctx.Text.SetColor(color.White)
+		ctx.Text.Draw(ctx.Screen, "<Enter> to restart room", x, int(y))
+		y += ctx.Text.Utils().GetLineHeight()
+		ctx.Text.SetColor(color.Black)
+		resources.DrawTextOutline(ctx.Text, ctx.Screen, "<Escape> to quit", x, int(y), 1)
+		ctx.Text.SetColor(color.White)
+		ctx.Text.Draw(ctx.Screen, "<Escape> to quit", ctx.Screen.Bounds().Max.X/2, int(y))
+	}
+}
