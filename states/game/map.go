@@ -276,11 +276,11 @@ func (m *Map) Draw(ctx states.DrawContext) {
 	m.vfx.Process(ctx, nil)
 }
 
-func (m *Map) GetCell(x, y, z int) (resources.Cell, error) {
+func (m *Map) GetCell(x, y, z int) *resources.Cell {
 	if z < 0 || z >= len(m.data.Layers) || y < 0 || y >= len(m.data.Layers[z].Cells) || x < 0 || x >= len(m.data.Layers[z].Cells[y]) {
-		return resources.Cell{}, errors.New("no such cell")
+		return nil
 	}
-	return m.data.Layers[z].Cells[y][x], nil
+	return &m.data.Layers[z].Cells[y][x]
 }
 
 func (m *Map) FindCellById(id string) *resources.Cell {
@@ -384,7 +384,7 @@ func (m *Map) DoesLineCollide(fx1, fy1, fx2, fy2 float64, z int) bool {
 	err := dx - dy
 
 	for {
-		if cell, er := m.GetCell(x1, y1, z); er == nil {
+		if cell := m.GetCell(x1, y1, z); cell != nil {
 			if cell.BlockView {
 				return true
 			}

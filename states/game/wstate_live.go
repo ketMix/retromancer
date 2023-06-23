@@ -185,6 +185,21 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	// Check the our interactive actor conditions
 	interactiveActors := s.activeMap.GetInteractiveActors()
 	for _, actor := range interactiveActors {
+		if actor.id == "drawbridge" && actor.active { // Need to not run this every update
+			cell := s.activeMap.FindCellById(actor.ID())
+			cells := make([]*resources.Cell, 0)
+			if cell != nil {
+				cells = append(cells, cell)
+				cells = append(cells, s.activeMap.GetCell(int(cell.Sprite.X/cellW), int(cell.Sprite.Y/cellH)+1, s.activeMap.currentZ))
+				cells = append(cells, s.activeMap.GetCell(int(cell.Sprite.X/cellW)+1, int(cell.Sprite.Y/cellH)+1, s.activeMap.currentZ))
+			}
+			for _, cell := range cells {
+				if cell != nil {
+					cell.BlockMove = false // No
+					cell.BlockView = false // No
+				}
+			}
+		}
 		if !actor.active {
 			conditions := actor.Conditions()
 			for _, condition := range conditions {
