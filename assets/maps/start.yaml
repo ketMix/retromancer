@@ -67,6 +67,7 @@ actors:
   - id: door
     type: interactive
     sprite: door
+    reversable: false
     door: 
       map: ballpit
     conditions:

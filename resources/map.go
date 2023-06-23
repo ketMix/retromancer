@@ -52,6 +52,7 @@ type ActorSpawn struct {
 	Condtions    []*ConditionDef   `yaml:"conditions,omitempty"`
 	BulletGroups []*BulletGroupDef `yaml:"bullets,omitempty"`
 	Linked       []string          `yaml:"linked,omitempty"`
+	Reversable   *bool             `yaml:"reversable"`
 	Degrade      bool              `yaml:"degrade"`
 	Sprite       string            `yaml:"sprite"`
 }

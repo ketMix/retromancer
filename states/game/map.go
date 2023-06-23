@@ -117,13 +117,16 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			inactiveSprite := resources.NewAnimatedSprite(inactiveImages)
 			inactiveSprite.X = x
 			inactiveSprite.Y = y
-
+			reversable := true
+			if a.Reversable != nil {
+				reversable = *a.Reversable
+			}
 			interactive := CreateInteractive(
 				x,
 				y,
 				a.ID,
 				a.Active,
-				true,
+				reversable,
 				a.Condtions,
 				activeSprite,
 				inactiveSprite,
