@@ -24,6 +24,7 @@ type Sprite struct {
 	Centered         bool
 	Hidden           bool
 	Options          ebiten.DrawImageOptions
+	vfxs             []VFX
 }
 
 func (s *Sprite) Width() float64 {
@@ -115,6 +116,7 @@ func (s *Sprite) Draw(screen *ebiten.Image) {
 }
 
 func (s *Sprite) DrawWithOptions(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
+	s.PreProcessVFX(screen, opts)
 	// hmmmmm
 	/*lx := (s.X * (1.0 - 0.1)) + (s.interpX * 0.1)
 	ly := (s.Y * (1.0 - 0.1)) + (s.interpY * 0.1)
@@ -171,6 +173,7 @@ func (s *Sprite) DrawWithOptions(screen *ebiten.Image, opts *ebiten.DrawImageOpt
 	}
 
 	screen.DrawImage(s.image, &s.Options)
+	s.PostProcessVFX(screen, opts)
 }
 
 func (s *Sprite) Hit(x, y float64) bool {
@@ -185,6 +188,32 @@ func (s *Sprite) Hit(x, y float64) bool {
 		return false
 	}
 	return true
+}
+
+func (s *Sprite) AddVFX(vfx VFX) {
+	s.vfxs = append(s.vfxs, vfx)
+}
+
+func (s *Sprite) PreProcessVFX(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
+	for i := 0; i < len(s.vfxs); i++ {
+		vfx := s.vfxs[i]
+		vfx.PreProcess(screen, opts)
+		if vfx.Done() {
+			s.vfxs = append(s.vfxs[:i], s.vfxs[i+1:]...)
+			i--
+		}
+	}
+}
+
+func (s *Sprite) PostProcessVFX(screen *ebiten.Image, opts *ebiten.DrawImageOptions) {
+	for i := 0; i < len(s.vfxs); i++ {
+		vfx := s.vfxs[i]
+		vfx.PostProcess(screen, opts)
+		if vfx.Done() {
+			s.vfxs = append(s.vfxs[:i], s.vfxs[i+1:]...)
+			i--
+		}
+	}
 }
 
 func NewSprite(image *ebiten.Image) *Sprite {
