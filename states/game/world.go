@@ -68,6 +68,21 @@ func (s *World) Update(ctx states.Context) error {
 			// Process the players' current tick think -- this also sends impulses to their respective actors.
 			for _, player := range s.Players {
 				player.Tick()
+
+				if pc, ok := player.Actor().(*PC); ok {
+					hoveringInteractable := false
+					for _, a := range s.activeMap.GetInteractiveActors() {
+						if a.shape.Collides(&CircleShape{
+							X:      pc.Hand.Shape.X,
+							Y:      pc.Hand.Shape.Y,
+							Radius: 20,
+						}) {
+							hoveringInteractable = true
+							break
+						}
+					}
+					pc.Hand.HoverSprite.Hidden = !hoveringInteractable
+				}
 			}
 
 			// Process the world!!!

@@ -60,6 +60,8 @@ func (s *World) NewPC(ctx states.Context) *PC {
 	pc.Sprite.Centered = true
 	pc.Hand.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
 	pc.Hand.Sprite.Centered = true
+	pc.Hand.HoverSprite = resources.NewSprite(ctx.Manager.GetAs("images", "hand-glow", (*ebiten.Image)(nil)).(*ebiten.Image))
+	pc.Hand.HoverSprite.Centered = true
 
 	return pc
 }
@@ -199,6 +201,7 @@ func (p *PC) Draw(screen *ebiten.Image) {
 	p.InvulnerableTicks--
 
 	p.Hand.Sprite.Draw(screen)
+	p.Hand.HoverSprite.Draw(screen)
 
 	if p.InvulnerableTicks <= 0 || p.InvulnerableTicks%20 >= 10 {
 		p.Sprite.Draw(screen)
