@@ -195,7 +195,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				if bullet.Shape.Collides(actor.Shape()) {
 					x, y, _, _ := actor.Bounds()
 					for i := 0; i < 6; i++ {
-						s.SpawnParticle(ctx, "hurt", x, y, rand.Float64()*math.Pi*2, rand.Float64()*2.0, 30)
+						s.SpawnParticle(ctx, "hurt", x, y, bullet.Angle-math.Pi/4+(math.Pi/2*rand.Float64()), rand.Float64()*2.0, 30)
 					}
 					bullet.Destroyed = true
 					p.InvulnerableTicks = 40
