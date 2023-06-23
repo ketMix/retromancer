@@ -19,6 +19,8 @@ type Menu struct {
 func (m *Menu) Init(ctx states.Context) error {
 	m.overlay.Init(ctx)
 
+	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "title", (*resources.Song)(nil)).(states.Song))
+
 	x := 320.0
 	y := 25.0
 	m.logo = resources.NewSprite(ctx.Manager.GetAs("images", "logo", (*ebiten.Image)(nil)).(*ebiten.Image))

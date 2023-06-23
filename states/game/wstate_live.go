@@ -14,6 +14,7 @@ type WorldStateLive struct {
 }
 
 func (w *WorldStateLive) Enter(s *World, ctx states.Context) {
+	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "funky", (*resources.Song)(nil)).(states.Song))
 }
 
 func (w *WorldStateLive) Leave(s *World, ctx states.Context) {

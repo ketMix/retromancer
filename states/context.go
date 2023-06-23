@@ -20,4 +20,5 @@ type Context struct {
 	Locale       func() string
 	SetLocale    func(loc string)
 	Cursor       Cursor
+	MusicPlayer  MusicPlayer
 }

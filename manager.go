@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"ebijam23/resources"
 	"errors"
 	"fmt"
@@ -137,6 +138,21 @@ func (m *ResourceManager) Load(category string, name string) (interface{}, error
 		} else {
 			return nil, nil
 		}
+	} else if category == "songs" {
+		if strings.HasSuffix(name, ".ogg") {
+			b, err := m.files.ReadFile(fmt.Sprintf("%s/%s", category, name))
+			if err != nil {
+				return nil, err
+			}
+			song, err := resources.NewSong(bytes.NewReader(b))
+			if err != nil {
+				return nil, err
+			}
+			group.data[strings.TrimSuffix(name, filepath.Ext(name))] = song
+			return song, nil
+		} else {
+			return nil, nil
+		}
 	}
 
 	return nil, ErrNoSuchCategory
@@ -224,6 +240,12 @@ func (m *ResourceManager) GetAs(category string, name string, target interface{}
 			}
 		}
 		return d
+	case *resources.Song:
+		d := m.Get(category, name)
+		if d == nil {
+			return &resources.Song{} // FIXME: Use an actual fallback song.
+		}
+		return d
 	}
 
 	return nil
@@ -290,5 +312,17 @@ func (m *ResourceManager) LoadAll() error {
 		return nil
 	})
 	fmt.Println("loaded", len(m.groups["locales"].data), "locales")
+	m.files.Walk("songs/", func(path string, entry fs.DirEntry, err error) error {
+		if entry == nil {
+			return ErrMissingDirectory
+		}
+		if !entry.IsDir() {
+			if _, err := m.Load("songs", entry.Name()); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	fmt.Println("loaded", len(m.groups["songs"].data), "songs")
 	return nil
 }

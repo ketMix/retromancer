@@ -11,11 +11,12 @@ import (
 )
 
 type Game struct {
-	States    []states.State
-	Text      *etxt.Renderer
-	Manager   ResourceManager
-	Localizer Localizer
-	Cursor    Cursor
+	States      []states.State
+	Text        *etxt.Renderer
+	Manager     ResourceManager
+	Localizer   Localizer
+	Cursor      Cursor
+	MusicPlayer MusicPlayer
 }
 
 func (g *Game) State() states.State {
@@ -31,6 +32,7 @@ func (g *Game) PushState(state states.State) {
 		SetLocale:    g.Localizer.SetLocale,
 		StateMachine: g,
 		Cursor:       &g.Cursor,
+		MusicPlayer:  &g.MusicPlayer,
 	})
 }
 
@@ -45,6 +47,7 @@ func (g *Game) PopState() {
 		SetLocale:    g.Localizer.SetLocale,
 		StateMachine: g,
 		Cursor:       &g.Cursor,
+		MusicPlayer:  &g.MusicPlayer,
 	})
 	g.States = g.States[:len(g.States)-1]
 }
@@ -63,6 +66,9 @@ func (g *Game) Update() error {
 		ebiten.SetFullscreen(!ebiten.IsFullscreen())
 	}
 
+	// Check if music needs to loop, etc.
+	g.MusicPlayer.Update()
+
 	if state := g.State(); state != nil {
 		return state.Update(states.Context{
 			Manager:      &g.Manager,
@@ -71,6 +77,7 @@ func (g *Game) Update() error {
 			SetLocale:    g.Localizer.SetLocale,
 			StateMachine: g,
 			Cursor:       &g.Cursor,
+			MusicPlayer:  &g.MusicPlayer,
 		})
 	}
 	return nil
