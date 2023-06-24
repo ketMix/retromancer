@@ -60,8 +60,8 @@ func CreateGPT(fs multipath.FS) (*GPT, error) {
 	return &GPT{
 		key:       k,
 		Model:     "gpt-3.5-turbo",
-		MaxTokens: 1000,
-		Style:     "a retarded ogre",
+		MaxTokens: 2048,
+		Style:     "an old mumbling sage",
 		SystemPrompt: `
 			You are assisting with writing the story and text for a game.
 			
@@ -70,12 +70,13 @@ func CreateGPT(fs multipath.FS) (*GPT, error) {
 
 			- You will receive a prompt with a JSON object containing the key value pairs of the original text.
 			- For each key you should create a new phrase that is different of the original.
-			- This new phrase should be less than or equal to the length of the original value.
-			- A style be requested that you should use for creating the new phrase.
+			- A style will be requested that you should use for creating the new phrase.
+			- All values should be less than or equal to the length of their original value.
 			- Escape characters in the original value should be removed.
 			- After creating the phrase you will translate the new phrase into the request locale.
 			- There should be no escape characters in the translated phrase.
-
+			- The value for the key should be the translated phrase only.
+			- All keys must be present in the output.
 			Your response must be YAML unmarshalable.
 		`,
 	}, nil
@@ -89,9 +90,8 @@ func (gpt *GPT) createPrompt(inputLocale *Locale, locale string) string {
 	}
 	str += "}"
 	return fmt.Sprintf(`
-		It should be in the similar spelling, case sensitivity, and grammar
-		as a person who is "%s" would write it.
-		Translate the following JSON values to "%s" localization:
+		It should be in the similar spelling, case sensitivity, grammar, and phrasing of a %s style.
+		Translate to "%s" in YAML format:
 		"%s"
 	`, gpt.Style, locale, str)
 }
