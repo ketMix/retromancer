@@ -124,7 +124,6 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			inactiveSprite := resources.NewAnimatedSprite(inactiveImages)
 			inactiveSprite.X = x
 			inactiveSprite.Y = y
-			reversable := true
 
 			i := CreateInteractive(
 				x,
@@ -137,10 +136,11 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 				i.active = iDef.Active
 				i.degrade = iDef.Degrade
 				i.conditions = iDef.Conditions
-				if iDef.Reversable != nil {
-					reversable = *iDef.Reversable
-				}
-				i.reversable = reversable
+
+				// Default reversable to true
+				i.reversable = iDef.Reversable
+				i.touchable = iDef.Touchable
+				i.shootable = iDef.Shootable
 			}
 			m.actors = append(m.actors, i)
 			interactiveMap[a.ID] = i

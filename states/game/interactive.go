@@ -98,7 +98,7 @@ func (i *Interactive) Reverseable() bool {
 
 // Reverse the interactive object
 func (i *Interactive) Reverse() {
-	if !i.reversable {
+	if !i.reversable && !i.touchable && !i.shootable && i.linkedInteractives == nil {
 		return
 	}
 	// If already active or on cooldown, do nothing

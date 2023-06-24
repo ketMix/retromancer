@@ -48,7 +48,7 @@ runes:
     id: candle3
   "F":
     sprite: empty
-    id: candle4
+    id: lever
   "S":
     sprite: empty
     id: spawner
@@ -61,6 +61,18 @@ runes:
   "L":
     sprite: empty
     id: life1
+  "%":
+    sprite: empty
+    id: wall1
+    blockMove: true
+    blockView: true
+    isometric: true
+  "&":
+    sprite: empty
+    id: wall2
+    blockMove: true
+    blockView: true
+    isometric: true
 actors:
   - id: spawner
     type: spawner
@@ -76,14 +88,12 @@ actors:
     sprite: door
     interactive:
       map: ballpit
-      reversable: false
       conditions:
         - type: active
           args:
             - candle1
             - candle2
             - candle3
-            - candle4
   - id: drawbridge
     type: interactive
     sprite: drawbridge
@@ -91,6 +101,7 @@ actors:
     type: interactive
     sprite: wheel
     interactive:
+      reversable: true
       touchable: true
       degrade: true
       linked:
@@ -104,28 +115,43 @@ actors:
     type: interactive
     sprite: candle
     interactive:
+      reversable: true
       degrade: true
   - id: candle3
     type: interactive
     sprite: candle
     interactive:
-      linked: 
-        - candle4
-  - id: candle4
-    type: interactive
-    sprite: candle
-    interactive:
+      reversable: true
       degrade: true
-      linked: 
-        - candle3
+  - id: lever
+    type: interactive
+    sprite: lever
+    interactive:
+      touchable: true
+  - id: wall1
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - lever
+  - id: wall2
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - lever
   - id: life1
     type: snaggable
     sprite: item-life
 layers:
   - |
    ^********D*******^.^
-   ^ B^ C      E  F ^.^
-   ^  ^             ^.^
+   ^ B% C      E  F ^.^
+   ^  &             ^.^
    ^^^^          ^^^^.^
    ^^               ^.^
    ^              L ^.^
@@ -133,8 +159,9 @@ layers:
    ^^       G   W   ^.^
    ^~~~~~~~~~~~~~~~~^.^
    ^^^^^,, ____     ^.^
-   ^^^^,,,,,__      ^.^
-   ^^^,,,,,____@    ^.^
+   ^^^^,,,,,__  ^    .^
+   ^^^,,,,,____ ^  @ .^
+   ^******************^
 #  - |
 #   ^              * ^ 
 #   ^                ^ 

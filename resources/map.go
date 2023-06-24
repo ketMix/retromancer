@@ -46,9 +46,11 @@ type InteractiveDef struct {
 	Conditions []*ConditionDef `yaml:"conditions,omitempty"`
 	Linked     []string        `yaml:"linked,omitempty"`
 	Collidable bool            `yaml:"collidable,omitempty"`
-	Reversable *bool           `yaml:"reversable"`
+	Reversable bool            `yaml:"reversable"`
 	Degrade    bool            `yaml:"degrade"`
 	Active     bool            `yaml:"active"`
+	Touchable  bool            `yaml:"touchable"`
+	Shootable  bool            `yaml:"shootable"`
 }
 
 type ActorSpawn struct {
