@@ -75,7 +75,7 @@ func CreateGPT(fs multipath.FS) (*GPT, error) {
 			- After creating the phrase you will translate the new phrase into the request locale.
 			- There should be no escape characters in the translated phrase.
 
-			Your response must be JSON serializable.
+			Your response must be RFC8259 compliant JSON.
 		`,
 	}, nil
 }
