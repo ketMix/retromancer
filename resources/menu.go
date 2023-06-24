@@ -16,6 +16,8 @@ type MenuItem interface {
 	Draw(ctx states.DrawContext)
 	CheckState(x, y float64) bool
 	Activate() bool
+	Hidden() bool
+	SetHidden(bool)
 }
 
 type SpriteItem struct {
@@ -25,13 +27,25 @@ type SpriteItem struct {
 	Callback func() bool
 }
 
+func (s *SpriteItem) Hidden() bool {
+	return s.Sprite.Hidden
+}
+
+func (s *SpriteItem) SetHidden(h bool) {
+	s.Sprite.Hidden = h
+}
+
 func (s *SpriteItem) CheckState(x, y float64) bool {
+	if s.Sprite.Hidden {
+		return false
+	}
+
 	s.hovered = s.Sprite.Hit(x, y)
 	return s.hovered
 }
 
 func (s *SpriteItem) Hovered() bool {
-	return s.hovered
+	return !s.Sprite.Hidden && s.hovered
 }
 
 func (s *SpriteItem) Activate() bool {
@@ -50,9 +64,21 @@ type TextItem struct {
 	hovered    bool
 	Text       string
 	Callback   func() bool
+	hidden     bool
+}
+
+func (t *TextItem) Hidden() bool {
+	return t.hidden
+}
+
+func (t *TextItem) SetHidden(h bool) {
+	t.hidden = h
 }
 
 func (t *TextItem) CheckState(x, y float64) bool {
+	if t.hidden {
+		return false
+	}
 	x1 := t.renderRect.Min.X.ToFloat64()
 	y1 := t.renderRect.Min.Y.ToFloat64()
 	x2 := t.renderRect.Max.X.ToFloat64()
@@ -66,7 +92,7 @@ func (t *TextItem) CheckState(x, y float64) bool {
 }
 
 func (t *TextItem) Hovered() bool {
-	return t.hovered
+	return !t.hidden && t.hovered
 }
 
 func (t *TextItem) Activate() bool {
@@ -74,6 +100,9 @@ func (t *TextItem) Activate() bool {
 }
 
 func (t *TextItem) Draw(ctx states.DrawContext) {
+	if t.hidden {
+		return
+	}
 	ctx.Text.SetAlign(etxt.YCenter | etxt.XCenter)
 	t.renderRect = ctx.Text.Measure(t.Text)
 	t.renderRect = t.renderRect.AddInts(int(t.X), int(t.Y))
@@ -93,11 +122,23 @@ type ButtonItem struct {
 	X, Y       float64
 	renderRect fract.Rect
 	hovered    bool
+	hidden     bool
 	Text       string
 	Callback   func() bool
 }
 
+func (t *ButtonItem) Hidden() bool {
+	return t.hidden
+}
+
+func (t *ButtonItem) SetHidden(h bool) {
+	t.hidden = h
+}
+
 func (t *ButtonItem) CheckState(x, y float64) bool {
+	if t.hidden {
+		return false
+	}
 	x1 := t.renderRect.Min.X.ToFloat64()
 	y1 := t.renderRect.Min.Y.ToFloat64()
 	x2 := t.renderRect.Max.X.ToFloat64()
@@ -111,7 +152,7 @@ func (t *ButtonItem) CheckState(x, y float64) bool {
 }
 
 func (t *ButtonItem) Hovered() bool {
-	return t.hovered
+	return !t.hidden && t.hovered
 }
 
 func (t *ButtonItem) Activate() bool {
@@ -119,6 +160,9 @@ func (t *ButtonItem) Activate() bool {
 }
 
 func (t *ButtonItem) Draw(ctx states.DrawContext) {
+	if t.hidden {
+		return
+	}
 
 	ctx.Text.SetAlign(etxt.YCenter | etxt.XCenter)
 	t.renderRect = ctx.Text.Measure(t.Text)
@@ -155,12 +199,16 @@ type InputItem struct {
 	Width      float64
 	renderRect fract.Rect
 	hovered    bool
+	hidden     bool
 	active     bool
 	Text       string
 	Callback   func() bool
 }
 
 func (t *InputItem) CheckState(x, y float64) bool {
+	if t.hidden {
+		return false
+	}
 	x1 := t.X - t.Width/2
 	x2 := t.X + t.Width/2
 	y1 := t.Y - t.renderRect.Height().ToFloat64()/2 - 4
@@ -173,8 +221,16 @@ func (t *InputItem) CheckState(x, y float64) bool {
 	return t.hovered
 }
 
+func (t *InputItem) Hidden() bool {
+	return t.hidden
+}
+
+func (t *InputItem) SetHidden(h bool) {
+	t.hidden = h
+}
+
 func (t *InputItem) Hovered() bool {
-	return t.hovered
+	return !t.hidden && t.hovered
 }
 
 func (t *InputItem) Activate() bool {
@@ -191,6 +247,9 @@ func (t *InputItem) IsActive() bool {
 }
 
 func (t *InputItem) Update() {
+	if t.hidden {
+		return
+	}
 	if t.active {
 		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
 			if len(t.Text) > 0 {
@@ -206,6 +265,9 @@ func (t *InputItem) Update() {
 }
 
 func (t *InputItem) Draw(ctx states.DrawContext) {
+	if t.hidden {
+		return
+	}
 
 	ctx.Text.SetAlign(etxt.YCenter | etxt.XCenter)
 	txt := t.Text
