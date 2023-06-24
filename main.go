@@ -86,8 +86,10 @@ func main() {
 		ebiten.SetFullscreen(true)
 	}
 
-	// Push the state.
 	game.PushState(&menu.Menu{})
+
+	// Push the intro state
+	game.PushState(&menu.Intro{})
 
 	if err := ebiten.RunGame(game); err != nil {
 		if err == states.ErrQuitGame {

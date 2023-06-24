@@ -49,7 +49,7 @@ func (m *Menu) Finalize(ctx states.Context) error {
 }
 
 func (m *Menu) Enter(ctx states.Context) error {
-	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "title", (*resources.Song)(nil)).(states.Song))
+	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "title-menu", (*resources.Song)(nil)).(states.Song))
 	return nil
 }
 
