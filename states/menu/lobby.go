@@ -18,7 +18,7 @@ type Lobby struct {
 	hostItem        *resources.ButtonItem
 	backItem        *resources.TextItem
 	lobbyItem       *resources.InputItem
-	playerEntries   [2]*PlayerEntry
+	playerEntries   []*PlayerEntry
 	overlay         game.Overlay
 }
 
@@ -27,11 +27,9 @@ func (s *Lobby) Init(ctx states.Context) error {
 	//
 	s.clickSound = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
-	s.playerEntries[0] = &PlayerEntry{
+	s.playerEntries = append(s.playerEntries, &PlayerEntry{
 		player: game.NewLocalPlayer(),
-	}
-	// Dummy player entry for 2nd player.
-	s.playerEntries[1] = &PlayerEntry{}
+	})
 
 	for _, e := range s.playerEntries {
 		e.Init(ctx)
@@ -43,10 +41,14 @@ func (s *Lobby) Init(ctx states.Context) error {
 		Y:    20,
 		Callback: func() bool {
 			s.clickSound.Play(1.0)
-			for i, item := range s.items {
+			for _, item := range s.items {
 				if item == s.multiplayerItem {
-					s.items = append(s.items[:i], s.items[i+1:]...)
-					s.items = append(s.items, s.lobbyItem, s.joinItem, s.hostItem)
+					s.multiplayerItem.SetHidden(true)
+					s.lobbyItem.SetHidden(false)
+					s.joinItem.SetHidden(false)
+					s.hostItem.SetHidden(false)
+					s.playerEntries = append(s.playerEntries, &PlayerEntry{})
+					s.playerEntries[len(s.playerEntries)-1].Init(ctx)
 					break
 				}
 			}
@@ -62,6 +64,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 			return false
 		},
 	}
+	s.lobbyItem.SetHidden(true)
 
 	s.joinItem = &resources.ButtonItem{
 		Text: ctx.L("Host"),
@@ -69,9 +72,14 @@ func (s *Lobby) Init(ctx states.Context) error {
 		Y:    20,
 		Callback: func() bool {
 			s.clickSound.Play(1.0)
+			// TODO: Create network server:
+			//   - Check if lobby is an address or ip
+			//      - If so, begin directly hosting and wait for a client to connect.
+			//			- If not, connect to magnet's matchmaker with the lobby as the advertisement and begin waiting for a client to connect.
 			return false
 		},
 	}
+	s.joinItem.SetHidden(true)
 
 	s.hostItem = &resources.ButtonItem{
 		Text: ctx.L("Join"),
@@ -79,9 +87,14 @@ func (s *Lobby) Init(ctx states.Context) error {
 		Y:    20,
 		Callback: func() bool {
 			s.clickSound.Play(1.0)
+			// TODO: Create network client:
+			//   - Check if lobby is an address or ip
+			//      - If so, directly connect to it
+			//			- If not, connect to magnet's matchmaker and use the lobby as the target name. Wait for response, and if an ip:port, directly connect to it using the same socket.
 			return false
 		},
 	}
+	s.hostItem.SetHidden(true)
 
 	s.backItem = &resources.TextItem{
 		Text: ctx.L("Back"),
@@ -93,7 +106,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 			return false
 		},
 	}
-	s.items = append(s.items, s.backItem, s.multiplayerItem)
+	s.items = append(s.items, s.backItem, s.multiplayerItem, s.lobbyItem, s.joinItem, s.hostItem)
 
 	return nil
 }
@@ -119,6 +132,10 @@ func (s *Lobby) Update(ctx states.Context) error {
 			s.playerEntries[1].controllerId = int(gamepadID)
 			s.playerEntries[1].SyncController(ctx)
 			pl.GamepadID = int(gamepadID)
+			// TODO: Stop network stuff and hide host/join.
+			s.hostItem.SetHidden(true)
+			s.joinItem.SetHidden(true)
+			s.lobbyItem.SetHidden(true)
 		}
 	}
 
