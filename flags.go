@@ -7,4 +7,5 @@ type Flags struct {
 	SoundVolume float64
 	Muted       bool
 	Fullscreen  bool
+	SkipIntro   bool
 }

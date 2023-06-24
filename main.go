@@ -26,6 +26,7 @@ func main() {
 	flag.Float64Var(&game.Flags.SoundVolume, "sound", 1.0, "volume to play sound at")
 	flag.BoolVar(&game.Flags.Muted, "mute", false, "whether to start muted")
 	flag.BoolVar(&game.Flags.Fullscreen, "fullscreen", false, "whether to start in fullscreen")
+	flag.BoolVar(&game.Flags.SkipIntro, "skip-intro", false, "whether to skip the intro")
 	flag.StringVar(&game.Flags.Locale, "locale", "en", "locale to use")
 	flag.StringVar(&game.Flags.Font, "font", "x12y16pxMaruMonica", "font to use")
 	flag.Parse()
@@ -89,7 +90,9 @@ func main() {
 	game.PushState(&menu.Menu{})
 
 	// Push the intro state
-	game.PushState(&menu.Intro{})
+	if !game.Flags.SkipIntro {
+		game.PushState(&menu.Intro{})
+	}
 
 	if err := ebiten.RunGame(game); err != nil {
 		if err == states.ErrQuitGame {
