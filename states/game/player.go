@@ -16,4 +16,5 @@ type Player interface {
 	//
 	SetHat(string)
 	Hat() string
+	//
 }
