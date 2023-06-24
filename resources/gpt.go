@@ -8,14 +8,15 @@ import (
 	"net/http"
 
 	"github.com/kettek/go-multipath/v2"
+	"gopkg.in/yaml.v2"
 )
 
 type GPTResponse struct {
 	Choices []struct {
 		Message struct {
-			Content string `json:"content"`
-		} `json:"message"`
-	} `json:"choices"`
+			Content string `yaml:"content"`
+		} `yaml:"message"`
+	} `yaml:"choices"`
 }
 
 type MessageBody struct {
@@ -60,7 +61,7 @@ func CreateGPT(fs multipath.FS) (*GPT, error) {
 		key:       k,
 		Model:     "gpt-3.5-turbo",
 		MaxTokens: 1000,
-		Style:     "an eloquent sage",
+		Style:     "a retarded ogre",
 		SystemPrompt: `
 			You are assisting with writing the story and text for a game.
 			
@@ -75,7 +76,7 @@ func CreateGPT(fs multipath.FS) (*GPT, error) {
 			- After creating the phrase you will translate the new phrase into the request locale.
 			- There should be no escape characters in the translated phrase.
 
-			Your response must be RFC8259 compliant JSON.
+			Your response must be YAML unmarshalable.
 		`,
 	}, nil
 }
@@ -145,7 +146,7 @@ func (gpt *GPT) GetResponse(inputLocale *Locale, locale string) (Locale, error) 
 	content := s.Choices[0].Message.Content
 
 	var respLocale *Locale
-	if err := json.Unmarshal([]byte(content), &respLocale); err != nil {
+	if err := yaml.Unmarshal([]byte(content), &respLocale); err != nil {
 		return nil, err
 	}
 	return *respLocale, nil
