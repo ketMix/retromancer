@@ -30,8 +30,8 @@ func (i *Intro) Enter(ctx states.Context) error {
 	i.vfx.Add(&resources.Text{
 		Text:         ctx.L("MenuIntro1"),
 		InDuration:   1 * time.Second,
-		HoldDuration: 2 * time.Second,
-		OutDuration:  1 * time.Second,
+		HoldDuration: 1250 * time.Millisecond,
+		OutDuration:  1500 * time.Millisecond,
 		X:            x,
 		Y:            y,
 	})
@@ -40,8 +40,8 @@ func (i *Intro) Enter(ctx states.Context) error {
 	i.vfx.Add(&resources.Text{
 		Text:         ctx.L("MenuIntro2"),
 		InDuration:   1 * time.Second,
-		HoldDuration: 1 * time.Second,
-		OutDuration:  1 * time.Second,
+		HoldDuration: 1250 * time.Millisecond,
+		OutDuration:  1500 * time.Millisecond,
 		X:            x,
 		Y:            y,
 	})
@@ -50,16 +50,8 @@ func (i *Intro) Enter(ctx states.Context) error {
 	i.vfx.Add(&resources.Text{
 		Text:         ctx.L("MenuIntro3"),
 		InDuration:   1 * time.Second,
-		HoldDuration: 2 * time.Second,
-		OutDuration:  1 * time.Second,
-		X:            x,
-		Y:            y,
-	})
-	i.vfx.Add(&resources.Text{
-		Text:         "",
-		InDuration:   0,
-		HoldDuration: 2025 * time.Millisecond,
-		OutDuration:  0,
+		HoldDuration: 750 * time.Millisecond,
+		OutDuration:  3800 * time.Millisecond,
 		X:            x,
 		Y:            y,
 	})
