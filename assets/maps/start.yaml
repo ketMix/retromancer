@@ -4,6 +4,8 @@ conditions:
     args:
       - door
 runes:
+  "@":
+    sprite: empty
   "f":
     sprite: fire
   "*":
@@ -56,7 +58,6 @@ runes:
   "W":
     sprite: empty
     id: wheel
-start: [8, 11, 0]
 actors:
   - id: spawner
     type: spawner
@@ -129,7 +130,7 @@ layers:
    ^~~~~~~~~~~~~~~~~^.^
    ^^^^^,, ____     ^.^
    ^^^^,,,,,__      ^.^
-   ^^^,,,,,____     ^.^
+   ^^^,,,,,____@    ^.^
 #  - |
 #   ^              * ^ 
 #   ^                ^ 

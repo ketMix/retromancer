@@ -1,10 +1,24 @@
 title: Vomit in the Ballpit
 runes:
+  "@":
+    sprite: empty
   " ":
     sprite: empty
-start: [8, 11, 0]
+  "s":
+    sprite: empty
+    id: spawner
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
 actors:
-  - spawn: [20, 11, 0]
+  - id: spawner
     type: spawner
     bullets: 
       - alias: daggers
@@ -21,4 +35,25 @@ actors:
           color: [0, 255, 0, 255]
 layers:
   - |
-
+   ^**************************************^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                   s                  ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^      
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^      
+   ^                                      ^
+   ^                   @                  ^
+   ^**************************************^

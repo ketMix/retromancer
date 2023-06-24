@@ -38,7 +38,6 @@ type Map struct {
 	Width        int                `yaml:"width"`
 	Height       int                `yaml:"height"`
 	SourceLayers []string           `yaml:"layers"`
-	Start        [3]int             `yaml:"start"`
 	Actors       []ActorSpawn       `yaml:"actors"`
 }
 

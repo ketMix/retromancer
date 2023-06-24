@@ -47,6 +47,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 	//wallH := 6
 
+	playerStart := []int{0, 0, 0}
 	for i, l := range m.data.Layers {
 		//xoffset := float64(wallH * len(m.data.Layers))
 		//yoffset := float64(wallH * 2 * len(m.data.Layers))
@@ -55,6 +56,9 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		for j, row := range l.Cells {
 			for k, cell := range row {
 				if r, ok := m.data.RuneMap[string(cell.Type)]; ok {
+					if cell.Type == '@' {
+						playerStart = []int{k, j, i}
+					}
 					cell.ID = r.ID
 					cell.BlockMove = r.BlockMove
 					cell.BlockView = r.BlockView
@@ -188,7 +192,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	}
 
 	// Set proper active layer.
-	m.currentZ = m.data.Start[2]
+	m.currentZ = playerStart[2]
 
 	// Only add fade and title VFX if this map is not the same as the previous one.
 	if s.activeMap == nil || s.activeMap.data != m.data {
@@ -221,7 +225,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		// Save actor right before entry.
 		p.Actor().Save()
 		// Position the actor and place them in the map.
-		p.Actor().SetXY(float64(m.data.Start[0]*cellW), float64(m.data.Start[1]*cellH))
+		p.Actor().SetXY(float64(playerStart[0]*cellW), float64(playerStart[1]*cellH))
 		m.actors = append(m.actors, p.Actor())
 	}
 
