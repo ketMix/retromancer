@@ -8,29 +8,39 @@ import (
 )
 
 type Snaggable struct {
+	id           string
+	spriteName   string
 	shape        CircleShape
 	sprite       *resources.Sprite
 	destroyed    bool
 	nextParticle int
 }
 
-func CreateSnaggable(x, y float64, sprite *resources.Sprite) *Snaggable {
+func CreateSnaggable(x, y float64, id, spriteName string, sprite *resources.Sprite) *Snaggable {
 	sprite.VFX.Add(&resources.Hover{
 		Intensity: 2.0,
 		Rate:      1.25,
 	})
 	sprite.Centered = true
 	return &Snaggable{
-		shape:  CircleShape{X: x, Y: y, Radius: 3}, // FIXME: don't hardcode radius
-		sprite: sprite,
+		id:         id,
+		spriteName: spriteName,
+		shape:      CircleShape{X: x, Y: y, Radius: 3}, // FIXME: don't hardcode radius
+		sprite:     sprite,
 	}
 }
 
 func (s *Snaggable) Update() (actions []Action) {
 	s.nextParticle++
 	if s.nextParticle >= 0 {
+		// Set Img property here
+		img := ""
+		switch s.spriteName {
+		case "item-life":
+			img = "life"
+		}
 		actions = append(actions, ActionSpawnParticle{
-			Img:   "life",
+			Img:   img,
 			X:     s.shape.X,
 			Y:     s.shape.Y,
 			Angle: math.Pi + rand.Float64()*math.Pi,

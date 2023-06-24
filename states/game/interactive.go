@@ -18,6 +18,8 @@ type Interactive struct {
 	conditions         []*resources.ConditionDef
 	shape              RectangleShape
 	reversable         bool
+	shootable          bool // Whether or not it can be hit by bullets
+	touchable          bool // Whether or not it can be reversed by touching
 	degrade            bool // Whether or not the activation can be degraded, should this always be true?
 	activationIdx      int  // Holds the degree of activation
 	activateCooldown   int  // Holds the cooldown for activation, can only decrement activation when this is 0

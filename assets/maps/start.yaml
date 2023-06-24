@@ -58,6 +58,9 @@ runes:
   "W":
     sprite: empty
     id: wheel
+  "L":
+    sprite: empty
+    id: life1
 actors:
   - id: spawner
     type: spawner
@@ -88,6 +91,7 @@ actors:
     type: interactive
     sprite: wheel
     interactive:
+      touchable: true
       degrade: true
       linked:
         - drawbridge
@@ -114,9 +118,9 @@ actors:
       degrade: true
       linked: 
         - candle3
-  - type: snaggable
+  - id: life1
+    type: snaggable
     sprite: item-life
-    spawn: [15, 5, 0]
 layers:
   - |
    ^********D*******^.^
@@ -124,7 +128,7 @@ layers:
    ^  ^             ^.^
    ^^^^          ^^^^.^
    ^^               ^.^
-   ^                ^.^
+   ^              L ^.^
    ^  S             ^.^
    ^^       G   W   ^.^
    ^~~~~~~~~~~~~~~~~^.^

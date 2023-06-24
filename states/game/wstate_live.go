@@ -187,7 +187,19 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			bullet.Destroyed = true
 			continue
 		}
+
+		// Check for bullet collisions with actors.
 		for _, actor := range s.activeMap.actors {
+			// Check interactive collisions.
+			// If the interactive is touchable, apply reverse to it and destroy the bullet.
+			if i, ok := actor.(*Interactive); ok {
+				if i.shootable && bullet.Shape.Collides(actor.Shape()) {
+					i.Reverse()
+					bullet.Destroyed = true
+				}
+			}
+
+			// Check player collisions.
 			if p, ok := actor.(*PC); ok {
 				if p.InvulnerableTicks > 0 {
 					continue
@@ -207,15 +219,25 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	}
 
 	// Oh boy, yet another loop.
-	// Check for collisions between player characters and snaggables.
+	// Check for collisions between player characters and interactives/snaggables.
 	for _, pl := range s.Players {
-		if _, pc := pl.Actor().(*PC); pc {
+		if pc, ok := pl.Actor().(*PC); ok {
 			for _, actor := range s.activeMap.actors {
-				if a, ok := actor.(*Snaggable); ok {
-					if a.shape.Collides(pl.Actor().Shape()) {
-						// Kinda wish this could be an action...
-						a.destroyed = true
+				// If touchable, apply reverse to it
+				if i, ok := actor.(*Interactive); ok {
+					if i.touchable && i.shape.Collides(pl.Actor().Shape()) {
+						i.Reverse()
+						continue
+					}
+				}
+				if s, ok := actor.(*Snaggable); ok {
+					if s.shape.Collides(pl.Actor().Shape()) && pc.Lives < PLAYER_MAX_LIVES {
+						s.destroyed = true
 						// TODO: Bless the player with powers beyond their wildest imaginations (lives, power unlocks, etc.)
+						switch s.spriteName {
+						case "item-life":
+							pc.Lives++
+						}
 						continue
 					}
 				}

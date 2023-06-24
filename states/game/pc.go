@@ -11,6 +11,9 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
+const PLAYER_START_LIVES = 3
+const PLAYER_MAX_LIVES = PLAYER_START_LIVES + 2
+
 type PC struct {
 	player Player
 	saved  *PC
@@ -45,7 +48,7 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		Energy:            100,
 		MaxEnergy:         100,
 		EnergyRestoreRate: 2,
-		Lives:             3,
+		Lives:             PLAYER_START_LIVES,
 	}
 
 	// FIXME: This shouldn't be hardcoded.
