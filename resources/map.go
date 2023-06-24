@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -41,27 +42,29 @@ type Map struct {
 	Actors       []ActorSpawn       `yaml:"actors"`
 }
 
-type DoorDef struct {
-	Map string `yaml:"map"`
+type InteractiveDef struct {
+	Map        *string         `yaml:"map,omitempty"`
+	Conditions []*ConditionDef `yaml:"conditions,omitempty"`
+	Linked     []string        `yaml:"linked,omitempty"`
+	Collidable bool            `yaml:"collidable,omitempty"`
+	Reversable *bool           `yaml:"reversable"`
+	Degrade    bool            `yaml:"degrade"`
+	Active     bool            `yaml:"active"`
 }
 
 type ActorSpawn struct {
-	ID           string            `yaml:"id"`
-	Spawn        [3]int            `yaml:"spawn,omitempty"`
-	Type         string            `yaml:"type"`
-	Active       bool              `yaml:"active"`
-	Door         *DoorDef          `yaml:"door,omitempty"`
-	Condtions    []*ConditionDef   `yaml:"conditions,omitempty"`
-	BulletGroups []*BulletGroupDef `yaml:"bullets,omitempty"`
-	Linked       []string          `yaml:"linked,omitempty"`
-	Reversable   *bool             `yaml:"reversable"`
-	Degrade      bool              `yaml:"degrade"`
-	Sprite       string            `yaml:"sprite"`
+	ID             string            `yaml:"id"`
+	Spawn          [3]int            `yaml:"spawn,omitempty"`
+	Type           string            `yaml:"type"`
+	Sprite         string            `yaml:"sprite"`
+	BulletGroups   []*BulletGroupDef `yaml:"bullets,omitempty"`
+	InteractiveDef *InteractiveDef   `yaml:"interactive,omitempty"`
 }
 
 func (m *Map) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	type mapAlias Map
 	if err := unmarshal((*mapAlias)(m)); err != nil {
+		fmt.Printf("Error unmarshalling map: %v", err)
 		return err
 	}
 

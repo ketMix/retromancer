@@ -23,7 +23,7 @@ type Interactive struct {
 	activateCooldown   int  // Holds the cooldown for activation, can only decrement activation when this is 0
 }
 
-func CreateInteractive(x, y float64, id string, active, reversable bool, conditions []*resources.ConditionDef, activeSprite, inactiveSprite *resources.Sprite) *Interactive {
+func CreateInteractive(x, y float64, id string, activeSprite, inactiveSprite *resources.Sprite) *Interactive {
 	// Set activation index to fully inactive
 	activationIdx := len(inactiveSprite.Images()) - 1
 	if activationIdx < 0 {
@@ -42,17 +42,14 @@ func CreateInteractive(x, y float64, id string, active, reversable bool, conditi
 	}
 	return &Interactive{
 		id:             id,
-		active:         active,
 		activeSprite:   activeSprite,
 		inactiveSprite: inactiveSprite,
-		conditions:     conditions,
 		shape: RectangleShape{
 			X:      x,
 			Y:      y,
 			Width:  width,
 			Height: height,
 		},
-		reversable:    reversable,
 		activationIdx: activationIdx,
 	}
 }

@@ -95,6 +95,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		}
 		switch a.Type {
 		case "interactive":
+			iDef := a.InteractiveDef
 			spritePrefix := a.Sprite
 			// Create the active sprite
 			activeImageNames := ctx.Manager.GetNamesWithPrefix("images", spritePrefix+"-active")
@@ -120,22 +121,25 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			inactiveSprite.X = x
 			inactiveSprite.Y = y
 			reversable := true
-			if a.Reversable != nil {
-				reversable = *a.Reversable
-			}
-			interactive := CreateInteractive(
+
+			i := CreateInteractive(
 				x,
 				y,
 				a.ID,
-				a.Active,
-				reversable,
-				a.Condtions,
 				activeSprite,
 				inactiveSprite,
 			)
-			interactive.degrade = a.Degrade
-			m.actors = append(m.actors, interactive)
-			interactiveMap[a.ID] = interactive
+			if iDef != nil {
+				i.active = iDef.Active
+				i.degrade = iDef.Degrade
+				i.conditions = iDef.Conditions
+				if iDef.Reversable != nil {
+					reversable = *iDef.Reversable
+				}
+				i.reversable = reversable
+			}
+			m.actors = append(m.actors, i)
+			interactiveMap[a.ID] = i
 		case "spawner":
 			bulletGroups := make([]*BulletGroup, 0)
 
@@ -163,20 +167,22 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 	// After creating the actors, link them up
 	for _, a := range m.data.Actors {
-		if a.Linked != nil {
-			// Find the actor in the map
-			i := interactiveMap[a.ID]
-			if i == nil {
-				continue
-			}
-
-			// Find the linked actors in the map and link them up
-			for _, b := range a.Linked {
-				childActor := interactiveMap[b]
-				if childActor == nil {
+		if a.InteractiveDef != nil {
+			if a.InteractiveDef.Linked != nil {
+				// Find the actor in the map
+				i := interactiveMap[a.ID]
+				if i == nil {
 					continue
 				}
-				i.AddLinkedInteractive(childActor)
+
+				// Find the linked actors in the map and link them up
+				for _, b := range a.InteractiveDef.Linked {
+					childActor := interactiveMap[b]
+					if childActor == nil {
+						continue
+					}
+					i.AddLinkedInteractive(childActor)
+				}
 			}
 		}
 	}

@@ -70,45 +70,49 @@ actors:
   - id: door
     type: interactive
     sprite: door
-    reversable: false
-    door: 
+    interactive:
       map: ballpit
-    conditions:
-      - type: active
-        args:
-          - candle1
-          - candle2
-          - candle3
-          - candle4
+      reversable: false
+      conditions:
+        - type: active
+          args:
+            - candle1
+            - candle2
+            - candle3
+            - candle4
   - id: drawbridge
     type: interactive
     sprite: drawbridge
-    reversable: false
   - id: wheel
     type: interactive
     sprite: wheel
-    degrade: true
-    linked:
-      - drawbridge
+    interactive:
+      degrade: true
+      linked:
+        - drawbridge
   - id: candle1
     type: interactive
     sprite: candle
-    active: true
+    interactive:
+      active: true
   - id: candle2
     type: interactive
     sprite: candle
-    degrade: true
+    interactive:
+      degrade: true
   - id: candle3
     type: interactive
     sprite: candle
-    linked: 
-      - candle4
+    interactive:
+      linked: 
+        - candle4
   - id: candle4
     type: interactive
     sprite: candle
-    degrade: true
-    linked: 
-      - candle3
+    interactive:
+      degrade: true
+      linked: 
+        - candle3
   - type: snaggable
     sprite: item-life
     spawn: [15, 5, 0]
