@@ -5,6 +5,8 @@ import (
 	"ebijam23/states"
 	"image/color"
 	"time"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Intro struct {
@@ -20,8 +22,10 @@ func (i *Intro) Enter(ctx states.Context) error {
 	i.vfx.Add(&resources.Fade{
 		Duration: 1 * time.Second,
 	})
-	x := 320.0
-	y := 200.0
+	x := 275.0
+	y := 150.0
+	xOffset := 50.0
+	yOffset := 30.0
 	// TODO: Make this text actually good.
 	i.vfx.Add(&resources.Text{
 		Text:         ctx.L("MenuIntro1"),
@@ -31,6 +35,8 @@ func (i *Intro) Enter(ctx states.Context) error {
 		X:            x,
 		Y:            y,
 	})
+	x += xOffset
+	y += yOffset
 	i.vfx.Add(&resources.Text{
 		Text:         ctx.L("MenuIntro2"),
 		InDuration:   1 * time.Second,
@@ -39,6 +45,8 @@ func (i *Intro) Enter(ctx states.Context) error {
 		X:            x,
 		Y:            y,
 	})
+	x += xOffset
+	y += yOffset
 	i.vfx.Add(&resources.Text{
 		Text:         ctx.L("MenuIntro3"),
 		InDuration:   1 * time.Second,
@@ -50,7 +58,7 @@ func (i *Intro) Enter(ctx states.Context) error {
 	i.vfx.Add(&resources.Text{
 		Text:         "",
 		InDuration:   0,
-		HoldDuration: 2 * time.Second,
+		HoldDuration: 2025 * time.Millisecond,
 		OutDuration:  0,
 		X:            x,
 		Y:            y,
@@ -63,10 +71,10 @@ func (i *Intro) Finalize(ctx states.Context) error {
 }
 
 func (i *Intro) Update(ctx states.Context) error {
-	if !i.vfx.Empty() {
-		return nil
+	if ebiten.IsKeyPressed(ebiten.KeyEnter) || ebiten.IsKeyPressed(ebiten.KeyEscape) || i.vfx.Empty() {
+		ctx.StateMachine.PopState()
 	}
-	ctx.StateMachine.PopState()
+
 	return nil
 }
 
