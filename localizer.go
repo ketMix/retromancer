@@ -21,7 +21,7 @@ func (l *Localizer) SetLocale(loc string) {
 	l.backupLocale = l.manager.GetAs("locales", "en", (*resources.Locale)(nil)).(*resources.Locale)
 
 	fmt.Println("Fetching from GPT")
-	currentLocale, err := resources.GetGPTLocale(*l.backupLocale, loc)
+	currentLocale, err := resources.GetGPTLocale(l.manager.files, l.backupLocale, loc)
 	if err != nil {
 		fmt.Println("Failed to get GPT locale:", err)
 		l.currentLocale = l.manager.GetAs("locales", loc, (*resources.Locale)(nil)).(*resources.Locale)

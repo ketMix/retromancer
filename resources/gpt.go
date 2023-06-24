@@ -6,7 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
+
+	"github.com/kettek/go-multipath/v2"
 )
 
 type GPTResponse struct {
@@ -41,26 +42,20 @@ func findKey() string {
 // Does some set up for GPT
 //  - finds the api key from "assets/key.txt"
 //	- sets default values
-func CreateGPT() (*GPT, error) {
-	// The file to open
-	fileName := "assets/key.txt"
-
-	// Open the file
-	file, err := os.Open(fileName)
+func CreateGPT(fs multipath.FS) (*GPT, error) {
+	fileName := "key.txt"
+	file, err := fs.ReadFile(fileName)
 
 	// Check if an error was returned
 	if err != nil {
 		return nil, err
 	}
 
-	defer file.Close()
-
-	bytes, err := ioutil.ReadAll(file)
-	if err != nil {
-		return nil, err
+	k := string(file)
+	// Check if the key is empty
+	if k == "" {
+		return nil, fmt.Errorf("key is empty")
 	}
-
-	k := string(bytes)
 	return &GPT{
 		key:       k,
 		Model:     "gpt-3.5-turbo",
@@ -79,16 +74,16 @@ func CreateGPT() (*GPT, error) {
 			- Escape characters in the original value should be removed.
 			- After creating the phrase you will translate the new phrase into the request locale.
 			- There should be no escape characters in the translated phrase.
-			
+
 			Your response must be JSON serializable.
 		`,
 	}, nil
 }
 
 // Creates the prompt
-func (gpt *GPT) createPrompt(inputLocale Locale, locale string) string {
+func (gpt *GPT) createPrompt(inputLocale *Locale, locale string) string {
 	str := "{"
-	for k, v := range inputLocale {
+	for k, v := range *inputLocale {
 		str += fmt.Sprintf(`"%s": "%s",`, k, v)
 	}
 	str += "}"
@@ -100,7 +95,7 @@ func (gpt *GPT) createPrompt(inputLocale Locale, locale string) string {
 	`, gpt.Style, locale, str)
 }
 
-func (gpt *GPT) GetResponse(inputLocale Locale, locale string) (Locale, error) {
+func (gpt *GPT) GetResponse(inputLocale *Locale, locale string) (Locale, error) {
 	url := "https://api.openai.com/v1/chat/completions"
 	prompt := GPTRequestBody{
 		Model: gpt.Model,
@@ -156,8 +151,11 @@ func (gpt *GPT) GetResponse(inputLocale Locale, locale string) (Locale, error) {
 	return *respLocale, nil
 }
 
-func GetGPTLocale(baseLocale Locale, locale string) (*Locale, error) {
-	gpt, err := CreateGPT()
+func GetGPTLocale(fs multipath.FS, baseLocale *Locale, locale string) (*Locale, error) {
+	if baseLocale == nil {
+		return nil, fmt.Errorf("baseLocale is nil")
+	}
+	gpt, err := CreateGPT(fs)
 	if err != nil {
 		return nil, err
 	}
