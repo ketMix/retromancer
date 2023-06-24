@@ -104,7 +104,6 @@ func (e *PlayerEntry) Init(ctx states.Context) error {
 			if e.hatIndex < 0 {
 				e.hatIndex = len(e.hats) - 1
 			}
-			e.hatItem.Sprite = resources.NewSprite(ctx.Manager.Get("images", e.hats[e.hatIndex]).(*ebiten.Image))
 			e.clickSound.Play(1.0)
 			e.SyncHat(ctx)
 			return false

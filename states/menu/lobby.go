@@ -57,9 +57,10 @@ func (s *Lobby) Init(ctx states.Context) error {
 	}
 
 	s.lobbyItem = &resources.InputItem{
-		X:     350,
-		Y:     20,
-		Width: 150,
+		X:           350,
+		Y:           20,
+		Width:       150,
+		Placeholder: ctx.L("Lobby or Address"),
 		Callback: func() bool {
 			return false
 		},
