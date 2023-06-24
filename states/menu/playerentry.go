@@ -221,7 +221,7 @@ func (e *PlayerEntry) Update(ctx states.Context, offsetX float64) error {
 	rightX := centerX + 50.0
 
 	x := centerX
-	y := 30.0
+	y := 60.0
 
 	e.hatText.X = x
 	e.hatText.Y = y
