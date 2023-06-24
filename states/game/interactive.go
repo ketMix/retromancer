@@ -131,7 +131,7 @@ func (i *Interactive) IncreaseActivation(parentIds []string) {
 	// If the activation index is now negative, and we have active sprite defined
 	// set it to 0 and activate the object
 	// otherwise reset the idx
-	if i.activationIdx <= 0 {
+	if i.activationIdx < 0 {
 		if i.activeSprite != nil {
 			i.activationIdx = 0
 			i.active = true
