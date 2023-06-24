@@ -115,6 +115,7 @@ func (t *TextItem) Draw(ctx states.DrawContext) {
 		t.renderRect = t.renderRect.AddInts(-t.renderRect.Width().ToInt()/2, 0)
 	}
 
+	ctx.Text.SetColor(color.NRGBA{0xff, 0xff, 0xff, 0xff})
 	ctx.Text.Draw(ctx.Screen, t.Text, int(t.X), int(t.Y))
 }
 
@@ -191,18 +192,20 @@ func (t *ButtonItem) Draw(ctx states.DrawContext) {
 	vector.StrokeLine(ctx.Screen, x2, y1, x2, y2, 1, c, false)
 	vector.StrokeLine(ctx.Screen, x1, y2, x2, y2, 1, c, false)
 
+	ctx.Text.SetColor(color.NRGBA{0xff, 0xff, 0xff, 0xff})
 	ctx.Text.Draw(ctx.Screen, t.Text, int(t.X), int(t.Y))
 }
 
 type InputItem struct {
-	X, Y       float64
-	Width      float64
-	renderRect fract.Rect
-	hovered    bool
-	hidden     bool
-	active     bool
-	Text       string
-	Callback   func() bool
+	X, Y        float64
+	Width       float64
+	Placeholder string
+	renderRect  fract.Rect
+	hovered     bool
+	hidden      bool
+	active      bool
+	Text        string
+	Callback    func() bool
 }
 
 func (t *InputItem) CheckState(x, y float64) bool {
@@ -271,6 +274,12 @@ func (t *InputItem) Draw(ctx states.DrawContext) {
 
 	ctx.Text.SetAlign(etxt.YCenter | etxt.XCenter)
 	txt := t.Text
+	if txt == "" && t.Placeholder != "" {
+		ctx.Text.SetColor(color.NRGBA{0x80, 0x80, 0x80, 0xff})
+		txt = t.Placeholder
+	} else {
+		ctx.Text.SetColor(color.NRGBA{0xff, 0xff, 0xff, 0xff})
+	}
 	if txt == "" {
 		txt = " "
 	}
@@ -296,5 +305,5 @@ func (t *InputItem) Draw(ctx states.DrawContext) {
 
 	vector.StrokeLine(ctx.Screen, x1, y2, x2, y2, 1, c, false)
 
-	ctx.Text.Draw(ctx.Screen, t.Text, int(t.X), int(t.Y))
+	ctx.Text.Draw(ctx.Screen, txt, int(t.X), int(t.Y))
 }
