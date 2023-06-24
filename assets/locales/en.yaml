@@ -1,6 +1,8 @@
 "Start": "Start"
+"Back": "Back"
 "Hat": "Hat"
 "Input": "Input"
+"WaitingPlayer": "Press <Start> to Join\nor\nWait for network player..."
 "Morte": "Morte"
 "ResetRoom": "<Enter> to restart room"
 "Quit": "<Esc> to quit"
