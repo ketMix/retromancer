@@ -10,7 +10,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
 
-type SinglePlayer struct {
+type Lobby struct {
 	clickSound      *resources.Sound
 	items           []resources.MenuItem
 	multiplayerItem *resources.ButtonItem
@@ -22,7 +22,7 @@ type SinglePlayer struct {
 	overlay         game.Overlay
 }
 
-func (s *SinglePlayer) Init(ctx states.Context) error {
+func (s *Lobby) Init(ctx states.Context) error {
 	s.overlay.Init(ctx)
 	//
 	s.clickSound = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
@@ -98,15 +98,15 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 	return nil
 }
 
-func (s *SinglePlayer) Finalize(ctx states.Context) error {
+func (s *Lobby) Finalize(ctx states.Context) error {
 	return nil
 }
 
-func (s *SinglePlayer) Enter(ctx states.Context) error {
+func (s *Lobby) Enter(ctx states.Context) error {
 	return nil
 }
 
-func (s *SinglePlayer) Update(ctx states.Context) error {
+func (s *Lobby) Update(ctx states.Context) error {
 	s.overlay.Update(ctx)
 
 	s.lobbyItem.Update()
@@ -143,7 +143,7 @@ func (s *SinglePlayer) Update(ctx states.Context) error {
 	return nil
 }
 
-func (s *SinglePlayer) Draw(ctx states.DrawContext) {
+func (s *Lobby) Draw(ctx states.DrawContext) {
 	ctx.Text.SetColor(color.White)
 	for _, e := range s.playerEntries {
 		e.Draw(ctx)

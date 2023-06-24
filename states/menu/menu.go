@@ -72,7 +72,7 @@ func (m *Menu) Update(ctx states.Context) error {
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButtonLeft) {
 		if m.play.Hit(float64(x), float64(y)) {
 			m.click.Play(1.0)
-			ctx.StateMachine.PushState(&SinglePlayer{})
+			ctx.StateMachine.PushState(&Lobby{})
 		} else if m.quit.Hit(float64(x), float64(y)) {
 			m.click.Play(1.0)
 			return states.ErrQuitGame
