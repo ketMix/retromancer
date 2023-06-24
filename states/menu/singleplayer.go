@@ -64,7 +64,7 @@ func (s *SinglePlayer) Update(ctx states.Context) error {
 		if inpututil.IsGamepadButtonJustPressed(gamepadID, ebiten.GamepadButton9) {
 			pl := game.NewLocalPlayer()
 			s.playerEntries[1].player = pl
-			s.playerEntries[1].useController = true
+			s.playerEntries[1].controllerId = int(gamepadID)
 			s.playerEntries[1].SyncController(ctx)
 			pl.GamepadID = int(gamepadID)
 		}

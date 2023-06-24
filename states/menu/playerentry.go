@@ -4,6 +4,7 @@ import (
 	"ebijam23/resources"
 	"ebijam23/states"
 	"ebijam23/states/game"
+	"fmt"
 	"math/rand"
 	"strings"
 
@@ -25,11 +26,12 @@ type PlayerEntry struct {
 	hatRight *resources.SpriteItem
 	hatText  *resources.TextItem
 	//
-	controllerTitle *resources.TextItem
-	controllerItem  *resources.SpriteItem
-	controllerLeft  *resources.SpriteItem
-	controllerRight *resources.SpriteItem
-	useController   bool
+	controllerTitle  *resources.TextItem
+	controllerItem   *resources.SpriteItem
+	controllerLeft   *resources.SpriteItem
+	controllerRight  *resources.SpriteItem
+	controllerIdText *resources.TextItem
+	controllerId     int
 	//
 	startText *resources.TextItem
 	//
@@ -54,19 +56,31 @@ func (e *PlayerEntry) SyncHat(ctx states.Context) {
 
 func (e *PlayerEntry) SyncController(ctx states.Context) {
 	if player, ok := e.player.(*game.LocalPlayer); ok {
-		if e.useController && len(ebiten.AppendGamepadIDs(nil)) == 0 {
-			e.useController = false
-		}
-
-		if e.useController {
-			gamepadIDs := ebiten.AppendGamepadIDs(nil)
-			player.GamepadID = int(gamepadIDs[0])
-
-			e.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "controller").(*ebiten.Image))
-		} else {
+		if e.controllerId == 0 {
 			player.GamepadID = 0
 			e.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "keyboard").(*ebiten.Image))
+			e.controllerIdText.Text = ""
+		} else {
+			player.GamepadID = e.controllerId
+			e.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "controller").(*ebiten.Image))
+			e.controllerIdText.Text = fmt.Sprintf("%d", e.controllerId)
 		}
+	}
+}
+
+func (e *PlayerEntry) SetController(dir int) {
+	controllers := ebiten.AppendGamepadIDs(nil)
+
+	next := e.controllerId + dir
+
+	if next > len(controllers) {
+		next = 0
+		e.controllerId = 0
+	} else if next < 0 {
+		next = len(controllers)
+		e.controllerId = next
+	} else {
+		e.controllerId = next
 	}
 }
 
@@ -141,7 +155,7 @@ func (e *PlayerEntry) Init(ctx states.Context) error {
 		Sprite: resources.NewSprite(ctx.Manager.Get("images", "arrow-left").(*ebiten.Image)),
 		Callback: func() bool {
 			e.clickSound.Play(1.0)
-			e.useController = !e.useController
+			e.SetController(-1)
 			e.SyncController(ctx)
 			return false
 		},
@@ -158,12 +172,19 @@ func (e *PlayerEntry) Init(ctx states.Context) error {
 		Sprite: resources.NewSprite(ctx.Manager.Get("images", "arrow-right").(*ebiten.Image)),
 		Callback: func() bool {
 			e.clickSound.Play(1.0)
-			e.useController = !e.useController
+			e.SetController(1)
 			e.SyncController(ctx)
 			return false
 		},
 	}
 	e.controllerRight.Sprite.Centered = true
+
+	e.controllerIdText = &resources.TextItem{
+		Text: "",
+		Callback: func() bool {
+			return false
+		},
+	}
 
 	// Other controls
 	e.startText = &resources.TextItem{
@@ -188,7 +209,7 @@ func (e *PlayerEntry) Init(ctx states.Context) error {
 		},
 	}
 
-	e.items = append(e.items, e.hatTitle, e.hatLeft, e.hatItem, e.hatRight, e.hatText, e.controllerTitle, e.controllerLeft, e.controllerItem, e.controllerRight, e.startText)
+	e.items = append(e.items, e.hatTitle, e.hatLeft, e.hatItem, e.hatRight, e.hatText, e.controllerTitle, e.controllerLeft, e.controllerItem, e.controllerRight, e.startText, e.controllerIdText)
 
 	return nil
 }
@@ -233,6 +254,9 @@ func (e *PlayerEntry) Update(ctx states.Context, offsetX float64) error {
 
 	e.controllerItem.X = x
 	e.controllerItem.Y = y
+
+	e.controllerIdText.X = x + 20
+	e.controllerIdText.Y = y
 
 	e.controllerRight.X = rightX
 	e.controllerRight.Y = y
