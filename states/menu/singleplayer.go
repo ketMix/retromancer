@@ -11,11 +11,15 @@ import (
 )
 
 type SinglePlayer struct {
-	clickSound    *resources.Sound
-	items         []resources.MenuItem
-	backItem      *resources.TextItem
-	playerEntries [2]*PlayerEntry
-	overlay       game.Overlay
+	clickSound      *resources.Sound
+	items           []resources.MenuItem
+	multiplayerItem *resources.ButtonItem
+	joinItem        *resources.ButtonItem
+	hostItem        *resources.ButtonItem
+	backItem        *resources.TextItem
+	lobbyItem       *resources.InputItem
+	playerEntries   [2]*PlayerEntry
+	overlay         game.Overlay
 }
 
 func (s *SinglePlayer) Init(ctx states.Context) error {
@@ -33,6 +37,52 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 		e.Init(ctx)
 	}
 
+	s.multiplayerItem = &resources.ButtonItem{
+		Text: ctx.L("Multiplayer"),
+		X:    500,
+		Y:    20,
+		Callback: func() bool {
+			s.clickSound.Play(1.0)
+			for i, item := range s.items {
+				if item == s.multiplayerItem {
+					s.items = append(s.items[:i], s.items[i+1:]...)
+					s.items = append(s.items, s.lobbyItem, s.joinItem, s.hostItem)
+					break
+				}
+			}
+			return false
+		},
+	}
+
+	s.lobbyItem = &resources.InputItem{
+		X:     350,
+		Y:     20,
+		Width: 150,
+		Callback: func() bool {
+			return false
+		},
+	}
+
+	s.joinItem = &resources.ButtonItem{
+		Text: ctx.L("Host"),
+		X:    450,
+		Y:    20,
+		Callback: func() bool {
+			s.clickSound.Play(1.0)
+			return false
+		},
+	}
+
+	s.hostItem = &resources.ButtonItem{
+		Text: ctx.L("Join"),
+		X:    450 + 50,
+		Y:    20,
+		Callback: func() bool {
+			s.clickSound.Play(1.0)
+			return false
+		},
+	}
+
 	s.backItem = &resources.TextItem{
 		Text: ctx.L("Back"),
 		X:    30,
@@ -43,7 +93,7 @@ func (s *SinglePlayer) Init(ctx states.Context) error {
 			return false
 		},
 	}
-	s.items = append(s.items, s.backItem)
+	s.items = append(s.items, s.backItem, s.multiplayerItem)
 
 	return nil
 }
@@ -58,6 +108,8 @@ func (s *SinglePlayer) Enter(ctx states.Context) error {
 
 func (s *SinglePlayer) Update(ctx states.Context) error {
 	s.overlay.Update(ctx)
+
+	s.lobbyItem.Update()
 
 	// Check for controller button hit to activate player 2.
 	for _, gamepadID := range ebiten.AppendGamepadIDs(nil) {
