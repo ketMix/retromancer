@@ -8,4 +8,5 @@ type Flags struct {
 	Muted       bool
 	Fullscreen  bool
 	SkipIntro   bool
+	Map         string
 }

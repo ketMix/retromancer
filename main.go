@@ -13,6 +13,8 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/kettek/go-multipath/v2"
 	"golang.org/x/image/font/sfnt"
+
+	gaem "ebijam23/states/game"
 )
 
 //go:embed assets/*
@@ -29,6 +31,7 @@ func main() {
 	flag.BoolVar(&game.Flags.SkipIntro, "skip-intro", false, "whether to skip the intro")
 	flag.StringVar(&game.Flags.Locale, "locale", "en", "locale to use")
 	flag.StringVar(&game.Flags.Font, "font", "x12y16pxMaruMonica", "font to use")
+	flag.StringVar(&game.Flags.Map, "map", "", "map to load")
 	flag.Parse()
 
 	// Allow loading from filesystem.
@@ -89,9 +92,18 @@ func main() {
 
 	game.PushState(&menu.Menu{})
 
-	// Push the intro state
-	if !game.Flags.SkipIntro {
-		game.PushState(&menu.Intro{})
+	// Quick skip for map testing.
+	if game.Flags.Map != "" {
+		game.PushState(&gaem.World{
+			StartingMap: game.Flags.Map,
+			Players: []gaem.Player{
+				gaem.NewLocalPlayer(),
+			},
+		})
+	} else {
+		if !game.Flags.SkipIntro {
+			game.PushState(&menu.Intro{})
+		}
 	}
 
 	if err := ebiten.RunGame(game); err != nil {
