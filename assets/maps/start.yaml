@@ -85,6 +85,7 @@ actors:
             - candle1
             - candle2
             - candle3
+        - type: killedEnemies
   - id: drawbridge
     type: interactive
     sprite: drawbridge

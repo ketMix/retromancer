@@ -95,7 +95,7 @@ func (s *World) Update(ctx states.Context) error {
 
 				if pc, ok := player.Actor().(*PC); ok {
 					hoveringInteractable := false
-					for _, a := range s.activeMap.GetInteractiveActors() {
+					for _, a := range s.activeMap.interactives {
 						if !a.Reverseable() {
 							continue
 						}

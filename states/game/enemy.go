@@ -8,6 +8,7 @@ import (
 )
 
 type Enemy struct {
+	id         string
 	sprite     *resources.Sprite
 	deadSprite *resources.Sprite
 	hitSfx     *resources.Sound
@@ -20,7 +21,7 @@ type Enemy struct {
 	spawner    *Spawner
 }
 
-func CreateEnemy(ctx states.Context, enemyName string) *Enemy {
+func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 	// Get the enemy definition using enemy name
 	enemyDef := ctx.Manager.GetAs("enemies", enemyName, (*resources.Enemy)(nil)).(*resources.Enemy)
 
@@ -63,6 +64,10 @@ func CreateEnemy(ctx states.Context, enemyName string) *Enemy {
 		behavior: enemyDef.Behavior,
 		spawner:  spawner,
 	}
+}
+
+func (e *Enemy) ID() string {
+	return e.id
 }
 
 func (e *Enemy) SetXY(x, y float64) {

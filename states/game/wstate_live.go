@@ -257,9 +257,11 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 		}
 	}
 
+	interactives := s.activeMap.interactives
+	enemies := s.activeMap.enemies
+
 	// Check the our interactive actor conditions
-	interactiveActors := s.activeMap.GetInteractiveActors()
-	for _, actor := range interactiveActors {
+	for _, actor := range interactives {
 		if actor.id == "drawbridge" && actor.active { // Need to not run this every update and not tie to id
 			cell := s.activeMap.FindCellById(actor.ID())
 			cells := make([]*resources.Cell, 0)
@@ -276,19 +278,12 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			}
 		}
 		if !actor.active {
-			conditions := actor.Conditions()
-			for _, condition := range conditions {
-				args := condition.Args
-				switch condition.Type {
-				case resources.Active:
-					if CheckActiveCondition(args, interactiveActors) {
-						actor.IncreaseActivation(nil)
-						cell := s.activeMap.FindCellById(actor.ID())
-						if cell != nil {
-							cell.BlockMove = false // No
-							cell.BlockView = false // No
-						}
-					}
+			if CheckConditions(actor.Conditions(), interactives, enemies) {
+				actor.IncreaseActivation(nil)
+				cell := s.activeMap.FindCellById(actor.ID())
+				if cell != nil {
+					cell.BlockMove = false // No
+					cell.BlockView = false // No
 				}
 			}
 		}
@@ -296,15 +291,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 
 	// Check our map conditions if not yet cleared
 	if !s.activeMap.cleared {
-		conditions := s.activeMap.conditions
-		for _, condition := range conditions {
-			args := condition.Args
-			switch condition.Type {
-			case resources.Active:
-				if CheckActiveCondition(args, interactiveActors) {
-					s.activeMap.cleared = true
-				}
-			}
+		if CheckConditions(s.activeMap.conditions, interactives, enemies) {
+			s.activeMap.cleared = true
 		}
 	}
 

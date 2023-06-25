@@ -22,15 +22,17 @@ const (
 )
 
 type Map struct {
-	filename   string
-	data       *resources.Map
-	actors     []Actor
-	bullets    []*Bullet
-	conditions []*resources.ConditionDef
-	cleared    bool
-	currentZ   int // This isn't the right location for this, but we need to keep track of the current/active Z for rendering appropriate fading.
-	vfx        resources.VFXList
-	particles  []*Particle
+	filename     string
+	data         *resources.Map
+	actors       []Actor
+	interactives []*Interactive
+	enemies      []*Enemy
+	bullets      []*Bullet
+	conditions   []*resources.ConditionDef
+	cleared      bool
+	currentZ     int // This isn't the right location for this, but we need to keep track of the current/active Z for rendering appropriate fading.
+	vfx          resources.VFXList
+	particles    []*Particle
 }
 
 func (s *World) TravelToMap(ctx states.Context, mapName string) error {
@@ -108,7 +110,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			interactiveMap[a.ID] = interactive // Add it to map for linking later
 
 			m.actors = append(m.actors, interactive)
-
+			m.interactives = append(m.interactives, interactive)
 		case "spawner":
 			spawner := CreateSpawner(ctx, a.BulletGroups)
 			spawner.SetXY(x, y)
@@ -120,10 +122,11 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 			m.actors = append(m.actors, snaggable)
 		case "enemy":
-			enemy := CreateEnemy(ctx, a.Sprite)
+			enemy := CreateEnemy(ctx, a.ID, a.Sprite)
 			enemy.SetXY(x, y)
 
 			m.actors = append(m.actors, enemy)
+			m.enemies = append(m.enemies, enemy)
 		}
 	}
 
@@ -390,16 +393,6 @@ func (m *Map) DoesLineCollide(fx1, fy1, fx2, fy2 float64, z int) bool {
 	}
 
 	return false
-}
-
-func (m *Map) GetInteractiveActors() []*Interactive {
-	var actors []*Interactive
-	for _, a := range m.actors {
-		if a, ok := a.(*Interactive); ok {
-			actors = append(actors, a)
-		}
-	}
-	return actors
 }
 
 func (m *Map) OutOfBounds(s Shape) bool {
