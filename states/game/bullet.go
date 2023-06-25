@@ -22,21 +22,22 @@ const (
 type Bullet struct {
 	Shape           CircleShape
 	bulletType      BulletType
-	TargetActor     Actor   // Target actor to head towards
-	Speed           float64 // How fastum the bullet goes
-	Angle           float64 // What angle the bullet has
-	Acceleration    float64 // How fast the bullet accelerates
-	AccelAccel      float64 // How fast the bullet accelerates its acceleration
-	MaxSpeed        float64 // Maximum speed of the bullet
-	AngularVelocity float64 // How fast the bullet rotates
-	Color           color.Color
-	aimDelay        int       // How long the bullet should wait before aiming at player
-	aimTime         int       // How long the bullet should aim at player
-	reflected       bool      // If the bullet has been reflected
-	deflected       bool      // If the bullet has been deflected.
-	holdFor         int       // An amount of time to hold the bullet in place.
-	timeLine        []*Bullet // Positions the bullet has been in
-	nextParticle    int       // Next particle to spawn (negative upwards)
+	TargetActor     Actor       // Target actor to head towards
+	Speed           float64     // How fastum the bullet goes
+	Angle           float64     // What angle the bullet has
+	Acceleration    float64     // How fast the bullet accelerates
+	AccelAccel      float64     // How fast the bullet accelerates its acceleration
+	MaxSpeed        float64     // Maximum speed of the bullet
+	AngularVelocity float64     // How fast the bullet rotates
+	Color           color.Color // Color of the bullet
+	borderColor     color.Color // Color of the border
+	aimDelay        int         // How long the bullet should wait before aiming at player
+	aimTime         int         // How long the bullet should aim at player
+	reflected       bool        // If the bullet has been reflected
+	deflected       bool        // If the bullet has been deflected.
+	holdFor         int         // An amount of time to hold the bullet in place.
+	timeLine        []*Bullet   // Positions the bullet has been in
+	nextParticle    int         // Next particle to spawn (negative upwards)
 	sprite          *resources.Sprite
 	Destroyed       bool
 }
@@ -44,7 +45,7 @@ type Bullet struct {
 // TODO: do this differently, hard to read and write arguments
 func CreateBullet(
 	bulletType BulletType,
-	color color.Color,
+	clr color.Color,
 	radius, speed, angle, acceleration, accelAccel, maxSpeed, angularVelocity float64,
 	aimTime, aimDelay int,
 ) *Bullet {
@@ -57,7 +58,8 @@ func CreateBullet(
 		Angle:           angle,
 		MaxSpeed:        maxSpeed,
 		AngularVelocity: angularVelocity,
-		Color:           color,
+		Color:           clr,
+		borderColor:     color.White,
 		aimTime:         aimTime,
 		aimDelay:        aimDelay,
 		timeLine:        make([]*Bullet, 0),
@@ -162,6 +164,7 @@ func (b *Bullet) Update() (actions []Action) {
 		// if we're at the first point in timeLine, use the bullet as current bullet
 		prevBullet := b.timeLine[0]
 		b.timeLine = b.timeLine[:0]
+		b.borderColor = prevBullet.borderColor
 		b.Speed = prevBullet.Speed
 		b.Angle = prevBullet.Angle
 		b.Acceleration = prevBullet.Acceleration
@@ -225,8 +228,10 @@ func (b *Bullet) Update() (actions []Action) {
 		b.aimDelay--
 	}
 
-	// Add bullet to timeline
-	b.timeLine = append(b.timeLine, BulletFromExisting(b, b.Angle))
+	// Add bullet to timeline if not deflected
+	if !b.deflected {
+		b.timeLine = append(b.timeLine, BulletFromExisting(b, b.Angle))
+	}
 
 	// If we're not aiming at the player yet, adjust angle by angular velocity.
 	if b.aimDelay > 0 || b.aimTime <= 0 {
@@ -255,6 +260,9 @@ func (b *Bullet) Reflect() {
 	if b.reflected {
 		return
 	}
+	// Turn the bullet border REFLECT color
+	b.borderColor = color.NRGBA{0x66, 0x99, 0xff, 0xff}
+
 	// Stop aiming the bullet if it was aimed. Perhaps this should deflect the bullet towards the spawner that created it.
 	b.reflected = true
 }
@@ -263,10 +271,15 @@ func (b *Bullet) Deflect(angle float64) {
 	if b.deflected {
 		return
 	}
+
+	// Turn the bullet border DEFLECT color
+	b.borderColor = color.NRGBA{0xff, 0x66, 0x99, 0xff}
+
 	// Stop aiming the bullet if it was aimed. Perhaps this should deflect the bullet towards the spawner that created it.
 	b.aimTime = 0
 	// FIXME: Deflect should take into account the bullet's angle relative to the deflection angle and use that for the final angle.
 	b.Angle = angle
+	b.AngularVelocity = 0
 	b.deflected = true
 }
 
@@ -279,8 +292,7 @@ func (b *Bullet) Draw(ctx states.DrawContext) {
 	switch b.bulletType {
 	case Circular:
 		// Draw circle border? Bit too visually noisy.
-		// vector.StrokeCircle(screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius)+2, 1, color.White, false)
-		return
+		vector.StrokeCircle(ctx.Screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius)*1.2, 1, b.borderColor, false)
 	case Directional:
 		// Draw V shape on both ends
 		vector.StrokeLine(
@@ -290,7 +302,7 @@ func (b *Bullet) Draw(ctx states.DrawContext) {
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)+b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)+b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
 			1,
-			color.White,
+			b.borderColor,
 			false,
 		)
 		vector.StrokeLine(
@@ -300,7 +312,7 @@ func (b *Bullet) Draw(ctx states.DrawContext) {
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)-b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)-b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
 			1,
-			color.White,
+			b.borderColor,
 			false,
 		)
 		vector.StrokeLine(
@@ -310,7 +322,7 @@ func (b *Bullet) Draw(ctx states.DrawContext) {
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)+b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)+b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
 			1,
-			color.White,
+			b.borderColor,
 			false,
 		)
 		vector.StrokeLine(
@@ -320,30 +332,33 @@ func (b *Bullet) Draw(ctx states.DrawContext) {
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)-b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)-b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
 			1,
-			color.White,
+			b.borderColor,
 			false,
 		)
 	case Vector:
-		// Draw V shape
+		// Circular border + V shape
 		// Should be drawn on the edge in the direction of the bullet's angle
+		vector.StrokeCircle(ctx.Screen, float32(b.sprite.X), float32(b.sprite.Y), float32(b.Shape.Radius)*1.2, 1, b.borderColor, false)
+
+		// TODO: replace with triangle in borderColor
 		vector.StrokeLine(
 			ctx.Screen,
-			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*2),
-			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*2),
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*3),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*3),
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)+b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)+b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
 			1,
-			color.White,
+			b.borderColor,
 			false,
 		)
 		vector.StrokeLine(
 			ctx.Screen,
-			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*2),
-			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*2),
+			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)*3),
+			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)*3),
 			float32(b.sprite.X+b.Shape.Radius*math.Cos(b.Angle)-b.Shape.Radius*math.Cos(b.Angle+math.Pi/2)),
 			float32(b.sprite.Y+b.Shape.Radius*math.Sin(b.Angle)-b.Shape.Radius*math.Sin(b.Angle+math.Pi/2)),
 			1,
-			color.White,
+			b.borderColor,
 			false,
 		)
 	}
