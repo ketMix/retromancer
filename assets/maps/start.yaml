@@ -31,6 +31,8 @@ runes:
     sprite: dead-grass
   " ":
     sprite: empty
+  "E":
+    sprite: empty
   "D":
     sprite: empty
     id: door
@@ -40,67 +42,20 @@ runes:
   "C":
     sprite: empty
     id: candle1
-  "E":
+  "c":
     sprite: empty
     id: candle2
-  "B":
-    sprite: empty
-    id: candle3
-  "F":
-    sprite: empty
-    id: lever
-  "S":
-    sprite: empty
-    id: skell
-  "J":
-    sprite: empty
-    id: bat
-  "G":
-    sprite: empty
-    id: drawbridge
-  "W":
-    sprite: empty
-    id: wheel
-  "L":
-    sprite: empty
-    id: life1
-  "%":
-    sprite: empty
-    id: wall1
-    blockMove: true
-    blockView: true
-    isometric: true
-  "&":
-    sprite: empty
-    id: wall2
-    blockMove: true
-    blockView: true
-    isometric: true
 actors:
   - id: door
     type: interactive
     sprite: door
     interactive:
-      map: ballpit
+      map: debug
       conditions:
         - type: active
           args:
             - candle1
             - candle2
-            - candle3
-        - type: killedEnemies
-  - id: drawbridge
-    type: interactive
-    sprite: drawbridge
-  - id: wheel
-    type: interactive
-    sprite: wheel
-    interactive:
-      reversable: true
-      touchable: true
-      degrade: true
-      linked:
-        - drawbridge
   - id: candle1
     type: interactive
     sprite: candle
@@ -112,57 +67,24 @@ actors:
     interactive:
       reversable: true
       degrade: true
-  - id: candle3
-    type: interactive
-    sprite: candle
-    interactive:
-      reversable: true
-      degrade: true
-  - id: lever
-    type: interactive
-    sprite: lever
-    interactive:
-      touchable: true
-  - id: wall1
-    type: interactive
-    sprite: wall1
-    interactive:
-      conditions:
-        - type: active
-          args:
-            - lever
-  - id: wall2
-    type: interactive
-    sprite: wall1
-    interactive:
-      conditions:
-        - type: active
-          args:
-            - lever
-  - id: life1
-    type: snaggable
-    sprite: item-life
-  - id: skell
-    type: enemy
-    sprite: skell
-  - id: bat
-    type: enemy
-    sprite: bat
 layers:
   - |
-   ^********D*******^.^
-   ^ B% C      E  F ^.^
-   ^  &     J       ^.^
-   ^^^^          ^^^^.^
-   ^^               ^.^
-   ^              L ^.^
-   ^  S             ^.^
-   ^^       G   W   ^.^
-   ^~~~~~~~~~~~~~~~~^.^
-   ^^^^^,, ____     ^.^
-   ^^^^,,,,,__  ^    .^
-   ^^^,,,,,____ ^  @ .^
-   ^******************^
+
+
+
+
+
+
+
+    E          ^********D*******^
+    E          ^      c   C     ^
+    E          ^                ^
+    E          ^                ^
+    E          ^        @       ^
+    E          ^^^^^,, ____     ^
+    E          ^^^^,,,,,__  ^   ^
+    E          ^^^,,,,,____ ^   ^
+    E          ^****************^
 #  - |
 #   ^              * ^ 
 #   ^                ^ 

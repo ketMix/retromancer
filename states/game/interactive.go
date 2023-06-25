@@ -19,6 +19,7 @@ type Interactive struct {
 	inactiveSprite     *resources.Sprite
 	conditions         []*resources.ConditionDef
 	shape              RectangleShape
+	nextMap            *string
 	reversable         bool
 	shootable          bool // Whether or not it can be hit by bullets
 	touchable          bool // Whether or not it can be reversed by touching
@@ -78,12 +79,14 @@ func CreateInteractive(ctx states.Context, actorDef resources.ActorSpawn) *Inter
 		},
 		activationIdx: activationIdx,
 	}
+
 	// If there are interactive definitions, set them
 	i := actorDef.Interactive
 	if i != nil {
 		interactive.active = i.Active
 		interactive.degrade = i.Degrade
 		interactive.conditions = i.Conditions
+		interactive.nextMap = i.Map
 
 		// Default reversable to true
 		interactive.reversable = i.Reversable

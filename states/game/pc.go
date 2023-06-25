@@ -267,3 +267,10 @@ func (p *PC) SetSize(r float64) {
 func (p *PC) Destroyed() bool {
 	return false
 }
+
+func (p *PC) Hurtie() {
+	if p.InvulnerableTicks <= 0 {
+		p.Lives--
+		p.InvulnerableTicks = 40
+	}
+}

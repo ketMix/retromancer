@@ -201,8 +201,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						s.SpawnParticle(ctx, "hurt", x, y, bullet.Angle-math.Pi/4+(math.Pi/2*rand.Float64()), rand.Float64()*2.0, 30)
 					}
 					bullet.Destroyed = true
-					p.InvulnerableTicks = 40
-					p.Lives--
+					p.Hurtie()
 					break
 				}
 				continue
@@ -235,13 +234,22 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	for _, pl := range s.Players {
 		if pc, ok := pl.Actor().(*PC); ok {
 			for _, actor := range s.activeMap.actors {
-				// If touchable, apply reverse to it
+
+				// Check interactive collisions.
 				if i, ok := actor.(*Interactive); ok {
+					// If touchable, apply reverse to it
 					if i.touchable && i.shape.Collides(pl.Actor().Shape()) {
 						i.Reverse()
 						continue
 					}
+
+					// If next door and map is cleared, go to next map.
+					if i.nextMap != nil && i.shape.Collides(pl.Actor().Shape()) && s.activeMap.cleared {
+						s.TravelToMap(ctx, *i.nextMap)
+					}
 				}
+
+				// Check snaggable collisions.
 				if s, ok := actor.(*Snaggable); ok {
 					if s.shape.Collides(pl.Actor().Shape()) && pc.Lives < PLAYER_MAX_LIVES {
 						s.destroyed = true
@@ -251,6 +259,13 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 							pc.Lives++
 						}
 						continue
+					}
+				}
+
+				// Check enemy collisions.
+				if e, ok := actor.(*Enemy); ok {
+					if e.IsAlive() && e.Shape().Collides(pl.Actor().Shape()) {
+						pc.Hurtie()
 					}
 				}
 			}

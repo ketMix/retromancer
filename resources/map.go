@@ -77,6 +77,7 @@ func (m *Map) UnmarshalYAML(unmarshal func(interface{}) error) error {
 			m.Height = len(rows)
 		}
 		for _, row := range rows {
+			fmt.Println(row)
 			l.Cells = append(l.Cells, []Cell{})
 			if len(row) > m.Width {
 				m.Width = len(row)
