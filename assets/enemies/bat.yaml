@@ -1,0 +1,12 @@
+sprite: bat
+framerate: 2
+health: 1
+speed: 3
+behavior: random
+bullets:
+  - alias: echo
+    spawnRate: 100
+    lastSpawnedAt: 20
+  - alias: echo
+    spawnRate: 100
+    lastSpawnedAt: 25

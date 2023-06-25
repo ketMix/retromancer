@@ -52,6 +52,9 @@ runes:
   "S":
     sprite: empty
     id: skell
+  "J":
+    sprite: empty
+    id: bat
   "G":
     sprite: empty
     id: drawbridge
@@ -142,11 +145,14 @@ actors:
   - id: skell
     type: enemy
     sprite: skell
+  - id: bat
+    type: enemy
+    sprite: bat
 layers:
   - |
    ^********D*******^.^
    ^ B% C      E  F ^.^
-   ^  &             ^.^
+   ^  &     J       ^.^
    ^^^^          ^^^^.^
    ^^               ^.^
    ^              L ^.^
