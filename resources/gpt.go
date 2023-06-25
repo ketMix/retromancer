@@ -70,11 +70,12 @@ func CreateGPT(fs multipath.FS) (*GPT, error) {
 			- For each key you should create a new phrase that is different of the original.
 			- A style will be requested that you should use for creating the new phrase.
 			- All values should be less than or equal to the length of their original value.
-			- Escape characters in the original value should be removed.
+			- All new line characters should remain in the output.
 			- After creating the phrase you will translate the new phrase into the request locale.
 			- There should be no escape characters in the translated phrase.
 			- The value for the key should be the translated phrase only.
 			- All keys must be present in the output.
+			
 			Your response must be YAML unmarshalable.
 		`,
 	}, nil

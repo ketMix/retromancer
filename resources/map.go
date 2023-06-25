@@ -51,6 +51,7 @@ type Interactive struct {
 	Active     bool            `yaml:"active"`
 	Touchable  bool            `yaml:"touchable"`
 	Health     int             `yaml:"health"`
+	Text       string          `yaml:"text"`
 }
 
 type ActorSpawn struct {

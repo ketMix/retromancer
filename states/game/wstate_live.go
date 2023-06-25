@@ -7,11 +7,14 @@ import (
 	"math"
 	"math/rand"
 	"reflect"
+	"strings"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
 type WorldStateLive struct {
+	signText *string
 }
 
 func (w *WorldStateLive) Enter(s *World, ctx states.Context) {
@@ -235,12 +238,19 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 
 	// Oh boy, yet another loop.
 	// Check for collisions between player characters and interactives/snaggables.
+	touchingSign := false
 	for _, pl := range s.Players {
 		if pc, ok := pl.Actor().(*PC); ok {
 			for _, actor := range s.activeMap.actors {
-
 				// Check interactive collisions.
 				if i, ok := actor.(*Interactive); ok {
+					// If the interactive has text and is active, show the text.
+					if !touchingSign && i.text != "" && i.Active() && i.shape.Collides(pl.Actor().Shape()) {
+						localized := ctx.L(i.text)
+						w.signText = &localized
+						touchingSign = true
+					}
+
 					// If touchable, apply reverse to it
 					if i.touchable && i.shape.Collides(pl.Actor().Shape()) {
 						i.Reverse()
@@ -274,6 +284,9 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				}
 			}
 		}
+	}
+	if !touchingSign {
+		w.signText = nil
 	}
 
 	interactives := s.activeMap.interactives
@@ -355,6 +368,64 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 			vector.DrawFilledRect(screen, float32(x+1), float32(y+1), float32(w2), float32(h-3), color.White, false)
 
 			y += h + 5*/
+		}
+	}
+
+	// Draw the sign text if it exists.
+	// TODO: Make this look like a sign
+	if w.signText != nil {
+		centerX := float32(ctx.Screen.Bounds().Max.X / 2)
+		centerY := float32(ctx.Screen.Bounds().Max.Y / 2)
+		boardSizeX := float32(ctx.Screen.Bounds().Max.X) * 0.85
+		boardSizeY := float32(ctx.Screen.Bounds().Max.Y) * 0.75
+		text := strings.Split(*w.signText, "\n")
+
+		boardX := centerX - boardSizeX/2
+		boardY := centerY - boardSizeY/2
+
+		// Draw the stake
+		vector.DrawFilledRect(
+			ctx.Screen,
+			centerX-boardSizeX*0.05,
+			centerY-boardSizeY*0.05,
+			boardSizeX*0.05,
+			float32(ctx.Screen.Bounds().Max.Y),
+			color.RGBA{0x8b, 0x45, 0x13, 0xff},
+			false,
+		)
+
+		// Draw the sign board
+		vector.DrawFilledRect(
+			ctx.Screen,
+			boardX,
+			boardY,
+			boardSizeX,
+			boardSizeY,
+			color.RGBA{0x8b, 0x45, 0x13, 0xff},
+			false,
+		)
+
+		// Draw the paper
+		vector.DrawFilledRect(
+			ctx.Screen,
+			boardX+boardSizeX*0.05,
+			boardY+boardSizeY*0.1,
+			boardSizeX*0.9,
+			boardSizeY*0.8,
+			color.White,
+			false,
+		)
+
+		// Draw the text
+		x := int(centerX)
+		y := int(centerY)
+		for _, line := range text {
+			{
+				ctx.Text.SetScale(1.5)
+				ctx.Text.SetColor(color.Black)
+				ctx.Text.Draw(ctx.Screen, line, x, y)
+			}
+			y += int(ctx.Text.Utils().GetLineHeight())
 		}
 	}
 }

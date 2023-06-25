@@ -16,6 +16,7 @@ type Interactive struct {
 	id                 string         // ID of the interactive object, used to identify it in the game for condition triggering
 	maxHp              int            // Hit points of the interactive object, if it reaches 0, it is activated (only relevant for shooting)
 	hp                 int            // Current hit points of the interactive object, also determines if it is shootable
+	text               string         // Text to display when the interactive is active and touched
 	linkedInteractives []*Interactive // Holds a list of interactives that have their activation state linked to this one
 	active             bool
 	activeSprite       *resources.Sprite
@@ -93,6 +94,7 @@ func CreateInteractive(ctx states.Context, actorDef resources.ActorSpawn) *Inter
 		interactive.hp = i.Health
 		interactive.reversable = i.Reversable
 		interactive.touchable = i.Touchable
+		interactive.text = i.Text
 	}
 	return interactive
 }

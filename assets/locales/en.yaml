@@ -15,3 +15,8 @@
 "Intro3": "ripl agin"
 "Intro4": "... u wakems up"
 "SkipIntro": "Press <Enter> or <Escape> to skip"
+"SignExit": "Press <Enter> to return"
+
+# Signs
+"sign-intro-reverse": "Press <Left-Click> to reverse some objects"
+"sign-intro-grats": "Nice!\nYour hand will glow yellow on reversable objects"

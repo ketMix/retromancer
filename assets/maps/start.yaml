@@ -45,6 +45,12 @@ runes:
   "c":
     sprite: empty
     id: candle2
+  "s":
+    sprite: empty
+    id: sign
+  "S":
+    sprite: empty
+    id: sign-grats
 actors:
   - id: door
     type: interactive
@@ -67,6 +73,18 @@ actors:
     interactive:
       reversable: true
       degrade: true
+  - id: sign
+    type: interactive
+    sprite: sign
+    interactive:
+      text: sign-intro-reverse
+      active: true
+  - id: sign-grats
+    type: interactive
+    sprite: sign
+    interactive:
+      text: sign-intro-grats
+      reversable: true
 layers:
   - |
 
@@ -79,7 +97,7 @@ layers:
     E          ^********D*******^
     E          ^      c   C     ^
     E          ^                ^
-    E          ^                ^
+    E          ^    s       S   ^
     E          ^        @       ^
     E          ^^^^^,, ____     ^
     E          ^^^^,,,,,__  ^   ^

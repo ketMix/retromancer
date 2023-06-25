@@ -104,11 +104,11 @@ func main() {
 	} else {
 		if !game.Flags.SkipIntro {
 			game.PushState(&menu.Intro{})
+			game.PushState(&menu.Loading{})
 		}
 	}
 
 	// Set up loading screen.
-	game.PushState(&menu.Loading{})
 	if err := ebiten.RunGame(game); err != nil {
 		if err == states.ErrQuitGame {
 			return
