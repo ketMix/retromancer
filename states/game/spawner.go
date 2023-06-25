@@ -42,8 +42,7 @@ func (s *Spawner) Update() (actions []Action) {
 	// Update the bullet groups
 	for _, bg := range s.bulletGroups {
 		// Add the actions from the bullet group to the list of actions
-		bgActions := bg.Update()
-		actions = append(actions, bgActions...)
+		actions = append(actions, bg.Update()...)
 	}
 	return actions
 }

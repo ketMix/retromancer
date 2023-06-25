@@ -60,7 +60,6 @@ type ActorSpawn struct {
 	Sprite       string         `yaml:"sprite"`
 	BulletGroups []*BulletGroup `yaml:"bullets,omitempty"`
 	Interactive  *Interactive   `yaml:"interactive,omitempty"`
-	Enemy        *Enemy         `yaml:"enemy,omitempty"`
 }
 
 func (m *Map) UnmarshalYAML(unmarshal func(interface{}) error) error {

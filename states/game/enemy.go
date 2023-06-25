@@ -10,15 +10,21 @@ import (
 type Enemy struct {
 	sprite     *resources.Sprite
 	deadSprite *resources.Sprite
+	hitSfx     *resources.Sound
+	deadSfx    *resources.Sound
 	shape      RectangleShape
 	phases     []*resources.Enemy
 	health     int
 	speed      int
 	behavior   string
-	spawner    Spawner
+	spawner    *Spawner
 }
 
-func CreateEnemy(ctx states.Context, enemyDef resources.Enemy) *Enemy {
+func CreateEnemy(ctx states.Context, enemyName string) *Enemy {
+	// Get the enemy definition using enemy name
+	enemyDef := ctx.Manager.GetAs("enemies", enemyName, (*resources.Enemy)(nil)).(*resources.Enemy)
+
+	// Get the alive and dead sprites
 	aliveImageNames := ctx.Manager.GetNamesWithPrefix("images", enemyDef.Sprite+"-alive")
 	aliveImages := make([]*ebiten.Image, 0)
 	for _, s := range aliveImageNames {
@@ -33,9 +39,20 @@ func CreateEnemy(ctx states.Context, enemyDef resources.Enemy) *Enemy {
 	}
 	deadSprite := resources.NewAnimatedSprite(deadImages)
 
+	// Get the hit and dead sounds
+	hitSfx := ctx.Manager.GetAs("sounds", enemyDef.Sprite+"-hit", (*resources.Sound)(nil)).(*resources.Sound)
+	deadSfx := ctx.Manager.GetAs("sounds", enemyDef.Sprite+"-dead", (*resources.Sound)(nil)).(*resources.Sound)
+
+	// Create the spawner
+	var spawner *Spawner
+	if enemyDef.Bullets != nil {
+		spawner = CreateSpawner(ctx, enemyDef.Bullets)
+	}
 	return &Enemy{
 		sprite:     aliveSprite,
 		deadSprite: deadSprite,
+		hitSfx:     hitSfx,
+		deadSfx:    deadSfx,
 		shape: RectangleShape{
 			Width:  aliveSprite.Width(),
 			Height: aliveSprite.Height(),
@@ -44,13 +61,14 @@ func CreateEnemy(ctx states.Context, enemyDef resources.Enemy) *Enemy {
 		health:   enemyDef.Health,
 		speed:    enemyDef.Speed,
 		behavior: enemyDef.Behavior,
-		spawner:  *CreateSpawner(ctx, enemyDef.Bullets),
+		spawner:  spawner,
 	}
 }
 
 func (e *Enemy) SetXY(x, y float64) {
 	e.sprite.SetXY(x, y)
 	e.deadSprite.SetXY(x, y)
+	e.spawner.SetXY(x+e.sprite.Width()/2, y+e.sprite.Height()/2)
 	e.shape.X = x
 	e.shape.Y = y
 }
@@ -60,12 +78,35 @@ func (e *Enemy) Draw(ctx states.DrawContext) {
 		e.deadSprite.Draw(ctx)
 	} else {
 		e.sprite.Draw(ctx)
-		e.spawner.Draw(ctx)
+		if e.spawner != nil {
+			e.spawner.Draw(ctx)
+		}
 	}
 }
 
-func (e *Enemy) Update() []Action {
-	return nil
+func (e *Enemy) Update() (a []Action) {
+	if e.health <= 0 {
+		e.deadSprite.Update()
+	} else {
+		e.sprite.Update()
+		if e.spawner != nil {
+			a = append(a, e.spawner.Update()...)
+		}
+	}
+	return a
+}
+
+func (e *Enemy) IsAlive() bool {
+	return e.health > 0
+}
+
+func (e *Enemy) Damage(amount int) {
+	e.health -= amount
+	if e.health <= 0 {
+		e.deadSfx.Play(0.5) // TODO: use global volume setting?
+	} else {
+		e.hitSfx.Play(0.5) // TODO: use global volume setting?
+	}
 }
 
 func (e *Enemy) Shape() Shape                    { return &e.shape }

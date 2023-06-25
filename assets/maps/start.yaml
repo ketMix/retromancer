@@ -51,7 +51,7 @@ runes:
     id: lever
   "S":
     sprite: empty
-    id: spawner
+    id: skell
   "G":
     sprite: empty
     id: drawbridge
@@ -74,15 +74,6 @@ runes:
     blockView: true
     isometric: true
 actors:
-  - id: spawner
-    type: spawner
-    bullets: 
-      - alias: daggers
-        bulletCount: 1
-        spawnRate: 20
-        bullet:
-          aimDelay: 0
-          color: [0, 128, 255, 128]
   - id: door
     type: interactive
     sprite: door
@@ -147,6 +138,9 @@ actors:
   - id: life1
     type: snaggable
     sprite: item-life
+  - id: skell
+    type: enemy
+    sprite: skell
 layers:
   - |
    ^********D*******^.^

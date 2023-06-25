@@ -120,7 +120,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 			m.actors = append(m.actors, snaggable)
 		case "enemy":
-			enemy := CreateEnemy(ctx, *a.Enemy)
+			enemy := CreateEnemy(ctx, a.Sprite)
 			enemy.SetXY(x, y)
 
 			m.actors = append(m.actors, enemy)

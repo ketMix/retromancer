@@ -1,4 +1,5 @@
 package game
+
 import (
 	"ebijam23/resources"
 	"math"
@@ -53,7 +54,7 @@ func CreateBulletGroupFromDef(override, alias *resources.BulletGroup) *BulletGro
 		}
 	}
 
-	// Default to spawn ate if last spawned at is nil
+	// Default to spawn rate if last spawned at is nil
 	spawnAt := spawnRate
 	if lastSpawnedAt != nil {
 		spawnAt = *lastSpawnedAt
@@ -102,7 +103,9 @@ func (bg *BulletGroup) Update() (actions []Action) {
 			case Fixed:
 			}
 			// Add the bullet to the array
-			bullets[i] = BulletFromExisting(bg.bullet, angle)
+			bullet := BulletFromExisting(bg.bullet, angle)
+			bullet.SetXY(bg.X, bg.Y)
+			bullets[i] = bullet
 		}
 		// Create the action to spawn the bullets
 		actions = append(actions, ActionSpawnBullets{bullets})

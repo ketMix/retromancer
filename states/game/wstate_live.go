@@ -190,15 +190,6 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 
 		// Check for bullet collisions with actors.
 		for _, actor := range s.activeMap.actors {
-			// Check interactive collisions.
-			// If the interactive is touchable, apply reverse to it and destroy the bullet.
-			if i, ok := actor.(*Interactive); ok {
-				if i.shootable && bullet.Shape.Collides(actor.Shape()) {
-					i.Reverse()
-					bullet.Destroyed = true
-				}
-			}
-
 			// Check player collisions.
 			if p, ok := actor.(*PC); ok {
 				if p.InvulnerableTicks > 0 {
@@ -213,6 +204,27 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 					p.InvulnerableTicks = 40
 					p.Lives--
 					break
+				}
+				continue
+			}
+
+			// Check interactive collisions.
+			// If the interactive is touchable, apply reverse to it and destroy the bullet.
+			if i, ok := actor.(*Interactive); ok {
+				if i.shootable && bullet.Shape.Collides(actor.Shape()) {
+					i.Reverse()
+					bullet.Destroyed = true
+				}
+				continue
+			}
+
+			if e, ok := actor.(*Enemy); ok {
+				if e.IsAlive() && (bullet.reflected || bullet.deflected) {
+					if bullet.Shape.Collides(e.Shape()) {
+						bullet.Destroyed = true
+						e.Damage(1)
+						break
+					}
 				}
 			}
 		}

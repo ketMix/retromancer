@@ -230,6 +230,12 @@ func (m *ResourceManager) GetAs(category string, name string, target interface{}
 			return &resources.BulletGroup{} // FIXME: Use an actual fallback bullet group.
 		}
 		return d
+	case *resources.Enemy:
+		d := m.Get(category, name)
+		if d == nil {
+			return &resources.Enemy{} // FIXME: Use an actual fallback enemy.
+		}
+		return d
 	case *sfnt.Font:
 		d := m.Get(category, name)
 		if d == nil {

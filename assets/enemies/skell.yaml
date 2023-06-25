@@ -1,7 +1,11 @@
 sprite: skell
-health: 100
+health: 5
 speed: 1
 behavior: random
 bullets:
   - alias: daggers
     bulletCount: 1
+    bullet:
+      speed: 1
+      color: [0, 0, 0, 0]
+      aimDelay: 0
