@@ -257,8 +257,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						continue
 					}
 
-					// If next door and active and map is cleared, go to next map.
-					if i.nextMap != nil && i.Active() && i.shape.Collides(pl.Actor().Shape()) && s.activeMap.cleared {
+					// If nextMap is defined and active, go to next map.
+					if i.nextMap != nil && i.Active() && i.shape.Collides(pl.Actor().Shape()) {
 						s.TravelToMap(ctx, *i.nextMap)
 					}
 				}
