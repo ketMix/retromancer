@@ -19,6 +19,7 @@ type BulletGroup struct {
 	Y             float64
 	bullet        *Bullet    // What bullet comprises this group
 	angle         GroupAngle // What angle to spawn bullets at
+	fixedAngle    int        // Fixed angle to spawn bullets at
 	spawnRate     int        // How often to spawn bullets
 	lastSpawnedAt int        // How long since spawn
 	bulletCount   int        // How many bullets to spawn
@@ -35,7 +36,11 @@ func CreateBulletGroupFromDef(override, alias *resources.BulletGroup) *BulletGro
 	bulletCount := *alias.BulletCount
 	loopCount := *alias.LoopCount
 	lastSpawnedAt := alias.LastSpawnedAt
+	fixedAngle := 0
 
+	if alias.FixedAngle != nil {
+		fixedAngle = *alias.FixedAngle
+	}
 	if override != nil {
 		if override.Angle != nil {
 			angle = GroupAngle(*override.Angle)
@@ -52,6 +57,9 @@ func CreateBulletGroupFromDef(override, alias *resources.BulletGroup) *BulletGro
 		if override.LastSpawnedAt != nil {
 			lastSpawnedAt = override.LastSpawnedAt
 		}
+		if override.FixedAngle != nil {
+			fixedAngle = *override.FixedAngle
+		}
 	}
 
 	// Default to spawn rate if last spawned at is nil
@@ -66,6 +74,7 @@ func CreateBulletGroupFromDef(override, alias *resources.BulletGroup) *BulletGro
 		lastSpawnedAt: spawnAt,
 		bulletCount:   bulletCount,
 		loopCount:     loopCount,
+		fixedAngle:    fixedAngle,
 	}
 }
 
@@ -101,6 +110,7 @@ func (bg *BulletGroup) Update() (actions []Action) {
 				// Generate a random angle
 				angle = rand.Float64() * 360
 			case Fixed:
+				angle = float64(bg.fixedAngle)
 			}
 			// Add the bullet to the array
 			bullet := BulletFromExisting(bg.bullet, angle)

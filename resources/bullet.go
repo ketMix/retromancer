@@ -17,6 +17,7 @@ type Bullet struct {
 type BulletGroup struct {
 	Alias         *string `yaml:"alias,omitempty"`
 	Angle         *string `yaml:"angle,omitempty"`
+	FixedAngle    *int    `yaml:"fixedAngle,omitempty"`
 	BulletCount   *int    `yaml:"bulletCount,omitempty"`
 	LastSpawnedAt *int    `yaml:"lastSpawnedAt,omitempty"`
 	SpawnRate     *int    `yaml:"spawnRate,omitempty"`
