@@ -36,7 +36,6 @@ func (g *Game) PushState(state states.State) {
 		MusicPlayer:  &g.MusicPlayer,
 	}
 	state.Init(ctx)
-	state.Enter(ctx)
 }
 
 func (g *Game) PopState() {

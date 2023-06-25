@@ -14,10 +14,12 @@ type Intro struct {
 }
 
 func (i *Intro) Init(ctx states.Context) error {
-	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "title-intro", (*resources.Song)(nil)).(states.Song))
 	return nil
 }
+
 func (i *Intro) Enter(ctx states.Context) error {
+	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "title-intro", (*resources.Song)(nil)).(states.Song))
+
 	i.vfx.SetMode(resources.Sequential)
 	i.vfx.Add(&resources.Fade{
 		Duration: 1 * time.Second,
@@ -26,12 +28,16 @@ func (i *Intro) Enter(ctx states.Context) error {
 	y := 150.0
 	xOffset := 50.0
 	yOffset := 30.0
-	// TODO: Make this text actually good.
+
+	i.vfx.Add(&resources.Text{
+		Text:         "",
+		HoldDuration: 900 * time.Millisecond,
+	})
 	i.vfx.Add(&resources.Text{
 		Text:         ctx.L("MenuIntro1"),
-		InDuration:   1 * time.Second,
-		HoldDuration: 1250 * time.Millisecond,
-		OutDuration:  1500 * time.Millisecond,
+		InDuration:   1450 * time.Millisecond,
+		HoldDuration: 800 * time.Millisecond,
+		OutDuration:  1350 * time.Millisecond,
 		X:            x,
 		Y:            y,
 	})
@@ -39,9 +45,9 @@ func (i *Intro) Enter(ctx states.Context) error {
 	y += yOffset
 	i.vfx.Add(&resources.Text{
 		Text:         ctx.L("MenuIntro2"),
-		InDuration:   1 * time.Second,
-		HoldDuration: 1250 * time.Millisecond,
-		OutDuration:  1500 * time.Millisecond,
+		InDuration:   1450 * time.Millisecond,
+		HoldDuration: 800 * time.Millisecond,
+		OutDuration:  1350 * time.Millisecond,
 		X:            x,
 		Y:            y,
 	})
@@ -49,9 +55,9 @@ func (i *Intro) Enter(ctx states.Context) error {
 	y += yOffset
 	i.vfx.Add(&resources.Text{
 		Text:         ctx.L("MenuIntro3"),
-		InDuration:   1 * time.Second,
-		HoldDuration: 750 * time.Millisecond,
-		OutDuration:  3800 * time.Millisecond,
+		InDuration:   1450 * time.Millisecond,
+		HoldDuration: 1250 * time.Millisecond,
+		OutDuration:  2800 * time.Millisecond,
 		X:            x,
 		Y:            y,
 	})

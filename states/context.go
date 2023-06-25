@@ -10,7 +10,7 @@ type DrawContext struct {
 	Text      *etxt.Renderer
 	L         func(key string) string
 	Locale    func() string
-	SetLocale func(loc string)
+	SetLocale func(loc string, gpt bool)
 }
 
 type Context struct {
@@ -18,7 +18,7 @@ type Context struct {
 	StateMachine StateMachine
 	L            func(key string) string
 	Locale       func() string
-	SetLocale    func(loc string)
+	SetLocale    func(loc string, gpt bool)
 	Cursor       Cursor
 	MusicPlayer  MusicPlayer
 }

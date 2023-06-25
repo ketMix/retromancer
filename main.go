@@ -55,8 +55,7 @@ func main() {
 
 	// Set our locale.
 	game.Localizer.manager = &game.Manager
-	game.Localizer.SetLocale(game.Flags.Locale)
-	// game.Localizer.InitGPT()
+	game.Localizer.SetLocale(game.Flags.Locale, false) // Start without GPT
 
 	// Initialize game fields as necessary.
 	if err := game.Init(); err != nil {
@@ -91,6 +90,7 @@ func main() {
 		ebiten.SetFullscreen(true)
 	}
 
+	// Set up menu.
 	game.PushState(&menu.Menu{})
 
 	// Quick skip for map testing.
@@ -107,6 +107,8 @@ func main() {
 		}
 	}
 
+	// Set up loading screen.
+	game.PushState(&menu.Loading{})
 	if err := ebiten.RunGame(game); err != nil {
 		if err == states.ErrQuitGame {
 			return

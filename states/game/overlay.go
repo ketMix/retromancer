@@ -96,7 +96,7 @@ func (o *Overlay) Update(ctx states.Context) error {
 			} else {
 				localeIndex++
 			}
-			ctx.SetLocale(locales[localeIndex])
+			ctx.SetLocale(locales[localeIndex], false)
 		}
 		o.Sync(ctx)
 	}
