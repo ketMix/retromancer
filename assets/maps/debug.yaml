@@ -31,6 +31,8 @@ runes:
     sprite: dead-grass
   " ":
     sprite: empty
+  "E":
+    sprite: empty
   "D":
     sprite: empty
     id: door
@@ -40,7 +42,7 @@ runes:
   "C":
     sprite: empty
     id: candle1
-  "E":
+  "H":
     sprite: empty
     id: candle2
   "B":
@@ -127,18 +129,12 @@ actors:
     type: interactive
     sprite: wall1
     interactive:
-      conditions:
-        - type: active
-          args:
-            - lever
+      health: 10
   - id: wall2
     type: interactive
     sprite: wall1
     interactive:
-      conditions:
-        - type: active
-          args:
-            - lever
+      health: 5
   - id: life1
     type: snaggable
     sprite: item-life
@@ -150,19 +146,24 @@ actors:
     sprite: bat
 layers:
   - |
-   ^********D*******^.^
-   ^ B% C      E  F ^.^
-   ^  &     J       ^.^
-   ^^^^          ^^^^.^
-   ^^               ^.^
-   ^              L ^.^
-   ^  S             ^.^
-   ^^       G   W   ^.^
-   ^~~~~~~~~~~~~~~~~^.^
-   ^^^^^,, ____     ^.^
-   ^^^^,,,,,__  ^    .^
-   ^^^,,,,,____ ^  @ .^
-   ^******************^
+
+
+
+
+
+    E       ^********D*******^.^
+    E       ^ B  C      H  F ^.^
+    E       ^  &     J       ^.^
+    E       ^^^^          ^^^^.^
+    E       ^^               ^.^
+    E       ^       %      L ^.^
+    E       ^  S             ^.^
+    E       ^^       G   W   ^.^
+    E       ^~~~~~~~~~~~~~~~~^.^
+    E       ^^^^^,, ____     ^.^
+    E       ^^^^,,,,,__  ^    .^
+    E       ^^^,,,,,____ ^  @ .^
+    E       ^******************^
 #  - |
 #   ^              * ^ 
 #   ^                ^ 

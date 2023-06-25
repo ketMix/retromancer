@@ -3,6 +3,7 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -13,6 +14,8 @@ const DEGRADE_COOLDOWN = ACTIVATE_COOLDOWN * 10
 
 type Interactive struct {
 	id                 string         // ID of the interactive object, used to identify it in the game for condition triggering
+	maxHp              int            // Hit points of the interactive object, if it reaches 0, it is activated (only relevant for shooting)
+	hp                 int            // Current hit points of the interactive object, also determines if it is shootable
 	linkedInteractives []*Interactive // Holds a list of interactives that have their activation state linked to this one
 	active             bool
 	activeSprite       *resources.Sprite
@@ -21,7 +24,6 @@ type Interactive struct {
 	shape              RectangleShape
 	nextMap            *string
 	reversable         bool
-	shootable          bool // Whether or not it can be hit by bullets
 	touchable          bool // Whether or not it can be reversed by touching
 	degrade            bool // Whether or not the activation can be degraded, should this always be true?
 	activationIdx      int  // Holds the degree of activation
@@ -87,11 +89,10 @@ func CreateInteractive(ctx states.Context, actorDef resources.ActorSpawn) *Inter
 		interactive.degrade = i.Degrade
 		interactive.conditions = i.Conditions
 		interactive.nextMap = i.Map
-
-		// Default reversable to true
+		interactive.maxHp = i.Health
+		interactive.hp = i.Health
 		interactive.reversable = i.Reversable
 		interactive.touchable = i.Touchable
-		interactive.shootable = i.Shootable
 	}
 	return interactive
 }
@@ -136,24 +137,57 @@ func (i *Interactive) Draw(ctx states.DrawContext) {
 	if i.active {
 		i.activeSprite.Draw(ctx)
 	} else {
-		i.inactiveSprite.Draw(ctx)
+		// If the interactive is shootable, color it a bit red depending on the hp
+		if i.hp > 0 {
+			colorScale := float32(i.hp) / float32(i.maxHp)
+			opts := &ebiten.DrawImageOptions{}
+			opts.ColorScale.Scale(1, colorScale, colorScale, 1)
+			i.inactiveSprite.DrawWithOptions(ctx, opts)
+		} else {
+			i.inactiveSprite.Draw(ctx)
+		}
 	}
 }
 
 func (i *Interactive) Reverseable() bool {
-	if !i.reversable {
-		return false
-	}
 	if i.active {
 		return false
 	}
 
-	return true
+	return i.reversable
+}
+
+func (i *Interactive) Shootable() bool {
+	if !i.active {
+		return false
+	}
+	return i.hp > 0
+}
+
+func (i *Interactive) Touchable() bool {
+	if !i.active {
+		return false
+	}
+	return i.touchable
+}
+
+func (i *Interactive) Hit() {
+	fmt.Println("Hit!")
+	if i.hp == 0 || i.active {
+		return
+	}
+
+	fmt.Println(i.hp, i.maxHp)
+	if i.hp <= 0 {
+		i.IncreaseActivation(nil)
+	} else {
+		i.hp--
+	}
 }
 
 // Reverse the interactive object
 func (i *Interactive) Reverse() {
-	if !i.reversable && !i.touchable && !i.shootable && i.linkedInteractives == nil {
+	if !i.reversable && !i.touchable && i.linkedInteractives == nil {
 		return
 	}
 	// If already active or on cooldown, do nothing

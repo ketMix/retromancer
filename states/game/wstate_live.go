@@ -204,25 +204,29 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 					p.Hurtie()
 					break
 				}
-				continue
+				continue // skip checking other actors
 			}
 
-			// Check interactive collisions.
-			// If the interactive is touchable, apply reverse to it and destroy the bullet.
-			if i, ok := actor.(*Interactive); ok {
-				if i.shootable && bullet.Shape.Collides(actor.Shape()) {
-					i.Reverse()
-					bullet.Destroyed = true
-				}
-				continue
-			}
-
-			if e, ok := actor.(*Enemy); ok {
-				if e.IsAlive() && (bullet.reflected || bullet.deflected) {
-					if bullet.Shape.Collides(e.Shape()) {
+			// Check interactive and enemy collisions.
+			// Only applicable to reflected or deflected bullets
+			if bullet.reflected || bullet.deflected {
+				// If the interactive is shootable, hit the interactive.
+				if i, ok := actor.(*Interactive); ok {
+					if i.Shootable() && bullet.Shape.Collides(i.Shape()) {
+						i.Hit()
 						bullet.Destroyed = true
-						e.Damage(1)
 						break
+					}
+					continue // skip checking other actors
+				}
+
+				if e, ok := actor.(*Enemy); ok {
+					if e.IsAlive() {
+						if bullet.Shape.Collides(e.Shape()) {
+							bullet.Destroyed = true
+							e.Damage(1)
+							break
+						}
 					}
 				}
 			}

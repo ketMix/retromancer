@@ -50,7 +50,7 @@ type Interactive struct {
 	Degrade    bool            `yaml:"degrade"`
 	Active     bool            `yaml:"active"`
 	Touchable  bool            `yaml:"touchable"`
-	Shootable  bool            `yaml:"shootable"`
+	Health     int             `yaml:"health"`
 }
 
 type ActorSpawn struct {
