@@ -1,4 +1,4 @@
-# Radial spinning purple vectors that aim at the player after a delay
+# Radial shooting pattern
 angle: radial
 bulletCount: 24
 spawnRate: 100
