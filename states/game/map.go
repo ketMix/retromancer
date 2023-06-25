@@ -47,6 +47,13 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		conditions: mapData.Conditions,
 	}
 
+	// Find music for map by filename. Fall back to FUNKY
+	song := ctx.Manager.Get("songs", mapName)
+	if song == nil {
+		song = ctx.Manager.GetAs("songs", "funky", (*resources.Song)(nil))
+	}
+	ctx.MusicPlayer.Play(song.(states.Song))
+
 	//wallH := 6
 
 	playerStart := []int{0, 0, 0}
