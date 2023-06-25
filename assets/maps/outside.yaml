@@ -1,0 +1,131 @@
+title: Outside
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "~":
+    sprite: water
+    blockMove: true
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  ",":
+    sprite: dead-grass
+    floor: true
+  "d":
+    sprite: empty
+    id: door1
+    isometric: true
+    blockMove: true
+    blockView: true
+  "D":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockMove: true
+    blockView: true
+  "b":
+    sprite: empty
+    id: door3
+    isometric: true
+    blockView: true
+  "c":
+    sprite: empty
+    id: lever
+  "s":
+    sprite: empty
+    id: shooter
+  "G":
+    sprite: empty
+    id: drawbridge
+  "C":
+    sprite: empty
+    id: candle
+  "S":
+    sprite: empty
+    id: sign-outside-bridge
+actors:
+  - id: door1
+    type: interactive
+    sprite: door
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - candle
+      map: debug
+  - id: door2
+    type: interactive
+    sprite: door
+    interactive:
+      active: true
+      map: ballpit
+  - id: door3
+    type: interactive
+    sprite: door
+    interactive:
+      active: true
+      map: start
+  - id: lever # CHANGE THIS TO A GEM OR SOMETHING SHOOTABLE
+    type: interactive
+    sprite: lever
+    interactive:
+      health: 1
+  - id: drawbridge
+    type: interactive
+    sprite: drawbridge
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - lever
+  - id: shooter
+    type: spawner
+    bullets: 
+      - alias: simple
+  - id: candle
+    sprite: candle
+    type: interactive
+    interactive:
+      reversable: true
+  - id: sign-outside-bridge
+    type: interactive
+    sprite: sign
+    interactive:
+      text: sign-outside-bridge
+      reversable: true
+layers:
+  - |
+
+
+
+    E     ~~~^**d**^~~~~~~~^***D*****^~
+    E     ~     . C       ~    .      ~
+    E     ~     .         ~    .   s  ~
+    E     ~     .         ~    .     c~
+    E     ~  ,  .  ,,     ~    .      ~
+    E     ~     .    ,    ~   G    *  ~          
+    E     ~     .  ,  ,,  ~~~~~~~~~~~~~
+    E     ~   , .   ,          . S    ~
+    E     ~     ................      ~
+    E     ~             .             ~
+    E     ~        ,    .      ,,,,   ~
+    E     ~     ,,      .         ,   ~
+    E     ~             @           , ~
+    E     ~~~~~~^*******b*******^~~~~~~

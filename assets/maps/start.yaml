@@ -56,7 +56,7 @@ actors:
     type: interactive
     sprite: door
     interactive:
-      map: debug
+      map: outside
       conditions:
         - type: active
           args:

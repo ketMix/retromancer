@@ -108,9 +108,10 @@ func (bg *BulletGroup) Update() (actions []Action) {
 			case Random:
 				// TODO: Random angle
 				// Generate a random angle
-				angle = rand.Float64() * 360
+				angle = rand.Float64() * math.Pi / 180
 			case Fixed:
-				angle = float64(bg.fixedAngle)
+				// Use the fixed angle
+				angle = float64(bg.fixedAngle-90) * math.Pi / 180
 			}
 			// Add the bullet to the array
 			bullet := BulletFromExisting(bg.bullet, angle)

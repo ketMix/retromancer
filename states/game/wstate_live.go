@@ -294,7 +294,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 
 	// Check the our interactive actor conditions
 	for _, actor := range interactives {
-		if actor.id == "drawbridge" && actor.active { // Need to not run this every update and not tie to id
+		if actor.id == "drawbridge" && actor.active { // Need to not run this every update and not tie to id, but drawbridge is kinda special
 			cell := s.activeMap.FindCellById(actor.ID())
 			cells := make([]*resources.Cell, 0)
 			if cell != nil {

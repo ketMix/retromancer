@@ -3,7 +3,6 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
-	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -160,7 +159,7 @@ func (i *Interactive) Reverseable() bool {
 }
 
 func (i *Interactive) Shootable() bool {
-	if !i.active {
+	if i.active {
 		return false
 	}
 	return i.hp > 0
@@ -174,16 +173,13 @@ func (i *Interactive) Touchable() bool {
 }
 
 func (i *Interactive) Hit() {
-	fmt.Println("Hit!")
 	if i.hp == 0 || i.active {
 		return
 	}
-
-	fmt.Println(i.hp, i.maxHp)
+	i.hp--
 	if i.hp <= 0 {
 		i.IncreaseActivation(nil)
-	} else {
-		i.hp--
+		i.hp = i.maxHp
 	}
 }
 

@@ -1,0 +1,18 @@
+# Simple bullet
+angle: fixed
+bulletCount: 1
+spawnRate: 30
+loopCount: -1
+fixedAngle: 180
+bullet: 
+  bulletType: vector
+  color: [0, 0, 255, 255]
+  radius: 2
+  speed: 2
+  acceleration: 0
+  accelAccel: 0
+  maxSpeed: 2
+  angularVelocity: 0
+  aimTime: 0
+  aimDelay: 0
+
