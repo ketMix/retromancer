@@ -1,4 +1,5 @@
 sprite: skell
+framerate: 15
 health: 5
 speed: 1
 behavior: random

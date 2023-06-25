@@ -32,6 +32,8 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 		aliveImages = append(aliveImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 	aliveSprite := resources.NewAnimatedSprite(aliveImages)
+	aliveSprite.Framerate = enemyDef.Framerate
+	aliveSprite.Loop = true
 
 	deadImageNames := ctx.Manager.GetNamesWithPrefix("images", enemyDef.Sprite+"-dead")
 	deadImages := make([]*ebiten.Image, 0)
