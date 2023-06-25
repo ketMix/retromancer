@@ -251,90 +251,49 @@ func (m *ResourceManager) GetAs(category string, name string, target interface{}
 	return nil
 }
 
+func (m *ResourceManager) LoadDir(category, path string) error {
+	err := m.files.Walk(path, func(path string, entry fs.DirEntry, err error) error {
+		if entry == nil {
+			return ErrMissingDirectory
+		}
+		if !entry.IsDir() {
+			if _, err := m.Load(category, entry.Name()); err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return err
+	}
+	fmt.Println("loaded", len(m.groups[category].data), category)
+	return nil
+}
+
 func (m *ResourceManager) LoadAll() error {
-	m.files.Walk("images/", func(path string, entry fs.DirEntry, err error) error {
-		if entry == nil {
-			return ErrMissingDirectory
-		}
-		if !entry.IsDir() {
-			if _, err := m.Load("images", entry.Name()); err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	fmt.Println("loaded", len(m.groups["images"].data), "images")
-	m.files.Walk("maps/", func(path string, entry fs.DirEntry, err error) error {
-		if entry == nil {
-			return ErrMissingDirectory
-		}
-		if !entry.IsDir() {
-			if _, err := m.Load("maps", entry.Name()); err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	fmt.Println("loaded", len(m.groups["maps"].data), "maps")
-	m.files.Walk("bullets/", func(path string, entry fs.DirEntry, err error) error {
-		if entry == nil {
-			return ErrMissingDirectory
-		}
-		if !entry.IsDir() {
-			if _, err := m.Load("bullets", entry.Name()); err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	fmt.Println("loaded", len(m.groups["bullets"].data), "bullet groups")
-	m.files.Walk("fonts/", func(path string, entry fs.DirEntry, err error) error {
-		if entry == nil {
-			return ErrMissingDirectory
-		}
-		if !entry.IsDir() {
-			if _, err := m.Load("fonts", entry.Name()); err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	fmt.Println("loaded", len(m.groups["fonts"].data), "fonts")
-	m.files.Walk("sounds/", func(path string, entry fs.DirEntry, err error) error {
-		if entry == nil {
-			return ErrMissingDirectory
-		}
-		if !entry.IsDir() {
-			if _, err := m.Load("sounds", entry.Name()); err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	fmt.Println("loaded", len(m.groups["sounds"].data), "sounds")
-	m.files.Walk("locales/", func(path string, entry fs.DirEntry, err error) error {
-		if entry == nil {
-			return ErrMissingDirectory
-		}
-		if !entry.IsDir() {
-			if _, err := m.Load("locales", entry.Name()); err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	fmt.Println("loaded", len(m.groups["locales"].data), "locales")
-	m.files.Walk("songs/", func(path string, entry fs.DirEntry, err error) error {
-		if entry == nil {
-			return ErrMissingDirectory
-		}
-		if !entry.IsDir() {
-			if _, err := m.Load("songs", entry.Name()); err != nil {
-				return err
-			}
-		}
-		return nil
-	})
-	fmt.Println("loaded", len(m.groups["songs"].data), "songs")
+	if err := m.LoadDir("images", "images/"); err != nil {
+		return err
+	}
+	if err := m.LoadDir("maps", "maps/"); err != nil {
+		return err
+	}
+	if err := m.LoadDir("bullets", "bullets/"); err != nil {
+		return err
+	}
+	if err := m.LoadDir("enemies", "enemies/"); err != nil {
+		return err
+	}
+	if err := m.LoadDir("fonts", "fonts/"); err != nil {
+		return err
+	}
+	if err := m.LoadDir("sounds", "sounds/"); err != nil {
+		return err
+	}
+	if err := m.LoadDir("locales", "locales/"); err != nil {
+		return err
+	}
+	if err := m.LoadDir("songs", "songs/"); err != nil {
+		return err
+	}
 	return nil
 }
