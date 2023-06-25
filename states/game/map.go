@@ -90,95 +90,55 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	interactiveMap := make(map[string]*Interactive)
 	for _, a := range m.data.Actors {
 		cell := m.FindCellById(a.ID)
-		// TODO: consolidate this junk elsewhere
+
+		// We're either using the spawn location ("spawn" property on actor)
 		x := float64(a.Spawn[0]) * cellW
 		y := float64(a.Spawn[1]) * cellH
+
+		// or the cell location (location of rune in map).
 		if cell != nil {
 			x = float64(cell.Sprite.X)
 			y = float64(cell.Sprite.Y)
 		}
+
 		switch a.Type {
 		case "interactive":
-			iDef := a.InteractiveDef
-			spritePrefix := a.Sprite
-			// Create the active sprite
-			activeImageNames := ctx.Manager.GetNamesWithPrefix("images", spritePrefix+"-active")
-			activeImages := make([]*ebiten.Image, 0)
-			for _, s := range activeImageNames {
-				activeImages = append(activeImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
-			}
-			activeSprite := resources.NewAnimatedSprite(activeImages)
-			if activeSprite != nil {
-				activeSprite.X = x
-				activeSprite.Y = y
-				activeSprite.Framerate = 5
-				activeSprite.Loop = true
-			}
+			interactive := CreateInteractive(ctx, a)
+			interactive.SetXY(x, y)
+			interactiveMap[a.ID] = interactive // Add it to map for linking later
 
-			// Create the inactive sprite
-			inactiveImageNames := ctx.Manager.GetNamesWithPrefix("images", spritePrefix+"-inactive")
-			inactiveImages := make([]*ebiten.Image, 0)
-			for _, s := range inactiveImageNames {
-				inactiveImages = append(inactiveImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
-			}
-			inactiveSprite := resources.NewAnimatedSprite(inactiveImages)
-			inactiveSprite.X = x
-			inactiveSprite.Y = y
+			m.actors = append(m.actors, interactive)
 
-			i := CreateInteractive(
-				x,
-				y,
-				a.ID,
-				activeSprite,
-				inactiveSprite,
-			)
-			if iDef != nil {
-				i.active = iDef.Active
-				i.degrade = iDef.Degrade
-				i.conditions = iDef.Conditions
-
-				// Default reversable to true
-				i.reversable = iDef.Reversable
-				i.touchable = iDef.Touchable
-				i.shootable = iDef.Shootable
-			}
-			m.actors = append(m.actors, i)
-			interactiveMap[a.ID] = i
 		case "spawner":
-			bulletGroups := make([]*BulletGroup, 0)
+			spawner := CreateSpawner(ctx, a.BulletGroups)
+			spawner.SetXY(x, y)
 
-			// If we have bullet groups defined for the spawner, create them.
-			if len(a.BulletGroups) > 0 {
-				for _, bg := range a.BulletGroups {
-					bulletAlias := (*resources.BulletGroupDef)(nil)
-					if bg.Alias != nil {
-						bulletAlias = ctx.Manager.GetAs("bullets", *bg.Alias, (*resources.BulletGroupDef)(nil)).(*resources.BulletGroupDef)
-					}
-					bulletGroups = append(bulletGroups, CreateBulletGroupFromDef(x, y, bg, bulletAlias))
-				}
-			}
-			spawner := CreateSpawner(x, y, bulletGroups)
 			m.actors = append(m.actors, spawner)
 		case "snaggable":
 			sprite := resources.NewSprite(ctx.Manager.GetAs("images", a.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
 			snaggable := CreateSnaggable(x, y, a.ID, a.Sprite, sprite)
 
 			m.actors = append(m.actors, snaggable)
+		case "enemy":
+			enemy := CreateEnemy(ctx, *a.Enemy)
+			enemy.SetXY(x, y)
+
+			m.actors = append(m.actors, enemy)
 		}
 	}
 
-	// After creating the actors, link them up
+	// After creating the actors, link up the interactives
 	for _, a := range m.data.Actors {
-		if a.InteractiveDef != nil {
-			if a.InteractiveDef.Linked != nil {
-				// Find the actor in the map
+		if a.Interactive != nil {
+			if a.Interactive.Linked != nil {
+				// Find the interactive in the map
 				i := interactiveMap[a.ID]
 				if i == nil {
 					continue
 				}
 
-				// Find the linked actors in the map and link them up
-				for _, b := range a.InteractiveDef.Linked {
+				// Find the linked interactives in the map and link them up
+				for _, b := range a.Interactive.Linked {
 					childActor := interactiveMap[b]
 					if childActor == nil {
 						continue

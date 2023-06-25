@@ -41,7 +41,7 @@ type Map struct {
 	Actors       []ActorSpawn       `yaml:"actors"`
 }
 
-type InteractiveDef struct {
+type Interactive struct {
 	Map        *string         `yaml:"map,omitempty"`
 	Conditions []*ConditionDef `yaml:"conditions,omitempty"`
 	Linked     []string        `yaml:"linked,omitempty"`
@@ -54,12 +54,13 @@ type InteractiveDef struct {
 }
 
 type ActorSpawn struct {
-	ID             string            `yaml:"id"`
-	Spawn          [3]int            `yaml:"spawn,omitempty"`
-	Type           string            `yaml:"type"`
-	Sprite         string            `yaml:"sprite"`
-	BulletGroups   []*BulletGroupDef `yaml:"bullets,omitempty"`
-	InteractiveDef *InteractiveDef   `yaml:"interactive,omitempty"`
+	ID           string         `yaml:"id"`
+	Spawn        [3]int         `yaml:"spawn,omitempty"`
+	Type         string         `yaml:"type"`
+	Sprite       string         `yaml:"sprite"`
+	BulletGroups []*BulletGroup `yaml:"bullets,omitempty"`
+	Interactive  *Interactive   `yaml:"interactive,omitempty"`
+	Enemy        *Enemy         `yaml:"enemy,omitempty"`
 }
 
 func (m *Map) UnmarshalYAML(unmarshal func(interface{}) error) error {

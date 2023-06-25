@@ -3,6 +3,8 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 // Default cooldown for interactive activation + degradation
@@ -25,7 +27,30 @@ type Interactive struct {
 	activateCooldown   int  // Holds the cooldown for activation, can only decrement activation when this is 0
 }
 
-func CreateInteractive(x, y float64, id string, activeSprite, inactiveSprite *resources.Sprite) *Interactive {
+func CreateInteractive(ctx states.Context, actorDef resources.ActorSpawn) *Interactive {
+	// Set up sprites
+	spritePrefix := actorDef.Sprite
+
+	// Create the active sprite
+	activeImageNames := ctx.Manager.GetNamesWithPrefix("images", spritePrefix+"-active")
+	activeImages := make([]*ebiten.Image, 0)
+	for _, s := range activeImageNames {
+		activeImages = append(activeImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+	}
+	activeSprite := resources.NewAnimatedSprite(activeImages)
+	if activeSprite != nil {
+		activeSprite.Framerate = 5
+		activeSprite.Loop = true
+	}
+
+	// Create the inactive sprite
+	inactiveImageNames := ctx.Manager.GetNamesWithPrefix("images", spritePrefix+"-inactive")
+	inactiveImages := make([]*ebiten.Image, 0)
+	for _, s := range inactiveImageNames {
+		inactiveImages = append(inactiveImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+	}
+	inactiveSprite := resources.NewAnimatedSprite(inactiveImages)
+
 	// Set activation index to fully inactive
 	activationIdx := len(inactiveSprite.Images()) - 1
 	if activationIdx < 0 {
@@ -42,18 +67,45 @@ func CreateInteractive(x, y float64, id string, activeSprite, inactiveSprite *re
 		width = inactiveSprite.Width()
 		height = inactiveSprite.Height()
 	}
-	return &Interactive{
-		id:             id,
+
+	interactive := &Interactive{
+		id:             actorDef.ID,
 		activeSprite:   activeSprite,
 		inactiveSprite: inactiveSprite,
 		shape: RectangleShape{
-			X:      x,
-			Y:      y,
 			Width:  width,
 			Height: height,
 		},
 		activationIdx: activationIdx,
 	}
+	// If there are interactive definitions, set them
+	i := actorDef.Interactive
+	if i != nil {
+		interactive.active = i.Active
+		interactive.degrade = i.Degrade
+		interactive.conditions = i.Conditions
+
+		// Default reversable to true
+		interactive.reversable = i.Reversable
+		interactive.touchable = i.Touchable
+		interactive.shootable = i.Shootable
+	}
+	return interactive
+}
+
+func (i *Interactive) SetXY(x, y float64) {
+	i.shape.X = x
+	i.shape.Y = y
+	if i.activeSprite != nil {
+		i.activeSprite.SetXY(x, y)
+	}
+	if i.inactiveSprite != nil {
+		i.inactiveSprite.SetXY(x, y)
+	}
+}
+
+func (i *Interactive) Bounds() (x, y, w, h float64) {
+	return i.shape.X, i.shape.Y, i.shape.Width, i.shape.Height
 }
 
 func (i *Interactive) Update() []Action {
@@ -176,8 +228,6 @@ func (i *Interactive) Restore()                        {}
 func (i *Interactive) Player() Player                  { return nil }
 func (i *Interactive) SetPlayer(p Player)              {}
 func (i *Interactive) SetImpulses(impulses ImpulseSet) {}
-func (i *Interactive) Bounds() (x, y, w, h float64)    { return 0, 0, 0, 0 }
-func (i *Interactive) SetXY(x, y float64)              {}
 func (i *Interactive) SetSize(r float64)               {}
 func (i *Interactive) Dead() bool                      { return false }
 func (i *Interactive) Destroyed() bool                 { return false }

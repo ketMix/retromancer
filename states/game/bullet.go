@@ -45,11 +45,11 @@ type Bullet struct {
 func CreateBullet(
 	bulletType BulletType,
 	color color.Color,
-	x, y, radius, speed, angle, acceleration, accelAccel, maxSpeed, angularVelocity float64,
+	radius, speed, angle, acceleration, accelAccel, maxSpeed, angularVelocity float64,
 	aimTime, aimDelay int,
 ) *Bullet {
 	b := &Bullet{
-		Shape:           CircleShape{X: x, Y: y, Radius: radius},
+		Shape:           CircleShape{Radius: radius},
 		bulletType:      bulletType,
 		Speed:           speed,
 		Acceleration:    acceleration,
@@ -63,8 +63,6 @@ func CreateBullet(
 		timeLine:        make([]*Bullet, 0),
 	}
 	b.sprite = resources.NewSprite(ebiten.NewImage(int(radius*2), int(radius*2)))
-	b.sprite.X = x
-	b.sprite.Y = y
 	return b
 }
 
@@ -73,8 +71,6 @@ func BulletFromExisting(b *Bullet, angle float64) *Bullet {
 	bullet := CreateBullet(
 		b.bulletType,
 		b.Color,
-		b.Shape.X,
-		b.Shape.Y,
 		b.Shape.Radius,
 		b.Speed,
 		angle,
@@ -85,10 +81,11 @@ func BulletFromExisting(b *Bullet, angle float64) *Bullet {
 		b.aimTime,
 		b.aimDelay,
 	)
+	bullet.SetXY(b.Shape.X, b.Shape.Y)
 	return bullet
 }
 
-func CreateBulletFromDef(x, y float64, override, alias *resources.BulletDef) *Bullet {
+func CreateBulletFromDef(override, alias *resources.Bullet) *Bullet {
 	// Create a bullet group from a bullet group definition
 	// Use override values if they exist
 	// TODO: maybe have default values if properties aren't present in alias or override
@@ -141,8 +138,6 @@ func CreateBulletFromDef(x, y float64, override, alias *resources.BulletDef) *Bu
 	return CreateBullet(
 		BulletType(bulletType),
 		color,
-		x,
-		y,
 		radius,
 		speed,
 		0,
@@ -153,6 +148,12 @@ func CreateBulletFromDef(x, y float64, override, alias *resources.BulletDef) *Bu
 		aimTime,
 		aimDelay,
 	)
+}
+
+func (b *Bullet) SetXY(x, y float64) {
+	b.Shape.X = x
+	b.Shape.Y = y
+	b.sprite.SetXY(x, y)
 }
 
 // Update the bullet's position and speed

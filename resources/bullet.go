@@ -1,7 +1,7 @@
 package resources
 
 // Omits empty to allow for overriding from enemy definition
-type BulletDef struct {
+type Bullet struct {
 	BulletType      *string  `yaml:"bulletType,omitempty"`
 	Color           *[]int   `yaml:"color,omitempty"`
 	Radius          *int     `yaml:"radius,omitempty"`
@@ -14,18 +14,18 @@ type BulletDef struct {
 	AimDelay        *int     `yaml:"aimDelay,omitempty"`
 }
 
-type BulletGroupDef struct {
-	Alias         *string    `yaml:"alias,omitempty"`
-	Angle         *string    `yaml:"angle,omitempty"`
-	BulletCount   *int       `yaml:"bulletCount,omitempty"`
-	LastSpawnedAt *int       `yaml:"lastSpawnedAt,omitempty"`
-	SpawnRate     *int       `yaml:"spawnRate,omitempty"`
-	LoopCount     *int       `yaml:"loopCount,omitempty"`
-	Bullet        *BulletDef `yaml:"bullet,omitempty"`
+type BulletGroup struct {
+	Alias         *string `yaml:"alias,omitempty"`
+	Angle         *string `yaml:"angle,omitempty"`
+	BulletCount   *int    `yaml:"bulletCount,omitempty"`
+	LastSpawnedAt *int    `yaml:"lastSpawnedAt,omitempty"`
+	SpawnRate     *int    `yaml:"spawnRate,omitempty"`
+	LoopCount     *int    `yaml:"loopCount,omitempty"`
+	Bullet        *Bullet `yaml:"bullet,omitempty"`
 }
 
-func (m *BulletGroupDef) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	type bulletGroup BulletGroupDef
+func (m *BulletGroup) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	type bulletGroup BulletGroup
 	if err := unmarshal((*bulletGroup)(m)); err != nil {
 		return err
 	}

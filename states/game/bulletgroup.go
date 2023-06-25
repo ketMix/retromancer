@@ -1,5 +1,4 @@
 package game
-
 import (
 	"ebijam23/resources"
 	"math"
@@ -15,12 +14,66 @@ const (
 )
 
 type BulletGroup struct {
+	X             float64
+	Y             float64
 	bullet        *Bullet    // What bullet comprises this group
 	angle         GroupAngle // What angle to spawn bullets at
 	spawnRate     int        // How often to spawn bullets
 	lastSpawnedAt int        // How long since spawn
 	bulletCount   int        // How many bullets to spawn
 	loopCount     int        // How many times to loop
+}
+
+func CreateBulletGroupFromDef(override, alias *resources.BulletGroup) *BulletGroup {
+	// Create a bullet group from a bullet group definition
+	// Use override values if they exist
+	// TODO: maybe have default values if properties aren't present in alias or override
+
+	angle := GroupAngle(*alias.Angle)
+	spawnRate := *alias.SpawnRate
+	bulletCount := *alias.BulletCount
+	loopCount := *alias.LoopCount
+	lastSpawnedAt := alias.LastSpawnedAt
+
+	if override != nil {
+		if override.Angle != nil {
+			angle = GroupAngle(*override.Angle)
+		}
+		if override.SpawnRate != nil {
+			spawnRate = *override.SpawnRate
+		}
+		if override.BulletCount != nil {
+			bulletCount = *override.BulletCount
+		}
+		if override.LoopCount != nil {
+			loopCount = *override.LoopCount
+		}
+		if override.LastSpawnedAt != nil {
+			lastSpawnedAt = override.LastSpawnedAt
+		}
+	}
+
+	// Default to spawn ate if last spawned at is nil
+	spawnAt := spawnRate
+	if lastSpawnedAt != nil {
+		spawnAt = *lastSpawnedAt
+	}
+	return &BulletGroup{
+		bullet:        CreateBulletFromDef(override.Bullet, alias.Bullet),
+		angle:         angle,
+		spawnRate:     spawnRate,
+		lastSpawnedAt: spawnAt,
+		bulletCount:   bulletCount,
+		loopCount:     loopCount,
+	}
+}
+
+func (bg *BulletGroup) SetXY(x, y float64) {
+	bg.X = x
+	bg.Y = y
+	if bg.bullet != nil {
+		bg.bullet.SetXY(x, y)
+	}
 }
 
 func (bg *BulletGroup) Update() (actions []Action) {
@@ -56,48 +109,4 @@ func (bg *BulletGroup) Update() (actions []Action) {
 	}
 	bg.lastSpawnedAt++
 	return actions
-}
-
-func CreateBulletGroupFromDef(x, y float64, override, alias *resources.BulletGroup) *BulletGroup {
-	// Create a bullet group from a bullet group definition
-	// Use override values if they exist
-	// TODO: maybe have default values if properties aren't present in alias or override
-
-	angle := GroupAngle(*alias.Angle)
-	spawnRate := *alias.SpawnRate
-	bulletCount := *alias.BulletCount
-	loopCount := *alias.LoopCount
-	lastSpawnedAt := alias.LastSpawnedAt
-
-	if override != nil {
-		if override.Angle != nil {
-			angle = GroupAngle(*override.Angle)
-		}
-		if override.SpawnRate != nil {
-			spawnRate = *override.SpawnRate
-		}
-		if override.BulletCount != nil {
-			bulletCount = *override.BulletCount
-		}
-		if override.LoopCount != nil {
-			loopCount = *override.LoopCount
-		}
-		if override.LastSpawnedAt != nil {
-			lastSpawnedAt = override.LastSpawnedAt
-		}
-	}
-
-	// Default to spawn rate if last spawned at is nil
-	spawnAt := spawnRate
-	if lastSpawnedAt != nil {
-		spawnAt = *lastSpawnedAt
-	}
-	return &BulletGroup{
-		bullet:        CreateBulletFromDef(x, y, override.Bullet, alias.Bullet),
-		angle:         angle,
-		spawnRate:     spawnRate,
-		lastSpawnedAt: spawnAt,
-		bulletCount:   bulletCount,
-		loopCount:     loopCount,
-	}
 }

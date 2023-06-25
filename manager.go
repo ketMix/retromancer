@@ -84,12 +84,23 @@ func (m *ResourceManager) Load(category string, name string) (interface{}, error
 		if err != nil {
 			return nil, err
 		}
-		var bg *resources.BulletGroupDef
+		var bg *resources.BulletGroup
 		if err := yaml.Unmarshal(bytes, &bg); err != nil {
 			return nil, err
 		}
 		group.data[strings.TrimSuffix(name, filepath.Ext(name))] = bg
 		return bg, nil
+	} else if category == "enemies" {
+		bytes, err := m.files.ReadFile(fmt.Sprintf("%s/%s", category, name))
+		if err != nil {
+			return nil, err
+		}
+		var e *resources.Enemy
+		if err := yaml.Unmarshal(bytes, &e); err != nil {
+			return nil, err
+		}
+		group.data[strings.TrimSuffix(name, filepath.Ext(name))] = e
+		return e, nil
 	} else if category == "fonts" {
 		if strings.HasSuffix(name, ".ttf") {
 			bytes, err := m.files.ReadFile(fmt.Sprintf("%s/%s", category, name))
@@ -213,10 +224,10 @@ func (m *ResourceManager) GetAs(category string, name string, target interface{}
 			return &resources.Map{} // FIXME: Use an actual fallback map.
 		}
 		return d
-	case *resources.BulletGroupDef:
+	case *resources.BulletGroup:
 		d := m.Get(category, name)
 		if d == nil {
-			return &resources.BulletGroupDef{} // FIXME: Use an actual fallback bullet group.
+			return &resources.BulletGroup{} // FIXME: Use an actual fallback bullet group.
 		}
 		return d
 	case *sfnt.Font:

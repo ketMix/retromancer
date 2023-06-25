@@ -1,0 +1,7 @@
+sprite: skell
+health: 100
+speed: 1
+behavior: random
+bullets:
+  - alias: daggers
+    bulletCount: 1

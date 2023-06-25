@@ -135,7 +135,6 @@ func (gpt *GPT) GetResponse(inputLocale *Locale, locale string) (Locale, error) 
 
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	fmt.Println(string(body))
 	var s *GPTResponse
 	if err := json.Unmarshal(body, &s); err != nil {
 		return nil, err
