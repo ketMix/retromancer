@@ -58,7 +58,7 @@ func (bg *BulletGroup) Update() (actions []Action) {
 	return actions
 }
 
-func CreateBulletGroupFromDef(x, y float64, override, alias *resources.BulletGroupDef) *BulletGroup {
+func CreateBulletGroupFromDef(x, y float64, override, alias *resources.BulletGroup) *BulletGroup {
 	// Create a bullet group from a bullet group definition
 	// Use override values if they exist
 	// TODO: maybe have default values if properties aren't present in alias or override
