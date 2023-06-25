@@ -28,16 +28,14 @@ type GPTRequestBody struct {
 	Messages []MessageBody `json:"messages"`
 }
 
+const url = "https://api.openai.com/v1/chat/completions"
+
 type GPT struct {
 	key          string
 	SystemPrompt string // The prompt to use for the system
 	MaxTokens    int    // 1-2048
 	Model        string // "davinci" or "curie"
 	Style        string // the style of the translation
-}
-
-func findKey() string {
-	return ""
 }
 
 // Does some set up for GPT
@@ -82,6 +80,27 @@ func CreateGPT(fs multipath.FS) (*GPT, error) {
 	}, nil
 }
 
+func (g *GPT) Fetch(requestBody []byte) ([]byte, error) {
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+g.key)
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	return body, err
+}
+
 // Creates the prompt
 func (gpt *GPT) createPrompt(inputLocale *Locale, locale string) string {
 	str := "{"
@@ -97,7 +116,7 @@ func (gpt *GPT) createPrompt(inputLocale *Locale, locale string) string {
 }
 
 func (gpt *GPT) GetResponse(inputLocale *Locale, locale string) (Locale, error) {
-	url := "https://api.openai.com/v1/chat/completions"
+
 	prompt := GPTRequestBody{
 		Model: gpt.Model,
 		Messages: []MessageBody{
@@ -117,23 +136,10 @@ func (gpt *GPT) GetResponse(inputLocale *Locale, locale string) (Locale, error) 
 		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(promptJson))
+	body, err := gpt.Fetch(promptJson)
 	if err != nil {
 		return nil, err
 	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+gpt.key)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	defer resp.Body.Close()
-
-	body, _ := ioutil.ReadAll(resp.Body)
 
 	var s *GPTResponse
 	if err := json.Unmarshal(body, &s); err != nil {
