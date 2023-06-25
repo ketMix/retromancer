@@ -372,7 +372,6 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 	}
 
 	// Draw the sign text if it exists.
-	// TODO: Make this look like a sign
 	if w.signText != nil {
 		centerX := float32(ctx.Screen.Bounds().Max.X / 2)
 		centerY := float32(ctx.Screen.Bounds().Max.Y / 2)
@@ -419,7 +418,28 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 		// Draw the text
 		x := int(centerX)
 		y := int(centerY)
+		splitText := make([]string, 0)
+		maxLen := 35
 		for _, line := range text {
+			if len(line) <= maxLen {
+				splitText = append(splitText, line)
+				continue
+			}
+			// split text into lines that are less than maxLen
+			// split on spaces
+			words := strings.Split(line, " ")
+			currentLine := ""
+			for _, word := range words {
+				if len(currentLine)+len(word) > maxLen {
+					splitText = append(splitText, currentLine)
+					currentLine = ""
+				}
+				currentLine += word + " "
+			}
+			splitText = append(splitText, currentLine)
+		}
+		y = int(centerY) - (len(splitText)/2)*int(ctx.Text.Utils().GetLineHeight())
+		for _, line := range splitText {
 			{
 				ctx.Text.SetScale(1.5)
 				ctx.Text.SetColor(color.Black)
