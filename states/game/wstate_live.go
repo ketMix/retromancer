@@ -18,7 +18,6 @@ type WorldStateLive struct {
 }
 
 func (w *WorldStateLive) Enter(s *World, ctx states.Context) {
-	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "funky", (*resources.Song)(nil)).(states.Song))
 }
 
 func (w *WorldStateLive) Leave(s *World, ctx states.Context) {
@@ -259,6 +258,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 
 					// If nextMap is defined and active, go to next map.
 					if i.nextMap != nil && i.Active() && i.shape.Collides(pl.Actor().Shape()) {
+						ctx.Manager.GetAs("sounds", "stairs", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
 						s.TravelToMap(ctx, *i.nextMap)
 					}
 				}
