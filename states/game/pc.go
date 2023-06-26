@@ -136,6 +136,12 @@ func (p *PC) Update() (actions []Action) {
 		p.momentumY = 0
 	}
 
+	if p.Hand.Shape.X < p.shape.X {
+		p.Sprite.Flipped = true
+	} else {
+		p.Sprite.Flipped = false
+	}
+
 	p.previousInteraction = nil
 	if p.impulses.Interaction != nil {
 		switch imp := p.impulses.Interaction.(type) {
