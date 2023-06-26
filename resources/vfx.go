@@ -180,3 +180,47 @@ func (h *Hover) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 func (h *Hover) Done() bool {
 	return false
 }
+
+type Darkness struct {
+	elapsed  time.Duration
+	Fade     bool
+	Duration time.Duration
+	img      *ebiten.Image
+	Fin      bool
+}
+
+func (d *Darkness) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
+	if opts == nil {
+		opts = &ebiten.DrawImageOptions{}
+	}
+	if d.img == nil {
+		d.img = ebiten.NewImage(ctx.Screen.Bounds().Dx(), ctx.Screen.Bounds().Dy())
+		d.img.Fill(color.NRGBA{R: 0, G: 0, B: 0, A: 250})
+		// Set pixels to make an empty circle.
+		for x := 0; x < d.img.Bounds().Dx(); x++ {
+			for y := 0; y < d.img.Bounds().Dy(); y++ {
+				if math.Sqrt(math.Pow(float64(x-d.img.Bounds().Dx()/2), 2)+math.Pow(float64(y-d.img.Bounds().Dy()/2), 2)) < float64(d.img.Bounds().Dx()/8) {
+					d.img.Set(x, y, color.NRGBA{R: 0, G: 0, B: 0, A: 200})
+				}
+			}
+		}
+	}
+	m := 1.0
+	if d.Fade {
+		d.elapsed += time.Second / 60
+		m = float64(d.elapsed) / float64(d.Duration)
+		if m >= 1.0 {
+			m = 1.0
+		}
+		if m == 1.0 {
+			d.Fin = true
+		}
+	}
+	c := color.NRGBA{R: 0, G: 0, B: 0, A: uint8(255 * m)}
+	opts.ColorScale.ScaleWithColor(c)
+	ctx.Screen.DrawImage(d.img, opts)
+}
+
+func (d *Darkness) Done() bool {
+	return d.Fin
+}
