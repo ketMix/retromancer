@@ -38,6 +38,9 @@ type PC struct {
 	previousInteraction Action
 	//
 	impulses ImpulseSet
+	//
+	momentumX float64
+	momentumY float64
 }
 
 func (s *World) NewPC(ctx states.Context) *PC {
@@ -104,7 +107,9 @@ func (p *PC) Update() (actions []Action) {
 		}
 	}
 	if p.impulses.Move != nil {
-		x := 5 * math.Cos((*p.impulses.Move).Direction)
+		p.momentumX = 0.3*p.momentumX + 3.7*math.Cos((*p.impulses.Move).Direction)
+		p.momentumY = 0.3*p.momentumY + 3.7*math.Sin((*p.impulses.Move).Direction)
+		/*x := 5 * math.Cos((*p.impulses.Move).Direction)
 		y := 5 * math.Sin((*p.impulses.Move).Direction)
 		if x < 0 {
 			p.Sprite.Flipped = true
@@ -114,7 +119,21 @@ func (p *PC) Update() (actions []Action) {
 		actions = append(actions, ActionMove{
 			X: p.shape.X + x,
 			Y: p.shape.Y + y,
+		})*/
+	}
+	if p.momentumX != 0 || p.momentumY != 0 {
+		actions = append(actions, ActionMove{
+			X: p.shape.X + p.momentumX,
+			Y: p.shape.Y + p.momentumY,
 		})
+	}
+	p.momentumX *= 0.3
+	p.momentumY *= 0.3
+	if math.Abs(p.momentumX) < 0.1 {
+		p.momentumX = 0
+	}
+	if math.Abs(p.momentumY) < 0.1 {
+		p.momentumY = 0
 	}
 
 	p.previousInteraction = nil
