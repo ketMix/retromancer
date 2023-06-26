@@ -265,7 +265,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 
 				// Check snaggable collisions.
 				if s, ok := actor.(*Snaggable); ok {
-					if s.shape.Collides(pl.Actor().Shape()) && pc.Lives < PLAYER_MAX_LIVES {
+					if s.shape.Collides(pl.Actor().Shape()) && pc.Lives < playerMaxLives {
 						s.destroyed = true
 						// TODO: Bless the player with powers beyond their wildest imaginations (lives, power unlocks, etc.)
 						switch s.spriteName {
