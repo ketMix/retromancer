@@ -99,25 +99,6 @@ func (s *World) Init(ctx states.Context) error {
 		OffsetY: 32,
 		Items:   []string{"p2-keyboard-hint-1", "p2-keyboard-hint-2"},
 	})
-	if s.StartingMap == "start" {
-		for _, p := range s.Players {
-			if pl, ok := p.(*LocalPlayer); ok {
-				if _, ok := pl.actor.(*PC); ok {
-					if pl.GamepadID != -1 {
-						s.hints.ActivateGroup("p1-controller-start")
-					} else {
-						s.hints.ActivateGroup("p1-keyboard-start")
-					}
-				} else {
-					if pl.GamepadID != -1 {
-						s.hints.ActivateGroup("p2-controller-start")
-					} else {
-						s.hints.ActivateGroup("p2-keyboard-start")
-					}
-				}
-			}
-		}
-	}
 
 	// Set our starting state.
 	if len(s.states) == 0 {

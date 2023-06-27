@@ -41,6 +41,7 @@ type Map struct {
 	SourceLayers []string           `yaml:"layers"`
 	Actors       []ActorSpawn       `yaml:"actors"`
 	VFX          []VFXDef           `yaml:"vfx"`
+	Hints        []string           `yaml:"hints"`
 }
 
 type Interactive struct {

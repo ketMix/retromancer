@@ -210,6 +210,35 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		m.actors = append(m.actors, p.Actor())
 	}
 
+	// Deactivate any hint groups.
+	s.hints.DeactivateGroups()
+
+	// Activate any specified hint groups.
+	for _, h := range m.data.Hints {
+		s.hints.ActivateGroup(h)
+	}
+
+	// Also manual hint group definition just for the start map.
+	if mapName == "start" {
+		for _, p := range s.Players {
+			if pl, ok := p.(*LocalPlayer); ok {
+				if _, ok := pl.actor.(*PC); ok {
+					if pl.GamepadID != -1 {
+						s.hints.ActivateGroup("p1-controller-start")
+					} else {
+						s.hints.ActivateGroup("p1-keyboard-start")
+					}
+				} else {
+					if pl.GamepadID != -1 {
+						s.hints.ActivateGroup("p2-controller-start")
+					} else {
+						s.hints.ActivateGroup("p2-keyboard-start")
+					}
+				}
+			}
+		}
+	}
+
 	return nil
 }
 

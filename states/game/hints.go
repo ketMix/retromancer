@@ -71,6 +71,11 @@ func (h *Hints) ActivateGroup(group string) {
 	h.activeGroupIndices = append(h.activeGroupIndices, -1)
 }
 
+func (h *Hints) DeactivateGroups() {
+	h.activeGroups = []string{}
+	h.activeGroupIndices = []int{}
+}
+
 func (h *Hints) Draw(ctx states.DrawContext) {
 	if !h.active {
 		return
