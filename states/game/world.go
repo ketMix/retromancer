@@ -50,6 +50,11 @@ func (s *World) Init(ctx states.Context) error {
 
 		pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
 
+		// If the starting map is not start, then set the player as resurrected.
+		if s.StartingMap != "start" {
+			pc.resurrected = true
+		}
+
 		p.SetActor(pc)
 	}
 
@@ -106,6 +111,16 @@ func (s *World) Update(ctx states.Context) error {
 						}) {
 							hoveringInteractable = true
 							break
+						}
+					}
+					// This feels bad, but show the hover sprite over the player if they haven't resurrected yet.
+					if !pc.resurrected {
+						if pc.shape.Collides(&CircleShape{
+							X:      pc.Hand.Shape.X,
+							Y:      pc.Hand.Shape.Y,
+							Radius: 20,
+						}) {
+							hoveringInteractable = true
 						}
 					}
 					pc.Hand.HoverSprite.Hidden = !hoveringInteractable

@@ -28,6 +28,9 @@ type Interactive struct {
 	degrade            bool // Whether or not the activation can be degraded, should this always be true?
 	activationIdx      int  // Holds the degree of activation
 	activateCooldown   int  // Holds the cooldown for activation, can only decrement activation when this is 0
+	//
+	addVFX    []string // Holds a list of VFX to add when the interactive is activated
+	removeVFX []string // Holds a list of VFX to remove when the interactive is activated
 }
 
 func CreateInteractive(ctx states.Context, actorDef resources.ActorSpawn) *Interactive {
@@ -94,6 +97,8 @@ func CreateInteractive(ctx states.Context, actorDef resources.ActorSpawn) *Inter
 		interactive.reversable = i.Reversable
 		interactive.touchable = i.Touchable
 		interactive.text = i.Text
+		interactive.addVFX = i.AddVFX
+		interactive.removeVFX = i.RemoveVFX
 	}
 	return interactive
 }

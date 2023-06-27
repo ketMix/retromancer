@@ -37,7 +37,8 @@ type PC struct {
 	//
 	previousInteraction Action
 	//
-	impulses ImpulseSet
+	impulses    ImpulseSet
+	resurrected bool
 	//
 	momentumX float64
 	momentumY float64
@@ -106,40 +107,43 @@ func (p *PC) Update() (actions []Action) {
 			p.Energy += p.EnergyRestoreRate
 		}
 	}
-	if p.impulses.Move != nil {
-		p.momentumX = 0.3*p.momentumX + 3.7*math.Cos((*p.impulses.Move).Direction)
-		p.momentumY = 0.3*p.momentumY + 3.7*math.Sin((*p.impulses.Move).Direction)
-		/*x := 5 * math.Cos((*p.impulses.Move).Direction)
-		y := 5 * math.Sin((*p.impulses.Move).Direction)
-		if x < 0 {
+	// Do not handle movement until we are resurrected.
+	if p.resurrected {
+		if p.impulses.Move != nil {
+			p.momentumX = 0.3*p.momentumX + 3.7*math.Cos((*p.impulses.Move).Direction)
+			p.momentumY = 0.3*p.momentumY + 3.7*math.Sin((*p.impulses.Move).Direction)
+			/*x := 5 * math.Cos((*p.impulses.Move).Direction)
+			y := 5 * math.Sin((*p.impulses.Move).Direction)
+			if x < 0 {
+				p.Sprite.Flipped = true
+			} else if x > 0 {
+				p.Sprite.Flipped = false
+			}
+			actions = append(actions, ActionMove{
+				X: p.shape.X + x,
+				Y: p.shape.Y + y,
+			})*/
+		}
+		if p.momentumX != 0 || p.momentumY != 0 {
+			actions = append(actions, ActionMove{
+				X: p.shape.X + p.momentumX,
+				Y: p.shape.Y + p.momentumY,
+			})
+		}
+		p.momentumX *= 0.3
+		p.momentumY *= 0.3
+		if math.Abs(p.momentumX) < 0.1 {
+			p.momentumX = 0
+		}
+		if math.Abs(p.momentumY) < 0.1 {
+			p.momentumY = 0
+		}
+
+		if p.Hand.Shape.X < p.shape.X {
 			p.Sprite.Flipped = true
-		} else if x > 0 {
+		} else {
 			p.Sprite.Flipped = false
 		}
-		actions = append(actions, ActionMove{
-			X: p.shape.X + x,
-			Y: p.shape.Y + y,
-		})*/
-	}
-	if p.momentumX != 0 || p.momentumY != 0 {
-		actions = append(actions, ActionMove{
-			X: p.shape.X + p.momentumX,
-			Y: p.shape.Y + p.momentumY,
-		})
-	}
-	p.momentumX *= 0.3
-	p.momentumY *= 0.3
-	if math.Abs(p.momentumX) < 0.1 {
-		p.momentumX = 0
-	}
-	if math.Abs(p.momentumY) < 0.1 {
-		p.momentumY = 0
-	}
-
-	if p.Hand.Shape.X < p.shape.X {
-		p.Sprite.Flipped = true
-	} else {
-		p.Sprite.Flipped = false
 	}
 
 	p.previousInteraction = nil
@@ -204,8 +208,20 @@ func (p *PC) DrawHat(screen *ebiten.Image, x, y float64) {
 	screen.DrawImage(p.Hat.Image(), opts)
 }
 
+func (p *PC) DrawHand(ctx states.DrawContext) {
+	p.Hand.Sprite.Draw(ctx)
+	p.Hand.HoverSprite.Draw(ctx)
+}
+
 func (p *PC) Draw(ctx states.DrawContext) {
-	if p.Dead() {
+	if !p.resurrected {
+		// TODO: Actually play the death sprite backwards.
+		p.DeathSprite.SetFrame(99)
+		p.DeathSprite.SetXY(p.Sprite.X, p.Sprite.Y)
+		p.DeathSprite.Draw(ctx)
+
+		p.DrawHat(ctx.Screen, 0, 3+8)
+	} else if p.Dead() {
 		// Hackiness ahoy. This is hard coded to the exact death sprite frames and positions.
 		p.DeathSprite.SetXY(p.Sprite.X, p.Sprite.Y)
 		p.DeathSprite.Draw(ctx)
@@ -230,10 +246,7 @@ func (p *PC) Draw(ctx states.DrawContext) {
 
 	opts := &ebiten.DrawImageOptions{}
 
-	p.Hand.Sprite.Draw(ctx)
-	p.Hand.HoverSprite.Draw(ctx)
-
-	if p.InvulnerableTicks <= 0 || p.InvulnerableTicks%6 >= 3 {
+	if (p.InvulnerableTicks <= 0 || p.InvulnerableTicks%6 >= 3) && p.resurrected {
 		p.Sprite.Draw(ctx)
 
 		// Draw the player's phylactery (hit box representation). If the player has 0 lives, hide it, since it "broke"
@@ -244,6 +257,10 @@ func (p *PC) Draw(ctx states.DrawContext) {
 		}
 
 		p.DrawHat(ctx.Screen, 0, 3)
+	}
+
+	if !p.resurrected {
+		return
 	}
 
 	// Draw lives?

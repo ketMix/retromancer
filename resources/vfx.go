@@ -22,12 +22,25 @@ type VFXList struct {
 	mode  VFXListMode
 }
 
+func (v *VFXList) Items() []VFX {
+	return v.items
+}
+
 func (v *VFXList) SetMode(mode VFXListMode) {
 	v.mode = mode
 }
 
 func (v *VFXList) Add(vfx VFX) {
 	v.items = append(v.items, vfx)
+}
+
+func (v *VFXList) RemoveByID(s string) {
+	for i, vfx := range v.items {
+		if vfx.ID() == s {
+			v.items = append(v.items[:i], v.items[i+1:]...)
+			return
+		}
+	}
 }
 
 func (v *VFXList) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
@@ -58,6 +71,7 @@ func (v *VFXList) Empty() bool {
 type VFX interface {
 	Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions)
 	Done() bool
+	ID() string
 }
 
 type Fade struct {
@@ -68,6 +82,10 @@ type Fade struct {
 	lastTime     time.Time
 	ApplyToImage bool
 	fadeInImage  *ebiten.Image
+}
+
+func (f *Fade) ID() string {
+	return "fade"
 }
 
 func (f *Fade) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
@@ -118,6 +136,10 @@ type Text struct {
 	OutDuration  time.Duration
 	elapsed      time.Duration
 	lastTime     time.Time
+}
+
+func (t *Text) ID() string {
+	return "text"
 }
 
 func (v *Text) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
@@ -172,6 +194,10 @@ type Hover struct {
 	Rate      float64
 }
 
+func (h *Hover) ID() string {
+	return "hover"
+}
+
 func (h *Hover) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 	h.elapsed += time.Duration(float64(time.Second/60) * h.Rate)
 	opts.GeoM.Translate(0, h.Intensity*math.Sin(float64(h.elapsed.Seconds())))
@@ -187,6 +213,10 @@ type Darkness struct {
 	Duration time.Duration
 	img      *ebiten.Image
 	Fin      bool
+}
+
+func (d *Darkness) ID() string {
+	return "darkness"
 }
 
 func (d *Darkness) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
@@ -208,11 +238,11 @@ func (d *Darkness) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions
 	m := 1.0
 	if d.Fade {
 		d.elapsed += time.Second / 60
-		m = float64(d.elapsed) / float64(d.Duration)
-		if m >= 1.0 {
-			m = 1.0
+		m = 1.0 - float64(d.elapsed)/float64(d.Duration)
+		if m <= 0 {
+			m = 0
 		}
-		if m == 1.0 {
+		if m == 0 {
 			d.Fin = true
 		}
 	}
@@ -223,4 +253,9 @@ func (d *Darkness) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions
 
 func (d *Darkness) Done() bool {
 	return d.Fin
+}
+
+type VFXDef struct {
+	Type     string
+	Duration time.Duration
 }

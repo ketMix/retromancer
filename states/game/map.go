@@ -162,6 +162,15 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	// Set proper active layer.
 	m.currentZ = playerStart[2]
 
+	for _, v := range m.data.VFX {
+		if v.Type == "darkness" {
+			// FIXME: Replace with a CreateVFX function.
+			m.vfx.Add(&resources.Darkness{
+				Duration: v.Duration,
+			})
+		}
+	}
+
 	// Only add fade and title VFX if this map is not the same as the previous one.
 	if s.activeMap == nil || s.activeMap.data != m.data {
 		// Add fade in VFX.
@@ -183,7 +192,6 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			HoldDuration: 2 * time.Second,
 			OutDuration:  500 * time.Millisecond,
 		})
-
 	}
 
 	s.activeMap = m
@@ -270,6 +278,13 @@ func (m *Map) Draw(ctx states.DrawContext) {
 	}
 
 	m.vfx.Process(ctx, nil)
+
+	// This is hacky, but I want the hand to be fully visible after VFX has been applied... Maybe move to top-level world state?
+	for _, a := range m.actors {
+		if pc, ok := a.(*PC); ok {
+			pc.DrawHand(ctx)
+		}
+	}
 }
 
 func (m *Map) GetCell(x, y, z int) *resources.Cell {

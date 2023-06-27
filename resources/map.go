@@ -39,6 +39,7 @@ type Map struct {
 	Height       int                `yaml:"height"`
 	SourceLayers []string           `yaml:"layers"`
 	Actors       []ActorSpawn       `yaml:"actors"`
+	VFX          []VFXDef           `yaml:"vfx"`
 }
 
 type Interactive struct {
@@ -52,6 +53,8 @@ type Interactive struct {
 	Touchable  bool            `yaml:"touchable"`
 	Health     int             `yaml:"health"`
 	Text       string          `yaml:"text"`
+	RemoveVFX  []string        `yaml:"removeVFX,omitempty"`
+	AddVFX     []string        `yaml:"addVFX,omitempty"`
 }
 
 type ActorSpawn struct {

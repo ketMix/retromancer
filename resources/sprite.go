@@ -16,6 +16,7 @@ type Sprite struct {
 	Framerate        int
 	elapsed          int
 	Loop             bool
+	Reverse          bool
 	X, Y             float64
 	lastX, lastY     float64
 	interpX, interpY float64
@@ -95,14 +96,26 @@ func (s *Sprite) Update() {
 		s.elapsed++
 		if s.elapsed >= s.Framerate {
 			s.elapsed = 0
-			if s.frame+1 >= len(s.images) {
-				if s.Loop {
-					s.frame = 0
+			if s.Reverse {
+				if s.frame-1 < 0 {
+					if s.Loop {
+						s.frame = len(s.images) - 1
+					} else {
+						return
+					}
 				} else {
-					return
+					s.frame--
 				}
 			} else {
-				s.frame++
+				if s.frame+1 >= len(s.images) {
+					if s.Loop {
+						s.frame = 0
+					} else {
+						return
+					}
+				} else {
+					s.frame++
+				}
 			}
 			s.image = s.images[s.frame]
 		}

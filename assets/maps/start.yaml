@@ -1,4 +1,7 @@
 title: Resurrection
+vfx: 
+  - type: "darkness"
+    duration: 2s
 conditions:
   - type: active
     args:
@@ -51,6 +54,9 @@ runes:
   "S":
     sprite: empty
     id: sign-grats
+  "x":
+    sprite: empty
+    id: campfire
 actors:
   - id: door
     type: interactive
@@ -62,6 +68,13 @@ actors:
           args:
             - candle1
             - candle2
+  - id: campfire
+    type: interactive
+    sprite: campfire
+    interactive:
+      reversable: true
+      degrade: true
+      removeVFX: ["darkness"]
   - id: candle1
     type: interactive
     sprite: candle
@@ -87,18 +100,19 @@ actors:
       reversable: true
 layers:
   - |
-
-
-
-
-
-
-
+    E          ^                ^
     E          ^********D*******^
     E          ^      c   C     ^
     E          ^                ^
-    E          ^    s       S   ^
-    E          ^        @       ^
+    E          ^******** *******^
+    E          ^                ^
+    E          ^        S       ^
+    E          ^                ^
+    E          ^******** *******^
+    E          ^       s        ^
+    E          ^                ^
+    E          ^        x       ^
+    E          ^           @    ^
     E          ^^^^^,, ____     ^
     E          ^^^^,,,,,__  ^   ^
     E          ^^^,,,,,____ ^   ^

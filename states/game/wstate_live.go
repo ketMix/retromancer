@@ -96,11 +96,30 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						Radius: 20,
 					})
 					// Reverse interactive actors.
-					for _, a := range actors {
-						if a, ok := a.(*Interactive); ok {
+					for _, actor := range actors {
+						if a, ok := actor.(*Interactive); ok {
 							if a.Reverseable() {
 								a.Reverse()
 								s.SpawnParticle(ctx, "reverse", action.X, action.Y, rand.Float64()*math.Pi*2, rand.Float64()*2.0, 30)
+								if a.active {
+									// FIXME: This isn't the right place for this, as it would be best if the interactive actor created an action containing its VFX remove, but this is the most obvious place.
+									for _, v := range a.removeVFX {
+										if v == "darkness" {
+											for _, vfx := range s.activeMap.vfx.Items() {
+												if v2, ok := vfx.(*resources.Darkness); ok {
+													v2.Fade = true
+												}
+											}
+										} else {
+											s.activeMap.vfx.RemoveByID(v)
+										}
+									}
+								}
+							}
+						} else if pc, ok := actor.(*PC); ok {
+							// More hackiness. Let us resurrect ourself if we haven't been already.
+							if !pc.resurrected {
+								pc.resurrected = true
 							}
 						}
 					}
