@@ -32,6 +32,7 @@ type Layer struct {
 
 type Map struct {
 	Title        string
+	Music        string             `yaml:"music"`
 	Conditions   []*ConditionDef    `yaml:"conditions"`
 	RuneMap      map[string]RuneDef `yaml:"runes"`
 	Layers       []Layer            `yaml:"-"`

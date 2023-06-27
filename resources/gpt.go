@@ -53,7 +53,7 @@ func InitGPT(fs multipath.FS) *GPT {
 		Key:       k,
 		Model:     "gpt-3.5-turbo",
 		Style:     "an old mumbling sage",
-		MaxTokens: 2048,
+		MaxTokens: 4096,
 		SystemPrompt: `
 			You are assisting with writing the story and text for a game.
 			
@@ -61,15 +61,15 @@ func InitGPT(fs multipath.FS) *GPT {
 			who can reverse items and spells.
 
 			- You will receive a prompt with a JSON object containing the key value pairs of the original text.
-			- For each key you should create a new phrase that is different of the original.
+			- For each key you should create a new phrase that is different from the original.
 			- A style will be requested that you should use for creating the new phrase.
-			- All values should be less than or equal to the length of their original value.
-			- All new line characters should remain in the output.
-			- After creating the phrase you will translate the new phrase into the request locale.
+			- All values should have length less than or equal to the length of their original value.
+			- After creating the phrase you will translate the new phrase into the requested language.
 			- There should be no escape characters in the translated phrase.
 			- The value for the key should be the translated phrase only.
 			- All keys must be present in the output.
-			
+			- If the value is one word, the phrase should be one word.
+
 			Your response must be YAML unmarshalable.
 		`,
 	}
@@ -113,8 +113,8 @@ func (gpt *GPT) createPrompt(inputLocale *Locale, locale string) string {
 	str += "}"
 	return fmt.Sprintf(`
 		It should be in the similar spelling, case sensitivity, grammar, and phrasing of a %s style.
-		Translate to "%s" in YAML format:
-		"%s"
+		Translate to the %s language in YAML format:
+		%s
 	`, gpt.Style, locale, str)
 }
 

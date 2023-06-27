@@ -1,0 +1,122 @@
+title: The Skells
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "d":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockMove: true
+    blockView: true
+  "s":
+    sprite: empty
+    id: skell1
+  "S":
+    sprite: empty
+    id: skell2
+  "t":
+    sprite: empty
+    id: skell3
+  "x":
+    sprite: empty
+    id: campfire
+  "l":
+    sprite: empty
+    id: lever
+actors:
+# Door
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 1-3
+      conditions:
+        - type: killedEnemies
+# Enemies
+  - id: skell1
+    type: enemy
+    sprite: skell
+
+  - id: skell2
+    type: enemy
+    sprite: skell
+
+  - id: skell3
+    type: enemy
+    sprite: skell
+
+# Interactives
+  - id: campfire
+    type: interactive
+    sprite: campfire
+    interactive:
+      active: true
+
+  - id: lever
+    type: interactive
+    sprite: lever
+    interactive:
+      touchable: true
+
+  - id: door2
+    type: interactive
+    sprite: door
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - lever
+layers:
+  - |
+
+
+
+
+
+
+    E          ^********D*******^
+    E          ^                ^
+    E          ^        S       ^
+    E          ^     t  x s     ^
+    E          ^                ^
+    E          ^                ^
+    E          ^                ^
+    E          ^        ^*d*****^
+    E          ^        *       ^
+    E          ^        *l    @ ^
+    E          ^****************^

@@ -1,0 +1,133 @@
+title: Reprieve
+music: outside
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "x":
+    sprite: empty
+    id: campfire
+  "G":
+    sprite: empty
+    id: drawbridge
+  "W":
+    sprite: empty
+    id: wheel
+  "s":
+    sprite: empty
+    id: sign-hp-item
+  "L":
+    sprite: empty
+    id: life1
+  "M":
+    sprite: empty
+    id: life2
+  "N":
+    sprite: empty
+    id: life3
+
+actors:
+# Door
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 1-4
+      active: true
+# Enemies
+# Interactives
+  - id: life1
+    type: snaggable
+    sprite: item-life
+
+  - id: life2
+    type: snaggable
+    sprite: item-life
+
+  - id: life3
+    type: snaggable
+    sprite: item-life
+
+  - id: sign-hp-item
+    type: interactive
+    sprite: sign
+    interactive:
+      text: sign-hp-item
+      reversable: true
+
+  - id: drawbridge
+    type: interactive
+    sprite: drawbridge
+
+  - id: wheel
+    type: interactive
+    sprite: wheel
+    interactive:
+      reversable: true
+      touchable: true
+      degrade: true
+      linked:
+        - drawbridge
+
+  - id: campfire
+    type: interactive
+    sprite: campfire
+    interactive:
+      active: true
+
+layers:
+  - |
+
+
+
+
+
+    E          ^********D*******^
+    E          ^~,,,,,,,.,,,,,,,^
+    E          ^~,,,,,,,.,,,,,,,^
+    E          ^~...............^
+    E          ^~...............^
+    E          ^~.         ,,.,,^
+    E          ^~.  L  M   ,,.,,^
+    E          ^~. x       ,,.,,^
+    E          ^~.    N  W ,G.,,^
+    E          ^~~~~~~~~~~~~~~~~^
+    E          ^~~~~~~~         ^
+    E          ^~~~~~~~  s      ^
+    E          ^~~~~~~~         ^
+    E          ^~~~~~~~     @   ^
+    E          ^****************^

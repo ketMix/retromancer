@@ -56,7 +56,11 @@ func (o *Overlay) Sync(ctx states.Context) {
 		o.musicButton.SetImage(ctx.Manager.GetAs("images", "music-high", (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 
-	o.localeIcon.SetImage(ctx.Manager.GetAs("images", fmt.Sprintf("flag-%s", ctx.Locale()), (*ebiten.Image)(nil)).(*ebiten.Image))
+	if ctx.GPTIsActive() {
+		o.localeIcon.SetImage(ctx.Manager.GetAs("images", "flag-gpt", (*ebiten.Image)(nil)).(*ebiten.Image))
+	} else {
+		o.localeIcon.SetImage(ctx.Manager.GetAs("images", fmt.Sprintf("flag-%s", ctx.Locale()), (*ebiten.Image)(nil)).(*ebiten.Image))
+	}
 }
 
 func (o *Overlay) Update(ctx states.Context) error {

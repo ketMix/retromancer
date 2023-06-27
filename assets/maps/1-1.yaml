@@ -1,0 +1,86 @@
+title: Bat Cave
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "b":
+    sprite: empty
+    id: bat1
+  "B":
+    sprite: empty
+    id: bat2
+  "c":
+    sprite: empty
+    id: candle
+actors:
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 1-2
+      conditions:
+        - type: killedEnemies
+  - id: candle
+    type: interactive
+    sprite: candle
+    interactive:
+      active: true
+  - id: bat1
+    type: enemy
+    sprite: bat
+  - id: bat2
+    type: enemy
+    sprite: bat
+layers:
+  - |
+
+
+
+
+
+
+    E          ^********D*******^
+    E          ^**^     .  ^*^,,^
+    E          ^*^ b  ^*^    ,,,^
+    E          ^^,            ,,^
+    E          ^,,,       B    ,^
+    E          ^****^           ^
+    E          ^,,,,            ^
+    E          ^,,,     ^*^     ^
+    E          ^,,          ^***^
+    E          ^        @    ,,,^
+    E          ^****************^
