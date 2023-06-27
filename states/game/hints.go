@@ -47,7 +47,7 @@ func (h *Hints) Update(ctx states.Context) error {
 			hint := h.hintGroup[g].Items[h.activeGroupIndices[i]]
 			h.vfxs.Add(&resources.Text{
 				X:            320,
-				Y:            250 + h.hintGroup[g].OffsetY,
+				Y:            325 + h.hintGroup[g].OffsetY,
 				Scale:        1.0,
 				InDuration:   1 * time.Second,
 				HoldDuration: 5 * time.Second,
