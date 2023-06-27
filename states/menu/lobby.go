@@ -131,7 +131,7 @@ func (s *Lobby) Update(ctx states.Context) error {
 		if !ebiten.IsStandardGamepadLayoutAvailable(gamepadID) {
 			continue
 		}
-		if inpututil.IsGamepadButtonJustPressed(gamepadID, ebiten.GamepadButton9) {
+		if ebiten.IsStandardGamepadButtonPressed(gamepadID, ebiten.StandardGamepadButtonCenterRight) {
 			if len(s.playerEntries) == 1 {
 				s.playerEntries = append(s.playerEntries, &PlayerEntry{})
 				s.playerEntries[len(s.playerEntries)-1].Init(s, ctx)
@@ -176,6 +176,7 @@ func (s *Lobby) Update(ctx states.Context) error {
 		// FIXME: Need to agree w/ players to start (or assume host has full control).
 		ctx.StateMachine.PushState(&game.World{
 			StartingMap: "start",
+			ShowHints:   true,
 			Players:     players,
 		})
 	}

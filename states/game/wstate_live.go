@@ -389,6 +389,9 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 		}
 	}
 
+	// Show hints as needed.
+	s.hints.Update(ctx)
+
 	if s.ArePlayersDead() {
 		s.PopState(ctx)
 		s.PushState(&WorldStateDead{}, ctx)
@@ -494,4 +497,5 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 			y += int(ctx.Text.Utils().GetLineHeight())
 		}
 	}
+	s.hints.Draw(ctx)
 }

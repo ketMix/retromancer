@@ -15,6 +15,11 @@ type World struct {
 	tick        int      // tick represents the current processed game tick. This is used to lockstep the players.
 	ebitenTicks int      // Elapsed ebiten ticks.
 	StartingMap string
+	ShowHints   bool
+	currentHint string
+	lastHint    string
+	hintTicks   int
+	hints       Hints
 	activeMap   *Map
 	states      []WorldState
 }
@@ -64,6 +69,53 @@ func (s *World) Init(ctx states.Context) error {
 			c.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
 
 			p.SetActor(c)
+		}
+	}
+
+	// Init the hints.
+	s.hints.active = s.ShowHints
+	s.hints.ticker = -60
+	// TODO: Read these from a hints file.
+	s.hints.hintGroup = make(map[string]HintGroup)
+	prefix := ""
+	if len(s.Players) > 1 {
+		prefix = ctx.L("Player 1:")
+	}
+	s.hints.AddHintGroup("p1-controller-start", HintGroup{
+		Prefix: prefix,
+		Items:  []string{"p1-controller-hint-1", "p1-controller-hint-2", "p1-controller-hint-3", "p1-controller-hint-4"},
+	})
+	s.hints.AddHintGroup("p1-keyboard-start", HintGroup{
+		Prefix: prefix,
+		Items:  []string{"p1-keyboard-hint-1", "p1-keyboard-hint-2", "p1-keyboard-hint-3"},
+	})
+	s.hints.AddHintGroup("p2-controller-start", HintGroup{
+		Prefix:  ctx.L("Player 2:"),
+		OffsetY: 32,
+		Items:   []string{"p2-controller-hint-1", "p2-controller-hint-2", "p2-controller-hint-3", "p2-controller-hint-4"},
+	})
+	s.hints.AddHintGroup("p2-keyboard-start", HintGroup{
+		Prefix:  ctx.L("Player 2:"),
+		OffsetY: 32,
+		Items:   []string{"p2-keyboard-hint-1", "p2-keyboard-hint-2"},
+	})
+	if s.StartingMap == "start" {
+		for _, p := range s.Players {
+			if pl, ok := p.(*LocalPlayer); ok {
+				if _, ok := pl.actor.(*PC); ok {
+					if pl.GamepadID != -1 {
+						s.hints.ActivateGroup("p1-controller-start")
+					} else {
+						s.hints.ActivateGroup("p1-keyboard-start")
+					}
+				} else {
+					if pl.GamepadID != -1 {
+						s.hints.ActivateGroup("p2-controller-start")
+					} else {
+						s.hints.ActivateGroup("p2-keyboard-start")
+					}
+				}
+			}
 		}
 	}
 

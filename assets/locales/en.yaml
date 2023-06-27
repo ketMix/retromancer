@@ -24,6 +24,30 @@
 "GPTKeyValid": "The API key is valid."
 "Language": "Language"
 
+# Hints
+"Player 1:": "Player 1: "
+"Player 2:": "Player 2: "
+"p1-controller-hint-1": "Use <Right Stick> to rotate your hand."
+"p1-controller-hint-2": "Use <Left Bumper> and <Right Bumper> to extend your hand."
+"p1-controller-hint-3": "Use <Right Trigger> to reverse time on objects.\nTry it on the burnt-out campfire."
+"p1-controller-hint-4": "Once you've reversed your death, use <Left Stick> to move your body."
+"p1-controller-hint-5": "Use <Right Trigger> to deflect bullets."
+"p1-controller-hint-6": "Use <B> to freeze bullets next to you."
+
+"p1-keyboard-hint-1": "Use the mouse to move your hand."
+"p1-keyboard-hint-2": "Use <Left Click> to reverse time on objects.\nTry it on the burnt-out campfire."
+"p1-keyboard-hint-3": "Once you've reversed your death, use <WASD> to move your body."
+"p1-keyboard-hint-4": "Use <Right Click> to deflect bullets."
+"p1-keyboard-hint-5": "Use <Space> to freeze bullets next to you."
+
+"p2-controller-hint-1": "Use <Right Stick> to rotate your aim."
+"p2-controller-hint-2": "Use <Left Bumper> and <Right Bumper> to extend your aim."
+"p2-controller-hint-3": "Use <Left Stick> to move your body."
+"p2-controller-hint-4": "Use <Right Trigger> to shoot weak bullets."
+
+"p2-keyboard-hint-1": "Use the mouse to aim and <WASD> to move."
+"p2-keyboard-hint-2": "Use <Left Click> to shoot weak bullets."
+
 # Maps
 "start": "Resurrection"
 "outside": "Outside"
