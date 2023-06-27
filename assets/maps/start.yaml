@@ -92,12 +92,12 @@ actors:
     sprite: sign
     interactive:
       text: sign-intro-reverse
-      active: true
+      reversable: true
   - id: sign-grats
     type: interactive
     sprite: sign
     interactive:
-      text: sign-intro-grats
+      text: sign-intro-candles
       reversable: true
 layers:
   - |
