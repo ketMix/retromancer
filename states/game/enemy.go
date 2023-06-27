@@ -3,22 +3,37 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"math"
+	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+type EnemyState int
+
+const (
+	EnemyStateHunt EnemyState = iota
+	EnemyStateWander
+	EnemyStateChase
+)
+
 type Enemy struct {
-	id         string
-	sprite     *resources.Sprite
-	deadSprite *resources.Sprite
-	hitSfx     *resources.Sound
-	deadSfx    *resources.Sound
-	shape      RectangleShape
-	phases     []*resources.Enemy
-	health     int
-	speed      int
-	behavior   string
-	spawner    *Spawner
+	id          string
+	sprite      *resources.Sprite
+	deadSprite  *resources.Sprite
+	hitSfx      *resources.Sound
+	deadSfx     *resources.Sound
+	shape       RectangleShape
+	phases      []*resources.Enemy
+	target      Actor
+	state       EnemyState
+	alwaysShoot bool
+	wanderDir   float64
+	rethinkTime int
+	health      int
+	speed       int
+	behavior    string
+	spawner     *Spawner
 }
 
 func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
@@ -51,7 +66,14 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 	if enemyDef.Bullets != nil {
 		spawner = CreateSpawner(ctx, enemyDef.Bullets)
 	}
+
+	firstState := EnemyStateHunt
+	if enemyDef.Wander {
+		firstState = EnemyStateWander
+	}
+
 	return &Enemy{
+		state:      firstState,
 		sprite:     aliveSprite,
 		deadSprite: deadSprite,
 		hitSfx:     hitSfx,
@@ -60,11 +82,12 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 			Width:  aliveSprite.Width(),
 			Height: aliveSprite.Height(),
 		},
-		phases:   enemyDef.Phases,
-		health:   enemyDef.Health,
-		speed:    enemyDef.Speed,
-		behavior: enemyDef.Behavior,
-		spawner:  spawner,
+		phases:      enemyDef.Phases,
+		health:      enemyDef.Health,
+		speed:       enemyDef.Speed,
+		behavior:    enemyDef.Behavior,
+		alwaysShoot: enemyDef.AlwaysShoot,
+		spawner:     spawner,
 	}
 }
 
@@ -91,13 +114,46 @@ func (e *Enemy) Draw(ctx states.DrawContext) {
 	}
 }
 
+func (e *Enemy) SetTarget(a Actor) {
+	e.target = a
+	if a == nil {
+		e.state = EnemyStateWander
+	} else {
+		e.state = EnemyStateChase
+	}
+}
+
 func (e *Enemy) Update() (a []Action) {
 	if e.health <= 0 {
 		e.deadSprite.Update()
 	} else {
 		e.sprite.Update()
-		if e.spawner != nil {
+		// FIXME: Add a flag for some enemies to fire even without a target.
+		if e.spawner != nil && (e.target != nil || e.alwaysShoot) {
 			a = append(a, e.spawner.Update()...)
+		}
+
+		switch e.state {
+		case EnemyStateHunt:
+			a = append(a, ActionFindNearestActor{Actor: (*PC)(nil)})
+		case EnemyStateWander:
+			e.rethinkTime++
+			if e.rethinkTime > 0 {
+				e.rethinkTime = -(30 + rand.Intn(20))
+				e.wanderDir = math.Pi * 2 * rand.Float64()
+				if e.target == nil {
+					a = append(a, ActionFindNearestActor{Actor: (*PC)(nil)})
+				}
+			}
+			a = append(a, ActionMove{X: e.shape.X + math.Cos(e.wanderDir)*float64(e.speed)*0.5, Y: e.shape.Y + math.Sin(e.wanderDir)*float64(e.speed)*0.25})
+		case EnemyStateChase:
+			if e.target == nil || e.target.Dead() {
+				e.state = EnemyStateWander
+			} else {
+				tx, ty, _, _ := e.target.Shape().Bounds()
+				r := math.Atan2(ty-e.shape.Y, tx-e.shape.X)
+				a = append(a, ActionMove{X: e.shape.X + math.Cos(r)*float64(e.speed)*0.5, Y: e.shape.Y + math.Sin(r)*float64(e.speed)*0.25})
+			}
 		}
 	}
 	return a

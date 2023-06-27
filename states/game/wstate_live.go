@@ -62,9 +62,18 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 		for _, action := range actorAction.Actions {
 			switch action := action.(type) {
 			case ActionMove:
-				checkShape := actor.Shape().Clone().(*CircleShape)
-				checkShape.X = action.X
-				checkShape.Y = action.Y + 4 // Stupid -4 to make the visual offset look nicer when bumpin' walls
+				var checkShape Shape
+				if shape, ok := actor.Shape().(*CircleShape); ok {
+					checkShape = shape.Clone()
+					checkShape.(*CircleShape).X = action.X
+					// Stupid -4 to make the visual offset look nicer when bumpin' walls
+					checkShape.(*CircleShape).Y = action.Y - 4
+				} else if shape, ok := actor.Shape().(*RectangleShape); ok {
+					checkShape = shape.Clone()
+					checkShape.(*RectangleShape).X = action.X
+					// Stupid -4 to make the visual offset look nicer when bumpin' walls
+					checkShape.(*RectangleShape).Y = action.Y - 4
+				}
 				if collision := s.activeMap.Collides(checkShape); collision == nil || !collision.Cell.BlockMove {
 					actor.SetXY(action.X, action.Y)
 				}
@@ -152,6 +161,16 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				s.activeMap.bullets = append(s.activeMap.bullets, action.Bullets...)
 			case ActionSpawnParticle:
 				s.SpawnParticle(ctx, action.Img, action.X, action.Y, action.Angle, action.Speed, action.Life)
+			case ActionFindNearestActor:
+				if e, ok := actor.(*Enemy); ok {
+					target := s.FindNearestActor(&e.shape, action.Actor)
+					if target != nil {
+						tx, ty, _, _ := target.Bounds()
+						if !s.activeMap.DoesLineCollide(e.shape.X, e.shape.Y, tx, ty, s.activeMap.currentZ) {
+							e.SetTarget(target)
+						}
+					}
+				}
 			}
 		}
 		if a, ok := actor.(*PC); ok {
