@@ -1,0 +1,209 @@
+title: Bat Hell
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "d":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockMove: true
+    blockView: true
+  "b":
+    sprite: empty
+    id: bat1
+  "B":
+    sprite: empty
+    id: bat2
+  "F":
+    sprite: empty
+    id: bat3
+  "a":
+    sprite: empty
+    id: bat4
+  "A":
+    sprite: empty
+    id: bat5
+  "e":
+    sprite: empty
+    id: bat6
+  "g":
+    sprite: empty
+    id: bat7
+  "c":
+    sprite: empty
+    id: candle1
+  "C":
+    sprite: empty
+    id: candle2
+  "f":
+    sprite: empty
+    id: candle3
+  "s":
+    sprite: empty
+    id: sign
+  "L":
+    sprite: empty
+    id: life
+  "K":
+    sprite: empty
+    id: brazier1
+  "X":
+    sprite: empty
+    id: brazier2
+  "x":
+    sprite: empty
+    id: brazier3
+actors:
+  # Doors
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 1-5
+      conditions:
+        - type: killedEnemies
+  - id: door2
+    type: interactive
+    sprite: door
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - candle1
+            - candle2
+            - candle3
+  # Enemies
+  - id: bat1
+    type: enemy
+    sprite: bat
+  - id: bat2
+    type: enemy
+    sprite: bat
+  - id: bat3
+    type: enemy
+    sprite: bat
+  - id: bat4
+    type: enemy
+    sprite: bat
+  - id: bat5
+    type: enemy
+    sprite: bat
+  - id: bat6
+    type: enemy
+    sprite: bat
+  - id: bat7
+    type: enemy
+    sprite: bat
+
+  # Interactives
+  - id: candle1
+    type: interactive
+    sprite: candle
+    interactive:
+      reversable: true
+      degrade: true
+  - id: candle2
+    type: interactive
+    sprite: candle
+    interactive:
+      reversable: true
+      degrade: true
+  - id: candle3
+    type: interactive
+    sprite: candle
+    interactive:
+      reversable: true
+      degrade: true
+  - id: brazier1
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - candle1
+            - candle2
+            - candle3
+  - id: brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+  - id: brazier3
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+  - id: sign
+    type: interactive
+    sprite: sign
+    interactive:
+      text: sign-door-blood
+      reversable: true
+
+  # Snaggable
+  - id: life
+    type: snaggable
+    sprite: item-life
+layers:
+  - |
+
+
+
+
+
+
+    E      ^********D******************^
+    E      ^      x...X    A         c ^
+    E      ^   b   s.              B,,,^
+    E      ^ C      .    ~~     ^    ,,^
+    E      ^        .   ~~~~    *  f  ,^
+    E      ^~~~     . ~~~~~~~~  *      ^
+    E      ^~~~~~~~...~~^**************^
+    E      ^******^...^**     a        ^
+    E      ^        ....*        g     ^
+    E      ^          ..^*d*^       e  ^
+    E      ^           ....K*       F  ^
+    E      ^         @ ,,,,,*   L      ^
+    E      ^***************************^
