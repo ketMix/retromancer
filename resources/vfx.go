@@ -129,6 +129,7 @@ type Text struct {
 	Scale        float64
 	Outline      bool
 	OutlineColor color.NRGBA
+	Color        color.NRGBA
 	Delay        time.Duration
 	hasDelayed   bool
 	InDuration   time.Duration
@@ -180,7 +181,11 @@ func (v *Text) Process(ctx states.DrawContext, opts *ebiten.DrawImageOptions) {
 	}
 
 	ctx.Text.SetAlign(etxt.XCenter | etxt.YCenter)
-	ctx.Text.SetColor(color.NRGBA{R: 255, G: 255, B: 255, A: uint8(255 * m)})
+	c := v.Color
+	if c.A == 0 {
+		c = color.NRGBA{R: 255, G: 255, B: 255, A: uint8(255 * m)}
+	}
+	ctx.Text.SetColor(color.NRGBA{R: c.R, G: c.G, B: c.B, A: uint8(255 * m)})
 	ctx.Text.Draw(ctx.Screen, v.Text, int(v.X), int(v.Y))
 }
 
