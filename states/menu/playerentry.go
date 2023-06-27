@@ -31,7 +31,8 @@ type PlayerEntry struct {
 	controllerLeft   *resources.SpriteItem
 	controllerRight  *resources.SpriteItem
 	controllerIdText *resources.TextItem
-	controllerId     int
+	controllerIndex  int
+	useController    bool
 	//
 	startText *resources.TextItem
 	//
@@ -55,15 +56,16 @@ func (e *PlayerEntry) SyncHat(ctx states.Context) {
 }
 
 func (e *PlayerEntry) SyncController(ctx states.Context) {
+	controllers := ebiten.AppendGamepadIDs(nil)
 	if player, ok := e.player.(*game.LocalPlayer); ok {
-		if e.controllerId == 0 {
-			player.GamepadID = 0
+		if !e.useController {
+			player.GamepadID = -1
 			e.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "keyboard").(*ebiten.Image))
 			e.controllerIdText.Text = ""
 		} else {
-			player.GamepadID = e.controllerId
+			player.GamepadID = int(controllers[e.controllerIndex])
 			e.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "controller").(*ebiten.Image))
-			e.controllerIdText.Text = fmt.Sprintf("%d", e.controllerId)
+			e.controllerIdText.Text = fmt.Sprintf("%d", player.GamepadID)
 		}
 	}
 }
@@ -71,16 +73,24 @@ func (e *PlayerEntry) SyncController(ctx states.Context) {
 func (e *PlayerEntry) SetController(dir int) {
 	controllers := ebiten.AppendGamepadIDs(nil)
 
-	next := e.controllerId + dir
+	next := e.controllerIndex + dir
 
-	if next > len(controllers) {
-		next = 0
-		e.controllerId = 0
-	} else if next < 0 {
-		next = len(controllers)
-		e.controllerId = next
+	if e.useController {
+		if next >= len(controllers) {
+			e.useController = false
+		} else if next < 0 {
+			e.useController = false
+		} else {
+			e.controllerIndex = next
+		}
 	} else {
-		e.controllerId = next
+		if dir == -1 {
+			e.controllerIndex = len(controllers) - 1
+			e.useController = true
+		} else {
+			e.controllerIndex = 0
+			e.useController = true
+		}
 	}
 }
 

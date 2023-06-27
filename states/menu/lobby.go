@@ -126,11 +126,11 @@ func (s *Lobby) Update(ctx states.Context) error {
 	s.lobbyItem.Update()
 
 	// Check for controller button hit to activate player 2.
-	for _, gamepadID := range ebiten.AppendGamepadIDs(nil) {
+	for i, gamepadID := range ebiten.AppendGamepadIDs(nil) {
 		if inpututil.IsGamepadButtonJustPressed(gamepadID, ebiten.GamepadButton9) {
 			pl := game.NewLocalPlayer()
 			s.playerEntries[1].player = pl
-			s.playerEntries[1].controllerId = int(gamepadID)
+			s.playerEntries[1].controllerIndex = i
 			s.playerEntries[1].SyncController(ctx)
 			pl.GamepadID = int(gamepadID)
 			// TODO: Stop network stuff and hide host/join.
