@@ -260,6 +260,10 @@ func (t *InputItem) Update() {
 			}
 		} else if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			t.active = false
+		} else if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
+			t.Text += ReadClipboard()
+		} else if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyC) {
+			WriteClipboard(t.Text)
 		} else {
 			runes := ebiten.AppendInputChars(nil)
 			t.Text += string(runes)
