@@ -3,6 +3,8 @@ framerate: 2
 health: 5
 speed: 3
 behavior: random
+wander: true
+alwaysShoot: true
 bullets:
   - alias: echo
     spawnRate: 100
