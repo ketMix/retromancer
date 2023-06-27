@@ -460,7 +460,7 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 			boardY+boardSizeY*0.1,
 			boardSizeX*0.9,
 			boardSizeY*0.8,
-			color.White,
+			color.RGBA{0xff, 0xe4, 0xc4, 0xff},
 			false,
 		)
 
@@ -468,7 +468,7 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 		x := int(centerX)
 		y := int(centerY)
 		splitText := make([]string, 0)
-		maxLen := 35
+		maxLen := 45
 		for _, line := range text {
 			if len(line) <= maxLen {
 				splitText = append(splitText, line)
