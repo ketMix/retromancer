@@ -19,10 +19,18 @@
 "Generate": "Generate"
 "GPTOptions": "GPT Options"
 "GPTInstructions": "Enter the desired writing style in the first box and the desired language in the second box.\nThen click 'Generate' to generate the locale.\nIt will take a few moments to generate.\nIf successful, this text should change."
-"GPTNotActive": "GPT is not active. If the API key is active, trying clicking generate again."
+"GPTNotActive": "GPT is not active. If the API key is valid, trying clicking generate again."
 "GPTKeyNotValid": "The API key is not valid."
 "GPTKeyValid": "The API key is valid."
 "Language": "Language"
+
+# Maps
+"start": "Resurrection"
+"outside": "Outside"
+"1-1": "Bat Cave"
+"1-2": "The Skells"
+"1-3": "Reprieve"
+"1-4": "Bat Hell"
 
 # Signs
 "sign-intro-reverse": "Press <Left-Click> to reverse some objects"

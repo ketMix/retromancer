@@ -173,6 +173,11 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 	// Only add fade and title VFX if this map is not the same as the previous one.
 	if s.activeMap == nil || s.activeMap.data != m.data {
+		mapTitle := ctx.L(m.filename)
+		if mapTitle == m.filename || mapTitle == "" {
+			mapTitle = m.data.Title
+		}
+
 		// Add fade in VFX.
 		m.vfx.Add(&resources.Fade{
 			Alpha:        1,
@@ -181,7 +186,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 		})
 		// Add map title VFX.
 		m.vfx.Add(&resources.Text{
-			Text:         m.data.Title,
+			Text:         mapTitle,
 			Scale:        2.0,
 			X:            320,
 			Y:            320,
