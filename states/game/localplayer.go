@@ -25,6 +25,7 @@ func NewLocalPlayer() *LocalPlayer {
 	return &LocalPlayer{
 		impulses:        ImpulseSet{},
 		queuedImpulses:  ImpulseSet{},
+		GamepadID:       -1,
 		ca:              math.Pi / 2,
 		cd:              40.0,
 		handRotateSpeed: 0.075,
