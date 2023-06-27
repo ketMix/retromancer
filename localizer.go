@@ -13,13 +13,16 @@ type Localizer struct {
 	gptActive     bool
 }
 
-func (l *Localizer) SetGPTParams(key, style string) {
-	l.GPT.Key = key
+func (l *Localizer) SetGPTStyle(style string) {
 	l.GPT.Style = style
 }
 
 func (l *Localizer) CheckGPTKey() bool {
 	return l.GPT.CheckKey()
+}
+
+func (l *Localizer) GPTIsActive() bool {
+	return l.gptActive
 }
 
 func (l *Localizer) InitGPT() {

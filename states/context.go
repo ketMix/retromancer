@@ -19,8 +19,9 @@ type Context struct {
 	L            func(key string) string
 	Locale       func() string
 	SetLocale    func(loc string, gpt bool)
-	SetGPTParams func(key, style string)
+	SetGPTStyle  func(style string)
 	CheckGPTKey  func() bool
+	GPTIsActive  func() bool
 	Cursor       Cursor
 	MusicPlayer  MusicPlayer
 }
