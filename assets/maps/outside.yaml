@@ -65,17 +65,17 @@ actors:
     type: interactive
     sprite: door
     interactive:
+      map: 1-1
       conditions:
         - type: active
           args:
             - candle
-      map: debug
   - id: door2
     type: interactive
     sprite: door
     interactive:
-      active: true
       map: ballpit
+      active: true
   - id: door3
     type: interactive
     sprite: door
