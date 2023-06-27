@@ -64,7 +64,6 @@ func InitGPT(fs multipath.FS) *GPT {
 			- For each key you should create a new phrase that is different from the original.
 			- A style will be requested that you should use for creating the new phrase.
 			- All values should have length less than or equal to the length of their original value.
-			- All new line characters should remain in the output.
 			- After creating the phrase you will translate the new phrase into the requested language.
 			- There should be no escape characters in the translated phrase.
 			- The value for the key should be the translated phrase only.
