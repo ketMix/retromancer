@@ -136,6 +136,7 @@ func (s *Lobby) Update(ctx states.Context) error {
 			pl := game.NewLocalPlayer()
 			s.playerEntries[1].player = pl
 			s.playerEntries[1].controllerIndex = i
+			s.playerEntries[1].useController = true
 			s.playerEntries[1].SyncController(ctx)
 			pl.GamepadID = int(gamepadID)
 			// TODO: Stop network stuff and hide host/join.
