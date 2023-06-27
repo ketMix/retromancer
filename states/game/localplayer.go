@@ -94,22 +94,37 @@ func (p *LocalPlayer) Update() {
 			p.cx += float64(a.shape.X)
 			p.cy += float64(a.shape.Y)
 			a.Hand.SetXY(p.cx, p.cy)
+		} else if a, ok := p.actor.(*Companion); ok {
+			p.cx += float64(a.shape.X)
+			p.cy += float64(a.shape.Y)
+			a.Hand.SetXY(p.cx, p.cy)
 		}
 
-		if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton1) {
-			p.impulses.Interaction = ImpulseShield{}
-		} else if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton7) {
-			p.impulses.Interaction = ImpulseReflect{
-				X: float64(p.cx),
-				Y: float64(p.cy),
+		if _, ok := p.actor.(*PC); ok {
+			if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton1) {
+				p.impulses.Interaction = ImpulseShield{}
+			} else if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton7) {
+				p.impulses.Interaction = ImpulseReflect{
+					X: float64(p.cx),
+					Y: float64(p.cy),
+				}
+			} else if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton6) {
+				p.impulses.Interaction = ImpulseDeflect{
+					X: float64(p.cx),
+					Y: float64(p.cy),
+				}
+			} else {
+				p.impulses.Interaction = nil
 			}
-		} else if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton6) {
-			p.impulses.Interaction = ImpulseDeflect{
-				X: float64(p.cx),
-				Y: float64(p.cy),
+		} else if _, ok := p.actor.(*Companion); ok {
+			if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton7) {
+				p.impulses.Interaction = ImpulseShoot{
+					X: float64(p.cx),
+					Y: float64(p.cy),
+				}
+			} else {
+				p.impulses.Interaction = nil
 			}
-		} else {
-			p.impulses.Interaction = nil
 		}
 
 	} else {
@@ -140,22 +155,35 @@ func (p *LocalPlayer) Update() {
 		// This feels a bit wrong to set the player actor's hand position directly, but the hand position is just for visual indication as to where interactions go.
 		if a, ok := p.actor.(*PC); ok {
 			a.Hand.SetXY(float64(x), float64(y))
+		} else if a, ok := p.actor.(*Companion); ok {
+			a.Hand.SetXY(float64(x), float64(y))
 		}
 
-		if ebiten.IsKeyPressed(ebiten.KeySpace) {
-			p.impulses.Interaction = ImpulseShield{}
-		} else if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-			p.impulses.Interaction = ImpulseReflect{
-				X: float64(x),
-				Y: float64(y),
+		if _, ok := p.actor.(*PC); ok {
+			if ebiten.IsKeyPressed(ebiten.KeySpace) {
+				p.impulses.Interaction = ImpulseShield{}
+			} else if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+				p.impulses.Interaction = ImpulseReflect{
+					X: float64(x),
+					Y: float64(y),
+				}
+			} else if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
+				p.impulses.Interaction = ImpulseDeflect{
+					X: float64(x),
+					Y: float64(y),
+				}
+			} else {
+				p.impulses.Interaction = nil
 			}
-		} else if ebiten.IsMouseButtonPressed(ebiten.MouseButtonRight) {
-			p.impulses.Interaction = ImpulseDeflect{
-				X: float64(x),
-				Y: float64(y),
+		} else if _, ok := p.actor.(*Companion); ok {
+			if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+				p.impulses.Interaction = ImpulseShoot{
+					X: float64(x),
+					Y: float64(y),
+				}
+			} else {
+				p.impulses.Interaction = nil
 			}
-		} else {
-			p.impulses.Interaction = nil
 		}
 	}
 

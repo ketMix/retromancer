@@ -1,6 +1,6 @@
 sprite: skell
 framerate: 15
-health: 5
+health: 25
 speed: 1
 behavior: random
 bullets:

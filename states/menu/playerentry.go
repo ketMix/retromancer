@@ -94,7 +94,7 @@ func (e *PlayerEntry) SetController(dir int) {
 	}
 }
 
-func (e *PlayerEntry) Init(ctx states.Context) error {
+func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 	e.clickSound = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
 	e.hats = ctx.Manager.GetNamesWithPrefix("images", "hat-")
@@ -200,13 +200,7 @@ func (e *PlayerEntry) Init(ctx states.Context) error {
 		Text: ctx.L("Start"),
 		Callback: func() bool {
 			e.clickSound.Play(1.0)
-			// FIXME: Need to agree w/ players to start (or assume host has full control).
-			ctx.StateMachine.PushState(&game.World{
-				StartingMap: "start",
-				Players: []game.Player{
-					e.player,
-				},
-			})
+			s.shouldStart = true
 			return false
 		},
 	}

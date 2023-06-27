@@ -3,6 +3,7 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"math"
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -45,17 +46,25 @@ func (s *World) Init(ctx states.Context) error {
 	}
 
 	// Create actors for our players.
-	for _, p := range s.Players {
-		pc := s.NewPC(ctx)
+	for i, p := range s.Players {
+		if i == 0 {
+			pc := s.NewPC(ctx)
 
-		pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
+			pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
 
-		// If the starting map is not start, then set the player as resurrected.
-		if s.StartingMap != "start" {
-			pc.resurrected = true
+			// If the starting map is not start, then set the player as resurrected.
+			if s.StartingMap != "start" {
+				pc.resurrected = true
+			}
+
+			p.SetActor(pc)
+		} else {
+			c := s.NewCompanion(ctx)
+
+			c.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
+
+			p.SetActor(c)
 		}
-
-		p.SetActor(pc)
 	}
 
 	// Set our starting state.
@@ -214,4 +223,30 @@ func (s *World) IntersectingActors(sh Shape) []Actor {
 		}
 	}
 	return actors
+}
+
+func (s *World) FindNearestActor(from Shape, a Actor) Actor {
+	var closestActor Actor
+	var closestDistance float64
+	for _, actor := range s.activeMap.actors {
+		// Skip dead actors.
+		if actor.Dead() {
+			continue
+		}
+		// Reflect isn't great to use here, but it beats nested type switches.
+		if reflect.TypeOf(actor) == reflect.TypeOf(a) {
+			x, y, _, _ := actor.Bounds()
+			distance := 0.0
+			if circle, ok := from.(*CircleShape); ok {
+				distance = math.Sqrt(math.Pow(circle.X-x, 2) + math.Pow(circle.Y-y, 2))
+			} else if rect, ok := from.(*RectangleShape); ok {
+				distance = math.Sqrt(math.Pow(rect.X-x, 2) + math.Pow(rect.Y-y, 2))
+			}
+			if closestActor == nil || distance < closestDistance {
+				closestActor = actor
+				closestDistance = distance
+			}
+		}
+	}
+	return closestActor
 }
