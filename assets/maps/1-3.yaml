@@ -36,7 +36,6 @@ runes:
     sprite: empty
     id: door
     isometric: true
-    blockMove: true
     blockView: true
   "x":
     sprite: empty
@@ -68,6 +67,7 @@ actors:
     interactive:
       map: 1-4
       active: true
+
 # Enemies
 # Interactives
   - id: life1
