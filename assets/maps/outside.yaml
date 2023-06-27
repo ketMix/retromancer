@@ -82,7 +82,7 @@ actors:
     sprite: door
     interactive:
       active: true
-      map: start
+      map: 0-1
   - id: lever # CHANGE THIS TO A GEM OR SOMETHING SHOOTABLE
     type: interactive
     sprite: lever

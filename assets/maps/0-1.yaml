@@ -1,0 +1,99 @@
+title: Offensive Reversal
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "g":
+    sprite: empty
+    id: drawbridge
+  "b":
+    sprite: empty
+    id: bat1
+  "s":
+    sprite: empty
+    id: sign
+  "d":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockMove: true
+    blockView: true
+actors:
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: outside
+      conditions:
+        - type: killedEnemies
+  - id: door2
+    type: interactive
+    sprite: door
+  - id: drawbridge
+    type: interactive
+    sprite: drawbridge
+    interactive:
+      conditions:
+        - type: killedEnemies
+  - id: sign
+    type: interactive
+    sprite: sign
+    interactive:
+      reversable: true
+      text: sign-intro-bullet_reversal
+  - id: bat1
+    type: enemy
+    sprite: bat
+layers:
+  - |
+
+
+
+
+
+
+    E          ^********D*******^
+    E          ^**^     .  ^*^,,^
+    E          ^*^ b    .   ,,,,^
+    E          ^^,      .   ,,,,^
+    E          ^,,,    g ,,,,,,,^
+    E          ^*******~~~~~~~~~^
+    E          ^,, ____ .   ___ ^
+    E          ^,,, s   .  ___  ^
+    E          ^,,      .   ^***^
+    E          ^  @......    ,,,^
+    E          ^**d*************^
