@@ -2,7 +2,6 @@ package main
 
 import (
 	"ebijam23/resources"
-	"fmt"
 )
 
 type Localizer struct {
@@ -10,6 +9,21 @@ type Localizer struct {
 	locale        string
 	currentLocale *resources.Locale
 	backupLocale  *resources.Locale
+	GPT           *resources.GPT
+	gptActive     bool
+}
+
+func (l *Localizer) SetGPTParams(key, style string) {
+	l.GPT.Key = key
+	l.GPT.Style = style
+}
+
+func (l *Localizer) CheckGPTKey() bool {
+	return l.GPT.CheckKey()
+}
+
+func (l *Localizer) InitGPT() {
+	l.GPT = resources.InitGPT(l.manager.files)
 }
 
 func (l *Localizer) Locale() string {
@@ -24,13 +38,13 @@ func (l *Localizer) SetLocale(loc string, gpt bool) {
 		l.currentLocale = l.manager.GetAs("locales", loc, (*resources.Locale)(nil)).(*resources.Locale)
 		return
 	}
-	fmt.Println("Fetching from GPT")
-	currentLocale, err := resources.GetGPTLocale(l.manager.files, l.backupLocale, loc)
+	currentLocale, err := l.GPT.GetLocale(l.backupLocale, loc)
 	if err != nil {
-		fmt.Println("Failed to get GPT locale:", err)
 		l.currentLocale = l.manager.GetAs("locales", loc, (*resources.Locale)(nil)).(*resources.Locale)
+		l.gptActive = false
 	} else {
 		l.currentLocale = currentLocale
+		l.gptActive = true
 	}
 }
 

@@ -16,6 +16,10 @@
 "Intro4": "... u wakems up"
 "SkipIntro": "Press <Enter> or <Escape> to skip"
 "SignExit": "Press <Enter> to return"
+"GPTInstructions": "Enter the desired writing style in the first box and the desired language in the second box.\nThen click 'Generate' to generate the locale.\nIt will take a few moments to generate.\nIf successful, this text should change."
+"GPTKeyNotValid": "The API key is not valid."
+"GPTKeyValid": "The API key is valid."
+"Language": "Language"
 
 # Signs
 "sign-intro-reverse": "Press <Left-Click> to reverse some objects"

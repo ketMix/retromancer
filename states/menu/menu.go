@@ -11,7 +11,9 @@ import (
 
 type Menu struct {
 	logo, play, quit, ballpit *resources.Sprite
+	gpt                       *resources.TextItem
 	sprites                   resources.Sprites
+	buttons                   []resources.MenuItem
 	click                     *resources.Sound
 	overlay                   game.Overlay
 }
@@ -37,7 +39,18 @@ func (m *Menu) Init(ctx states.Context) error {
 	m.ballpit.X = x - m.quit.Width()/2
 	m.ballpit.Y = y
 	y += m.ballpit.Height() + 16
+	m.gpt = &resources.TextItem{
+		Text: "GPT Options",
+		X:    x,
+		Y:    y,
+		Callback: func() bool {
+			m.click.Play(1.0)
+			ctx.StateMachine.PushState(&GPTOptions{})
+			return true
+		},
+	}
 	m.sprites = append(m.sprites, m.play, m.quit, m.ballpit)
+	m.buttons = append(m.buttons, m.gpt)
 
 	m.click = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
@@ -84,6 +97,19 @@ func (m *Menu) Update(ctx states.Context) error {
 
 	}
 
+	for _, m := range m.buttons {
+		m.CheckState(float64(x), float64(y))
+	}
+	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
+		for _, m := range m.buttons {
+			if m.Hovered() {
+				if m.Activate() {
+					return nil
+				}
+			}
+		}
+	}
+
 	m.overlay.Update(ctx)
 
 	return nil
@@ -93,6 +119,9 @@ func (m *Menu) Draw(ctx states.DrawContext) {
 	m.logo.Draw(ctx)
 	for _, sprite := range m.sprites {
 		sprite.Draw(ctx)
+	}
+	for _, button := range m.buttons {
+		button.Draw(ctx)
 	}
 
 	m.overlay.Draw(ctx)

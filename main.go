@@ -56,6 +56,7 @@ func main() {
 	// Set our locale.
 	game.Localizer.manager = &game.Manager
 	game.Localizer.SetLocale(game.Flags.Locale, false) // Start without GPT
+	game.Localizer.InitGPT()
 
 	// Initialize game fields as necessary.
 	if err := game.Init(); err != nil {

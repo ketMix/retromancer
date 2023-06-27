@@ -28,10 +28,8 @@ type GPTRequestBody struct {
 	Messages []MessageBody `json:"messages"`
 }
 
-const url = "https://api.openai.com/v1/chat/completions"
-
 type GPT struct {
-	key          string
+	Key          string
 	SystemPrompt string // The prompt to use for the system
 	MaxTokens    int    // 1-2048
 	Model        string // "davinci" or "curie"
@@ -41,25 +39,21 @@ type GPT struct {
 // Does some set up for GPT
 //  - finds the api key from "assets/key.txt"
 //	- sets default values
-func CreateGPT(fs multipath.FS) (*GPT, error) {
+func InitGPT(fs multipath.FS) *GPT {
 	fileName := "key.txt"
 	file, err := fs.ReadFile(fileName)
 
+	k := ""
 	// Check if an error was returned
-	if err != nil {
-		return nil, err
+	if err == nil {
+		k = string(file)
 	}
 
-	k := string(file)
-	// Check if the key is empty
-	if k == "" {
-		return nil, fmt.Errorf("key is empty")
-	}
 	return &GPT{
-		key:       k,
+		Key:       k,
 		Model:     "gpt-3.5-turbo",
-		MaxTokens: 2048,
 		Style:     "an old mumbling sage",
+		MaxTokens: 2048,
 		SystemPrompt: `
 			You are assisting with writing the story and text for a game.
 			
@@ -78,17 +72,25 @@ func CreateGPT(fs multipath.FS) (*GPT, error) {
 			
 			Your response must be YAML unmarshalable.
 		`,
-	}, nil
+	}
 }
 
-func (g *GPT) Fetch(requestBody []byte) ([]byte, error) {
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBody))
+func (g *GPT) Fetch(method, url string, requestBody *[]byte) ([]byte, error) {
+	if method == "POST" && requestBody == nil {
+		return nil, fmt.Errorf("request body cannot be nil for POST requests")
+	}
+	var req *http.Request
+	var err error
+	if method == "POST" {
+		req, err = http.NewRequest(method, url, bytes.NewBuffer(*requestBody))
+	} else {
+		req, err = http.NewRequest(method, url, nil)
+	}
 	if err != nil {
 		return nil, err
 	}
-
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+g.key)
+	req.Header.Set("Authorization", "Bearer "+g.Key)
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -137,7 +139,7 @@ func (gpt *GPT) GetResponse(inputLocale *Locale, locale string) (Locale, error) 
 		return nil, err
 	}
 
-	body, err := gpt.Fetch(promptJson)
+	body, err := gpt.Fetch("POST", "https://api.openai.com/v1/chat/completions", &promptJson)
 	if err != nil {
 		return nil, err
 	}
@@ -158,17 +160,22 @@ func (gpt *GPT) GetResponse(inputLocale *Locale, locale string) (Locale, error) 
 	return *respLocale, nil
 }
 
-func GetGPTLocale(fs multipath.FS, baseLocale *Locale, locale string) (*Locale, error) {
-	if baseLocale == nil {
-		return nil, fmt.Errorf("baseLocale is nil")
-	}
-	gpt, err := CreateGPT(fs)
-	if err != nil {
-		return nil, err
-	}
-	gptLocale, err := gpt.GetResponse(baseLocale, locale)
+func (g *GPT) GetLocale(baseLocale *Locale, locale string) (*Locale, error) {
+	gptLocale, err := g.GetResponse(baseLocale, locale)
 	if err != nil {
 		return nil, err
 	}
 	return &gptLocale, nil
+}
+
+func (g *GPT) CheckKey() bool {
+	if g.Key == "" {
+		return false
+	}
+
+	_, err := g.Fetch("GET", "https://api.openai.com/v1/models", nil)
+	if err != nil {
+		return false
+	}
+	return true
 }
