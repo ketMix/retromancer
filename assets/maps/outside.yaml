@@ -61,6 +61,9 @@ runes:
   "S":
     sprite: empty
     id: sign-outside-bridge
+  "x":
+    sprite: empty
+    id: sign-outside-power
 actors:
   - id: door1
     type: interactive
@@ -111,6 +114,12 @@ actors:
     interactive:
       text: sign-outside-bridge
       reversable: true
+  - id: sign-outside-power
+    type: interactive
+    sprite: sign
+    interactive:
+      text: sign-outside-power
+      reversable: true
 layers:
   - |
 
@@ -125,7 +134,7 @@ layers:
     E     ~     .  ,  ,,  ~~~~~~~~~~~~~
     E     ~   , .   ,          . S    ~
     E     ~     ................      ~
-    E     ~             .             ~
+    E     ~            x.             ~
     E     ~        ,    .      ,,,,   ~
     E     ~     ,,      .         ,   ~
     E     ~             @           , ~
