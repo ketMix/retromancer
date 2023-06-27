@@ -57,6 +57,15 @@ func (e *PlayerEntry) SyncHat(ctx states.Context) {
 
 func (e *PlayerEntry) SyncController(ctx states.Context) {
 	controllers := ebiten.AppendGamepadIDs(nil)
+	// Filter controllers that are not standard layout.
+	for i := 0; i < len(controllers); {
+		if !ebiten.IsStandardGamepadLayoutAvailable(controllers[i]) {
+			controllers = append(controllers[:i], controllers[i+1:]...)
+		} else {
+			i++
+		}
+	}
+
 	if player, ok := e.player.(*game.LocalPlayer); ok {
 		if !e.useController {
 			player.GamepadID = -1
@@ -72,6 +81,19 @@ func (e *PlayerEntry) SyncController(ctx states.Context) {
 
 func (e *PlayerEntry) SetController(dir int) {
 	controllers := ebiten.AppendGamepadIDs(nil)
+	// Filter controllers that are not standard layout.
+	for i := 0; i < len(controllers); {
+		if !ebiten.IsStandardGamepadLayoutAvailable(controllers[i]) {
+			controllers = append(controllers[:i], controllers[i+1:]...)
+		} else {
+			i++
+		}
+	}
+
+	if len(controllers) == 0 {
+		e.useController = false
+		return
+	}
 
 	next := e.controllerIndex + dir
 

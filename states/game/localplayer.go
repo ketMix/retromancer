@@ -36,16 +36,16 @@ func NewLocalPlayer() *LocalPlayer {
 func (p *LocalPlayer) Update() {
 	// FIXME: All of this is pretty rough, but I wanted to test controller usage.
 	if p.GamepadID >= 0 && len(ebiten.AppendGamepadIDs(nil)) > p.GamepadID {
-		lr := ebiten.GamepadAxisValue(ebiten.GamepadID(p.GamepadID), 0)
-		ud := ebiten.GamepadAxisValue(ebiten.GamepadID(p.GamepadID), 1)
+		lr := ebiten.StandardGamepadAxisValue(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadAxisLeftStickHorizontal)
+		ud := ebiten.StandardGamepadAxisValue(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadAxisLeftStickVertical)
 
 		if math.Abs(lr) > 0.01 || math.Abs(ud) > 0.01 {
 			a := math.Atan2(ud, lr)
 			p.impulses.Move = &ImpulseMove{Direction: a}
 		}
 
-		r1 := ebiten.GamepadAxisValue(ebiten.GamepadID(p.GamepadID), 3)
-		r2 := ebiten.GamepadAxisValue(ebiten.GamepadID(p.GamepadID), 4)
+		r1 := ebiten.StandardGamepadAxisValue(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadAxisRightStickHorizontal)
+		r2 := ebiten.StandardGamepadAxisValue(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadAxisRightStickVertical)
 		if math.Abs(r1) > 0.01 || math.Abs(r2) > 0.01 {
 			a := math.Atan2(r2, r1)
 
@@ -76,12 +76,12 @@ func (p *LocalPlayer) Update() {
 			}
 		}
 
-		if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton5) {
+		if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonFrontBottomRight) {
 			p.cd += 3
 			if p.cd > 300 {
 				p.cd = 300
 			}
-		} else if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton4) {
+		} else if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonFrontBottomLeft) {
 			if p.cd-3 > 0 {
 				p.cd -= 3
 			}
@@ -101,14 +101,14 @@ func (p *LocalPlayer) Update() {
 		}
 
 		if _, ok := p.actor.(*PC); ok {
-			if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton1) {
+			if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonRightLeft) {
 				p.impulses.Interaction = ImpulseShield{}
-			} else if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton7) {
+			} else if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonFrontTopRight) {
 				p.impulses.Interaction = ImpulseReflect{
 					X: float64(p.cx),
 					Y: float64(p.cy),
 				}
-			} else if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton6) {
+			} else if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonFrontTopLeft) {
 				p.impulses.Interaction = ImpulseDeflect{
 					X: float64(p.cx),
 					Y: float64(p.cy),
@@ -117,7 +117,7 @@ func (p *LocalPlayer) Update() {
 				p.impulses.Interaction = nil
 			}
 		} else if _, ok := p.actor.(*Companion); ok {
-			if ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton7) {
+			if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonFrontTopRight) {
 				p.impulses.Interaction = ImpulseShoot{
 					X: float64(p.cx),
 					Y: float64(p.cy),
@@ -189,9 +189,9 @@ func (p *LocalPlayer) Update() {
 
 	// Thoughts
 	p.thoughts = []Thought{}
-	if ebiten.IsKeyPressed(ebiten.KeyEnter) || ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton9) {
+	if ebiten.IsKeyPressed(ebiten.KeyEnter) || ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonCenterRight) {
 		p.thoughts = append(p.thoughts, ResetThought{})
-	} else if ebiten.IsKeyPressed(ebiten.KeyEscape) || ebiten.IsGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.GamepadButton8) {
+	} else if ebiten.IsKeyPressed(ebiten.KeyEscape) || ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonCenterLeft) {
 		p.thoughts = append(p.thoughts, QuitThought{})
 	}
 }
