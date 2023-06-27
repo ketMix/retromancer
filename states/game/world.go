@@ -45,17 +45,25 @@ func (s *World) Init(ctx states.Context) error {
 	}
 
 	// Create actors for our players.
-	for _, p := range s.Players {
-		pc := s.NewPC(ctx)
+	for i, p := range s.Players {
+		if i == 0 {
+			pc := s.NewPC(ctx)
 
-		pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
+			pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
 
-		// If the starting map is not start, then set the player as resurrected.
-		if s.StartingMap != "start" {
-			pc.resurrected = true
+			// If the starting map is not start, then set the player as resurrected.
+			if s.StartingMap != "start" {
+				pc.resurrected = true
+			}
+
+			p.SetActor(pc)
+		} else {
+			c := s.NewCompanion(ctx)
+
+			c.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
+
+			p.SetActor(c)
 		}
-
-		p.SetActor(pc)
 	}
 
 	// Set our starting state.

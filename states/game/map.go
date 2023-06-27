@@ -283,6 +283,8 @@ func (m *Map) Draw(ctx states.DrawContext) {
 	for _, a := range m.actors {
 		if pc, ok := a.(*PC); ok {
 			pc.DrawHand(ctx)
+		} else if c, ok := a.(*Companion); ok {
+			c.DrawHand(ctx)
 		}
 	}
 }

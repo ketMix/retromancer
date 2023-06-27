@@ -12,6 +12,7 @@ type Bullet struct {
 	AngularVelocity *float64 `yaml:"angularVelocity,omitempty"`
 	AimTime         *int     `yaml:"aimTime,omitempty"`
 	AimDelay        *int     `yaml:"aimDelay,omitempty"`
+	Damage          *int     `yaml:"damage,omitempty"`
 }
 
 type BulletGroup struct {

@@ -35,3 +35,11 @@ type ImpulseShield struct {
 func (i ImpulseShield) Cost() int {
 	return 4
 }
+
+type ImpulseShoot struct {
+	X, Y float64 // X and Y are the current cursor coordinates.
+}
+
+func (i ImpulseShoot) Cost() int {
+	return 6
+}

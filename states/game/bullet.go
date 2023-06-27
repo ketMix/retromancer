@@ -35,11 +35,15 @@ type Bullet struct {
 	aimTime         int         // How long the bullet should aim at player
 	reflected       bool        // If the bullet has been reflected
 	deflected       bool        // If the bullet has been deflected.
-	holdFor         int         // An amount of time to hold the bullet in place.
-	timeLine        []*Bullet   // Positions the bullet has been in
-	nextParticle    int         // Next particle to spawn (negative upwards)
+	friendly        bool
+	holdFor         int       // An amount of time to hold the bullet in place.
+	timeLine        []*Bullet // Positions the bullet has been in
+	nextParticle    int       // Next particle to spawn (negative upwards)
 	sprite          *resources.Sprite
+	Lifetime        int
+	Deathtime       int // Maximum lifetime of the bullet
 	Destroyed       bool
+	Damage          int
 }
 
 // TODO: do this differently, hard to read and write arguments
@@ -63,6 +67,7 @@ func CreateBullet(
 		aimTime:         aimTime,
 		aimDelay:        aimDelay,
 		timeLine:        make([]*Bullet, 0),
+		Damage:          5,
 	}
 	b.sprite = resources.NewSprite(ebiten.NewImage(int(radius*2), int(radius*2)))
 	return b
@@ -83,6 +88,7 @@ func BulletFromExisting(b *Bullet, angle float64) *Bullet {
 		b.aimTime,
 		b.aimDelay,
 	)
+	bullet.Damage = b.Damage
 	bullet.SetXY(b.Shape.X, b.Shape.Y)
 	return bullet
 }
@@ -102,6 +108,10 @@ func CreateBulletFromDef(override, alias *resources.Bullet) *Bullet {
 	angularVelocity := float64(*alias.AngularVelocity)
 	aimTime := *alias.AimTime
 	aimDelay := *alias.AimDelay
+	damage := 5
+	if alias.Damage != nil {
+		damage = *alias.Damage
+	}
 
 	if override != nil {
 		if override.BulletType != nil {
@@ -134,10 +144,17 @@ func CreateBulletFromDef(override, alias *resources.Bullet) *Bullet {
 		if override.AimDelay != nil {
 			aimDelay = *override.AimDelay
 		}
+		if override.Damage != nil {
+			damage = *override.Damage
+		}
 	}
 	color := color.RGBA{uint8(c[0]), uint8(c[1]), uint8(c[2]), uint8(c[3])}
 
-	return CreateBullet(
+	if damage == 0 {
+		damage = 5
+	}
+
+	bullet := CreateBullet(
 		BulletType(bulletType),
 		color,
 		radius,
@@ -150,6 +167,8 @@ func CreateBulletFromDef(override, alias *resources.Bullet) *Bullet {
 		aimTime,
 		aimDelay,
 	)
+	bullet.Damage = damage
+	return bullet
 }
 
 func (b *Bullet) SetXY(x, y float64) {
@@ -160,6 +179,14 @@ func (b *Bullet) SetXY(x, y float64) {
 
 // Update the bullet's position and speed
 func (b *Bullet) Update() (actions []Action) {
+	if b.Deathtime > 0 {
+		b.Lifetime++
+		if b.Lifetime > b.Deathtime {
+			b.Destroyed = true
+			return
+		}
+	}
+
 	if len(b.timeLine) == 1 && b.reflected {
 		// if we're at the first point in timeLine, use the bullet as current bullet
 		prevBullet := b.timeLine[0]
@@ -260,6 +287,13 @@ func (b *Bullet) Reflect() {
 	if b.reflected {
 		return
 	}
+
+	// If the bullet is friendly, empower it.
+	if b.friendly {
+		b.Damage = 2
+		b.Shape.Radius = 2
+	}
+
 	// Turn the bullet border REFLECT color
 	b.borderColor = color.NRGBA{0x66, 0x99, 0xff, 0xff}
 
@@ -270,6 +304,12 @@ func (b *Bullet) Reflect() {
 func (b *Bullet) Deflect(angle float64) {
 	if b.deflected {
 		return
+	}
+
+	// If the bullet is friendly, empower it.
+	if b.friendly {
+		b.Damage = 2
+		b.Shape.Radius = 2
 	}
 
 	// Turn the bullet border DEFLECT color

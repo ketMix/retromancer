@@ -212,25 +212,27 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 		// Check for bullet collisions with actors.
 		for _, actor := range s.activeMap.actors {
 			// Check player collisions.
-			if p, ok := actor.(*PC); ok {
-				if p.InvulnerableTicks > 0 {
-					continue
-				}
-				if bullet.Shape.Collides(actor.Shape()) {
-					x, y, _, _ := actor.Bounds()
-					for i := 0; i < 6; i++ {
-						s.SpawnParticle(ctx, "hurt", x, y, bullet.Angle-math.Pi/4+(math.Pi/2*rand.Float64()), rand.Float64()*2.0, 30)
+			if !bullet.friendly {
+				if p, ok := actor.(*PC); ok {
+					if p.InvulnerableTicks > 0 {
+						continue
 					}
-					bullet.Destroyed = true
-					p.Hurtie()
-					break
+					if bullet.Shape.Collides(actor.Shape()) {
+						x, y, _, _ := actor.Bounds()
+						for i := 0; i < 6; i++ {
+							s.SpawnParticle(ctx, "hurt", x, y, bullet.Angle-math.Pi/4+(math.Pi/2*rand.Float64()), rand.Float64()*2.0, 30)
+						}
+						bullet.Destroyed = true
+						p.Hurtie()
+						break
+					}
+					continue // skip checking other actors
 				}
-				continue // skip checking other actors
 			}
 
 			// Check interactive and enemy collisions.
 			// Only applicable to reflected or deflected bullets
-			if bullet.reflected || bullet.deflected {
+			if bullet.reflected || bullet.deflected || bullet.friendly {
 				// If the interactive is shootable, hit the interactive.
 				if i, ok := actor.(*Interactive); ok {
 					if i.Shootable() && bullet.Shape.Collides(i.Shape()) {
@@ -245,7 +247,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 					if e.IsAlive() {
 						if bullet.Shape.Collides(e.Shape()) {
 							bullet.Destroyed = true
-							e.Damage(1)
+							e.Damage(bullet.Damage)
 							break
 						}
 					}
@@ -258,7 +260,19 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	// Check for collisions between player characters and interactives/snaggables.
 	touchingSign := false
 	for _, pl := range s.Players {
-		if pc, ok := pl.Actor().(*PC); ok {
+		if _, ok := pl.Actor().(*Companion); ok {
+			// Allow companions to touch interactives.
+			for _, actor := range s.activeMap.actors {
+				if i, ok := actor.(*Interactive); ok {
+					// If touchable, apply reverse to it
+					if i.touchable && i.shape.Collides(pl.Actor().Shape()) {
+						i.Reverse()
+						continue
+					}
+				}
+			}
+
+		} else if pc, ok := pl.Actor().(*PC); ok {
 			for _, actor := range s.activeMap.actors {
 				// Check interactive collisions.
 				if i, ok := actor.(*Interactive); ok {
@@ -376,17 +390,11 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 			// Also draw the energy around the player if they shielded.
 			if _, ok := a.previousInteraction.(ActionShield); ok {
 				resources.DrawArc(ctx.Screen, a.shape.X, a.shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
+			} else if a, ok := p.Actor().(*Companion); ok {
+				resources.DrawArc(ctx.Screen, a.Hand.Shape.X, a.Hand.Shape.Y, 12, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
 			}
-
-			// Old energy bar
-			/*w := 100
-			h := 5
-			x := screen.Bounds().Max.X/2 - w/2
-			vector.StrokeRect(screen, float32(x), float32(y), float32(w), float32(h), 1, color.White, false)
-			w2 := int(float32(w-3) * (float32(a.Energy) / float32(a.MaxEnergy)))
-			vector.DrawFilledRect(screen, float32(x+1), float32(y+1), float32(w2), float32(h-3), color.White, false)
-
-			y += h + 5*/
+		} else if a, ok := p.Actor().(*Companion); ok {
+			resources.DrawArc(ctx.Screen, a.Hand.Shape.X, a.Hand.Shape.Y, 8, 0, 2*math.Pi*float64(a.Energy)/float64(a.MaxEnergy), color.RGBA{0xa0, 0x20, 0xf0, 0xaa})
 		}
 	}
 

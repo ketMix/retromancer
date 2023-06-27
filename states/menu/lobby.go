@@ -20,6 +20,7 @@ type Lobby struct {
 	lobbyItem       *resources.InputItem
 	playerEntries   []*PlayerEntry
 	overlay         game.Overlay
+	shouldStart     bool
 }
 
 func (s *Lobby) Init(ctx states.Context) error {
@@ -32,7 +33,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 	})
 
 	for _, e := range s.playerEntries {
-		e.Init(ctx)
+		e.Init(s, ctx)
 	}
 
 	s.multiplayerItem = &resources.ButtonItem{
@@ -48,7 +49,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 					s.joinItem.SetHidden(false)
 					s.hostItem.SetHidden(false)
 					s.playerEntries = append(s.playerEntries, &PlayerEntry{})
-					s.playerEntries[len(s.playerEntries)-1].Init(ctx)
+					s.playerEntries[len(s.playerEntries)-1].Init(s, ctx)
 					break
 				}
 			}
@@ -128,6 +129,10 @@ func (s *Lobby) Update(ctx states.Context) error {
 	// Check for controller button hit to activate player 2.
 	for i, gamepadID := range ebiten.AppendGamepadIDs(nil) {
 		if inpututil.IsGamepadButtonJustPressed(gamepadID, ebiten.GamepadButton9) {
+			if len(s.playerEntries) == 1 {
+				s.playerEntries = append(s.playerEntries, &PlayerEntry{})
+				s.playerEntries[len(s.playerEntries)-1].Init(s, ctx)
+			}
 			pl := game.NewLocalPlayer()
 			s.playerEntries[1].player = pl
 			s.playerEntries[1].controllerIndex = i
@@ -158,6 +163,19 @@ func (s *Lobby) Update(ctx states.Context) error {
 			}
 		}
 	}
+
+	if s.shouldStart {
+		players := make([]game.Player, len(s.playerEntries))
+		for i, e := range s.playerEntries {
+			players[i] = e.player
+		}
+		// FIXME: Need to agree w/ players to start (or assume host has full control).
+		ctx.StateMachine.PushState(&game.World{
+			StartingMap: "start",
+			Players:     players,
+		})
+	}
+
 	return nil
 }
 
