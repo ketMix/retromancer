@@ -84,8 +84,6 @@ actors:
     type: interactive
     sprite: door
     interactive:
-      active: true
-      map: 0-1
   - id: crystal
     type: interactive
     sprite: crystal
