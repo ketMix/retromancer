@@ -32,7 +32,7 @@ func NewPeer(addr *net.UDPAddr, conn *net.UDPConn) *Peer {
 	return &Peer{
 		addr:          addr,
 		conn:          conn,
-		readReadyChan: make(chan bool, 60),
+		readReadyChan: make(chan bool, 120),
 	}
 }
 

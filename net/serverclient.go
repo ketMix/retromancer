@@ -32,9 +32,9 @@ type ServerClient struct {
 func (s *ServerClient) Init() {
 	s.id = uint32(rand.Int31())
 	s.closeChan = make(chan struct{})
-	s.rawChan = make(chan Packet, 60)
-	s.peerChan = make(chan PeerPacket, 60)
-	s.EventChan = make(chan Event, 60)
+	s.rawChan = make(chan Packet, 120)
+	s.peerChan = make(chan PeerPacket, 120)
+	s.EventChan = make(chan Event, 120)
 	s.Matchmaker = "gamu.group:20220"
 }
 
@@ -85,7 +85,7 @@ func (s *ServerClient) ConnectTo(address string) error {
 	peer := NewPeer(addr, s.localConn)
 	s.peers = append(s.peers, peer)
 
-	session, err := kcp.NewConn3(0, addr, nil, 10, 3, peer)
+	session, err := kcp.NewConn3(0, addr, nil, 5, 2, peer)
 	if err != nil {
 		panic(err)
 	}
