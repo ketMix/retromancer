@@ -173,12 +173,10 @@ actors:
 
   - id: item-deflect
     type: snaggable
-    sprite: item-life ## REPLACE WITH DEFLECT PICKUP
+    sprite: item-book
 
 layers:
   - |
-
-
 
 
 

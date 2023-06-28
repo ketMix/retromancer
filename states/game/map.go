@@ -124,8 +124,8 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 			m.actors = append(m.actors, spawner)
 		case "snaggable":
-			sprite := resources.NewSprite(ctx.Manager.GetAs("images", a.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
-			snaggable := CreateSnaggable(x, y, a.ID, a.Sprite, sprite)
+			snaggable := CreateSnaggable(ctx, a.ID, a.Sprite)
+			snaggable.SetXY(x, y)
 
 			m.actors = append(m.actors, snaggable)
 		case "enemy":

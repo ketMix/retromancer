@@ -34,6 +34,7 @@ type PC struct {
 	Energy                    int
 	MaxEnergy                 int
 	EnergyRestoreRate         int
+	HasDeflect                bool
 	//
 	previousInteraction Action
 	//
@@ -160,7 +161,7 @@ func (p *PC) Update() (actions []Action) {
 				p.previousInteraction = ActionReflect{}
 			}
 		case ImpulseDeflect:
-			if p.HasEnergyFor(imp) {
+			if p.HasDeflect && p.HasEnergyFor(imp) {
 				p.Energy -= imp.Cost()
 				p.TicksSinceLastInteraction = 0
 				actions = append(actions, ActionDeflect{

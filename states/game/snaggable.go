@@ -4,6 +4,8 @@ import (
 	"ebijam23/resources"
 	"ebijam23/states"
 	"math"
+
+	"github.com/hajimehoshi/ebiten/v2"
 )
 
 type Snaggable struct {
@@ -15,7 +17,14 @@ type Snaggable struct {
 	nextParticle int
 }
 
-func CreateSnaggable(x, y float64, id, spriteName string, sprite *resources.Sprite) *Snaggable {
+func CreateSnaggable(ctx states.Context, id, spriteName string) *Snaggable {
+	imageNames := ctx.Manager.GetNamesWithPrefix("images", spriteName)
+	images := make([]*ebiten.Image, 0)
+	for _, s := range imageNames {
+		images = append(images, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+	}
+	sprite := resources.NewAnimatedSprite(images)
+
 	sprite.VFX.Add(&resources.Hover{
 		Intensity: 2.0,
 		Rate:      1.25,
@@ -24,9 +33,15 @@ func CreateSnaggable(x, y float64, id, spriteName string, sprite *resources.Spri
 	return &Snaggable{
 		id:         id,
 		spriteName: spriteName,
-		shape:      CircleShape{X: x, Y: y, Radius: 3}, // FIXME: don't hardcode radius
+		shape:      CircleShape{Radius: 3}, // FIXME: don't hardcode radius
 		sprite:     sprite,
 	}
+}
+func (s *Snaggable) SetXY(x, y float64) {
+	s.shape.X = x
+	s.shape.Y = y
+	s.sprite.X = x
+	s.sprite.Y = y
 }
 
 func (s *Snaggable) Update() (actions []Action) {
@@ -37,6 +52,8 @@ func (s *Snaggable) Update() (actions []Action) {
 		switch s.spriteName {
 		case "item-life":
 			img = "life"
+		case "item-book":
+			img = "book"
 		}
 		actions = append(actions, ActionSpawnParticle{
 			Img:   img,
@@ -68,6 +85,5 @@ func (s *Snaggable) Player() Player                  { return nil }
 func (s *Snaggable) SetPlayer(p Player)              {}
 func (s *Snaggable) SetImpulses(impulses ImpulseSet) {}
 func (s *Snaggable) Bounds() (x, y, w, h float64)    { return 0, 0, 0, 0 }
-func (s *Snaggable) SetXY(x, y float64)              {}
 func (s *Snaggable) SetSize(r float64)               {}
 func (s *Snaggable) Dead() bool                      { return false }
