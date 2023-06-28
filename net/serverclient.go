@@ -85,7 +85,7 @@ func (s *ServerClient) ConnectTo(address string) error {
 	peer := NewPeer(addr, s.localConn)
 	s.peers = append(s.peers, peer)
 
-	session, err := kcp.NewConn3(0, addr, nil, 5, 2, peer)
+	session, err := kcp.NewConn3(0, addr, nil, 32, 4, peer)
 	if err != nil {
 		panic(err)
 	}
@@ -169,7 +169,7 @@ func (s *ServerClient) LogicLoop() {
 
 			// Session is nil, try to set up a kcp session.
 			if peer.session == nil {
-				session, err := kcp.NewConn3(0, packet.addr, nil, 10, 3, peer)
+				session, err := kcp.NewConn3(0, packet.addr, nil, 32, 4, peer)
 				if err != nil {
 					panic(err)
 				}
