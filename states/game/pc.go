@@ -8,6 +8,7 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/hajimehoshi/ebiten/v2/vector"
 )
 
@@ -43,6 +44,12 @@ type PC struct {
 	//
 	momentumX float64
 	momentumY float64
+	//
+	audioPlayer *audio.Player
+	currentSfx  *resources.Sound
+	reflectSfx  *resources.Sound
+	deflectSfx  *resources.Sound
+	shieldSfx   *resources.Sound
 }
 
 func (s *World) NewPC(ctx states.Context) *PC {
@@ -56,7 +63,10 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		MaxEnergy:         100,
 		EnergyRestoreRate: 2,
 		Lives:             playerStartLives,
-
+		reflectSfx:        ctx.Manager.GetAs("sounds", "reflect-sfx", (*resources.Sound)(nil)).(*resources.Sound),
+		deflectSfx:        ctx.Manager.GetAs("sounds", "deflect-sfx", (*resources.Sound)(nil)).(*resources.Sound),
+		shieldSfx:         ctx.Manager.GetAs("sounds", "shield-sfx", (*resources.Sound)(nil)).(*resources.Sound),
+		//
 		HasDeflect: true, // REMOVE THIS WHEN DONE TESTING
 	}
 
@@ -319,5 +329,48 @@ func (p *PC) Hurtie() {
 	if p.InvulnerableTicks <= 0 {
 		p.Lives--
 		p.InvulnerableTicks = 40
+	}
+}
+
+func (p *PC) PlayAudio(deflecting, reflecting, shielding bool) {
+	// Stop playing sfx
+	if !deflecting && !reflecting && !shielding {
+		if p.audioPlayer != nil {
+			p.audioPlayer.Pause()
+			p.audioPlayer.Close()
+			p.audioPlayer = nil
+			p.currentSfx = nil
+		}
+		return
+	}
+
+	// Set reflect sfx
+	if reflecting && p.currentSfx != p.reflectSfx {
+		if p.audioPlayer != nil {
+			p.audioPlayer.Pause()
+			p.audioPlayer.Close()
+		}
+		p.audioPlayer = p.reflectSfx.Play(1.0)
+		p.currentSfx = p.reflectSfx
+	}
+
+	// Set deflect sfx
+	if deflecting && p.currentSfx != p.deflectSfx {
+		if p.audioPlayer != nil {
+			p.audioPlayer.Pause()
+			p.audioPlayer.Close()
+		}
+		p.audioPlayer = p.deflectSfx.Play(1.0)
+		p.currentSfx = p.deflectSfx
+	}
+
+	// Set shield sfx
+	if shielding && p.currentSfx != p.shieldSfx {
+		if p.audioPlayer != nil {
+			p.audioPlayer.Pause()
+			p.audioPlayer.Close()
+		}
+		p.audioPlayer = p.shieldSfx.Play(1.0)
+		p.currentSfx = p.shieldSfx
 	}
 }

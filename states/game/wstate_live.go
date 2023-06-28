@@ -183,6 +183,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			} else {
 				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
 			}
+			// Play the associated audio
+			a.PlayAudio(deflecting, reflecting, shielding)
 		}
 	}
 	// Even more overkill for the bullets.
