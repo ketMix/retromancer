@@ -1,6 +1,7 @@
 package main
 
 import (
+	"ebijam23/net"
 	"ebijam23/resources"
 	"ebijam23/states"
 	"ebijam23/states/menu"
@@ -32,6 +33,10 @@ func main() {
 	flag.StringVar(&game.Flags.Locale, "locale", "en", "locale to use")
 	flag.StringVar(&game.Flags.Font, "font", "x12y16pxMaruMonica", "font to use")
 	flag.StringVar(&game.Flags.Map, "map", "", "map to load")
+	flag.IntVar(&net.NetBufferSize, "net-buffer-size", 2048, "network buffer size")
+	flag.IntVar(&net.NetDataShards, "net-data-shards", 10, "network data shards")
+	flag.IntVar(&net.NetParityShards, "net-parity-shards", 3, "network parity shards")
+	flag.IntVar(&net.NetChannelSize, "net-channel-size", 10, "network channel size")
 	flag.Parse()
 
 	// Allow loading from filesystem.

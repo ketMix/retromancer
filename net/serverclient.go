@@ -12,6 +12,11 @@ import (
 	"github.com/xtaci/kcp-go"
 )
 
+var NetDataShards = 10
+var NetParityShards = 3
+var NetBufferSize = 2048
+var NetChannelSize = 10
+
 type ServerClient struct {
 	id uint32 // Our ID used to advertise to others.
 	//
@@ -32,9 +37,9 @@ type ServerClient struct {
 func (s *ServerClient) Init() {
 	s.id = uint32(rand.Int31())
 	s.closeChan = make(chan struct{})
-	s.rawChan = make(chan Packet, 120)
-	s.peerChan = make(chan PeerPacket, 120)
-	s.EventChan = make(chan Event, 120)
+	s.rawChan = make(chan Packet, NetChannelSize*2)
+	s.peerChan = make(chan PeerPacket, NetChannelSize)
+	s.EventChan = make(chan Event, NetChannelSize)
 	s.Matchmaker = "gamu.group:20220"
 }
 
@@ -85,7 +90,7 @@ func (s *ServerClient) ConnectTo(address string) error {
 	peer := NewPeer(addr, s.localConn)
 	s.peers = append(s.peers, peer)
 
-	session, err := kcp.NewConn3(0, addr, nil, 32, 4, peer)
+	session, err := kcp.NewConn3(0, addr, nil, NetDataShards, NetParityShards, peer)
 	if err != nil {
 		panic(err)
 	}
@@ -169,7 +174,7 @@ func (s *ServerClient) LogicLoop() {
 
 			// Session is nil, try to set up a kcp session.
 			if peer.session == nil {
-				session, err := kcp.NewConn3(0, packet.addr, nil, 32, 4, peer)
+				session, err := kcp.NewConn3(0, packet.addr, nil, NetDataShards, NetParityShards, peer)
 				if err != nil {
 					panic(err)
 				}
@@ -190,7 +195,7 @@ func (s *ServerClient) LogicLoop() {
 // ReadLoop runs the network read loop, handling new connections as necessary.
 func (s *ServerClient) ReadLoop() {
 	for s.Running {
-		buffer := make([]byte, 1024)
+		buffer := make([]byte, NetBufferSize)
 		n, addr, err := s.localConn.ReadFromUDP(buffer)
 		if err != nil {
 			if !os.IsTimeout(err) {
