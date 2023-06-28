@@ -115,6 +115,9 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			interactive := CreateInteractive(ctx, a)
 			interactive.SetXY(x, y)
 			interactiveMap[a.ID] = interactive // Add it to map for linking later
+			if a.Interactive != nil {
+				interactive.npc = a.Interactive.NPC
+			}
 
 			m.actors = append(m.actors, interactive)
 			m.interactives = append(m.interactives, interactive)

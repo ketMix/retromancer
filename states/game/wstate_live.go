@@ -13,7 +13,8 @@ import (
 )
 
 type WorldStateLive struct {
-	signText *string
+	signText  *string
+	isSignNPC bool
 }
 
 func (w *WorldStateLive) Enter(s *World, ctx states.Context) {
@@ -300,6 +301,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 					if !touchingSign && i.text != "" && i.Active() && i.shape.Collides(pl.Actor().Shape()) {
 						localized := ctx.L(i.text)
 						w.signText = &localized
+						w.isSignNPC = i.npc
 						touchingSign = true
 					}
 
@@ -421,24 +423,25 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 	// Draw the sign text if it exists.
 	if w.signText != nil {
 		centerX := float32(ctx.Screen.Bounds().Max.X / 2)
-		centerY := float32(ctx.Screen.Bounds().Max.Y / 2)
-		boardSizeX := float32(ctx.Screen.Bounds().Max.X) * 0.85
-		boardSizeY := float32(ctx.Screen.Bounds().Max.Y) * 0.75
+		centerY := float32(ctx.Screen.Bounds().Max.Y - ctx.Screen.Bounds().Max.Y/4)
+		boardSizeX := float32(ctx.Screen.Bounds().Max.X) * 0.6
+		boardSizeY := float32(ctx.Screen.Bounds().Max.Y) * 0.3
 		text := strings.Split(*w.signText, "\n")
 
 		boardX := centerX - boardSizeX/2
 		boardY := centerY - boardSizeY/2
 
-		// Draw the stake
-		vector.DrawFilledRect(
-			ctx.Screen,
-			centerX-boardSizeX*0.05,
-			centerY-boardSizeY*0.05,
-			boardSizeX*0.05,
-			float32(ctx.Screen.Bounds().Max.Y),
-			color.RGBA{0x8b, 0x45, 0x13, 0xff},
-			false,
-		)
+		boardColor := color.NRGBA{0x8b, 0x45, 0x13, 0xaa}
+		paperColor := color.NRGBA{0xff, 0xe4, 0xc4, 0xaa}
+		textColor := color.NRGBA{0x00, 0x00, 0x00, 0xff}
+		outlineColor := color.NRGBA{0xff, 0xff, 0xff, 0xaa}
+
+		if w.isSignNPC {
+			boardColor = color.NRGBA{0x00, 0x00, 0x00, 0x44}
+			paperColor = boardColor
+			textColor = color.NRGBA{0xff, 0xff, 0xff, 0xff}
+			outlineColor = color.NRGBA{0xa0, 0x20, 0xf0, 0xff}
+		}
 
 		// Draw the sign board
 		vector.DrawFilledRect(
@@ -447,22 +450,25 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 			boardY,
 			boardSizeX,
 			boardSizeY,
-			color.RGBA{0x8b, 0x45, 0x13, 0xff},
+			boardColor,
 			false,
 		)
+
+		margin := boardSizeX * 0.03
 
 		// Draw the paper
 		vector.DrawFilledRect(
 			ctx.Screen,
-			boardX+boardSizeX*0.05,
-			boardY+boardSizeY*0.1,
-			boardSizeX*0.9,
-			boardSizeY*0.8,
-			color.RGBA{0xff, 0xe4, 0xc4, 0xff},
+			boardX+margin,
+			boardY+margin,
+			boardSizeX-margin*2,
+			boardSizeY-margin*2,
+			paperColor,
 			false,
 		)
 
 		// Draw the text
+		ctx.Text.SetScale(1)
 		x := int(centerX)
 		y := int(centerY)
 		splitText := make([]string, 0)
@@ -488,8 +494,9 @@ func (w *WorldStateLive) Draw(s *World, ctx states.DrawContext) {
 		y = int(centerY) - (len(splitText)/2)*int(ctx.Text.Utils().GetLineHeight())
 		for _, line := range splitText {
 			{
-				ctx.Text.SetScale(1.5)
-				ctx.Text.SetColor(color.Black)
+				ctx.Text.SetColor(outlineColor)
+				resources.DrawTextOutline(ctx.Text, ctx.Screen, line, x, y, 1.0)
+				ctx.Text.SetColor(textColor)
 				ctx.Text.Draw(ctx.Screen, line, x, y)
 			}
 			y += int(ctx.Text.Utils().GetLineHeight())

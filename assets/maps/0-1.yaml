@@ -71,8 +71,9 @@ actors:
         - type: killedEnemies
   - id: sign
     type: interactive
-    sprite: sign
+    sprite: npc
     interactive:
+      npc: true
       reversable: true
       text: sign-intro-bullet_reversal
   - id: bat1

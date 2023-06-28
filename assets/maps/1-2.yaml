@@ -64,6 +64,12 @@ runes:
   "l":
     sprite: empty
     id: lever
+  "1":
+    sprite: empty
+    id: npc1
+  "2":
+    sprite: empty
+    id: npc2
 
 actors:
 # Door
@@ -110,6 +116,25 @@ actors:
     sprite: lever
     interactive:
       touchable: true
+  
+# NPCs
+  - id: npc1
+    type: interactive
+    sprite: npc
+    interactive:
+      text: npc-skells-1
+      npc: true
+      reversable: true
+      degrade: true
+  - id: npc2
+    type: interactive
+    sprite: npc
+    interactive:
+      text: npc-skells-2
+      npc: true
+      reversable: true
+      degrade: true
+
 
 layers:
   - |
@@ -124,8 +149,8 @@ layers:
     E          ^        S     __^
     E          ^     t  x s     ^
     E          ^                ^
-    E          ^         __     ^
-    E          ^                ^
+    E          ^ 1       __     ^
+    E          ^   2            ^
     E          ^_____,,,^*d*****^
     E          ^_,,,,,,,*       ^
     E          ^,,,,,,,,*l    @ ^

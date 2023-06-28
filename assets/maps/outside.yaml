@@ -110,14 +110,16 @@ actors:
       reversable: true
   - id: sign-outside-bridge
     type: interactive
-    sprite: sign
+    sprite: npc
     interactive:
+      npc: true
       text: sign-outside-bridge
       reversable: true
   - id: sign-outside-power
     type: interactive
-    sprite: sign
+    sprite: npc
     interactive:
+      npc: true
       text: sign-outside-power
       reversable: true
 layers:

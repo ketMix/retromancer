@@ -26,6 +26,7 @@ type Interactive struct {
 	reversable         bool
 	touchable          bool // Whether or not it can be reversed by touching
 	degrade            bool // Whether or not the activation can be degraded, should this always be true?
+	npc                bool // Whether or not this should be considered an NPC (sign alternative).
 	activationIdx      int  // Holds the degree of activation
 	activateCooldown   int  // Holds the cooldown for activation, can only decrement activation when this is 0
 	//

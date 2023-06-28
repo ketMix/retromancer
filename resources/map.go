@@ -54,6 +54,7 @@ type Interactive struct {
 	Active     bool            `yaml:"active"`
 	Touchable  bool            `yaml:"touchable"`
 	Health     int             `yaml:"health"`
+	NPC        bool            `yaml:"npc"`
 	Text       string          `yaml:"text"`
 	RemoveVFX  []string        `yaml:"removeVFX,omitempty"`
 	AddVFX     []string        `yaml:"addVFX,omitempty"`

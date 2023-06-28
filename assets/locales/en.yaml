@@ -63,10 +63,18 @@
 "2-1": "The Slime Pit"
 "2-2": "The Greedy Slime"
 
+# NPCs
+"sign-intro-npc1": "Ugh... I'm alive... Thank you,\n Retromancer..."
+"sign-intro-npc2": "I'm not sure what happened, but I'm glad you're here."
+"sign-intro-npc3": "That terrible Necromancer's minions fell upon us..."
+"sign-intro-npc4": "I am thankful for your power, but I fear it will not be enough to defeat the Necromancer..."
+"npc-skells-1": "I'm so glad you're here! If not, I surely would've become a mindless minion!"
+"npc-skells-2": "Stop for a bite to eat and this is what happens..."
+
 # Signs
 "sign-intro-reverse": "Your hand will glow yellow on reversable objects"
 "sign-intro-candles": "In this world, sometimes the reversal of time will reveal the way out..."
-"sign-intro-bullet_reversal": "Bullets reversed can hurt those who send them, but beware their return to forward time..."
+"sign-intro-bullet_reversal": "Bullets reversed can hurt those who send them, but beware their return to forward time...\nI was not so careful."
 "sign-outside-power": "Your power is strong, but not unlimited... the purple border around your hand will drain as you use your power. It will return in time..."
 "sign-outside-bridge": "Some problems can't be solved by the power of reversal...\nPerhaps when you return you will have more power."
 "sign-hp-item": "Pick up the lil' crystals to heal yourself. You can go up to five health!"

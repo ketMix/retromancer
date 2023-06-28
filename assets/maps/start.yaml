@@ -55,6 +55,18 @@ runes:
   "S":
     sprite: empty
     id: sign-grats
+  "1":
+    sprite: empty
+    id: sign-npc1
+  "2":
+    sprite: empty
+    id: sign-npc2
+  "3":
+    sprite: empty
+    id: sign-npc3
+  "4":
+    sprite: empty
+    id: sign-npc4
   "x":
     sprite: empty
     id: campfire
@@ -99,6 +111,38 @@ actors:
     interactive:
       text: sign-intro-candles
       reversable: true
+  - id: sign-npc1
+    type: interactive
+    sprite: npc
+    interactive:
+      text: sign-intro-npc1
+      npc: true
+      reversable: true
+      degrade: true
+  - id: sign-npc2
+    type: interactive
+    sprite: npc
+    interactive:
+      text: sign-intro-npc2
+      npc: true
+      reversable: true
+      degrade: true
+  - id: sign-npc3
+    type: interactive
+    sprite: npc
+    interactive:
+      text: sign-intro-npc3
+      npc: true
+      reversable: true
+      degrade: true
+  - id: sign-npc4
+    type: interactive
+    sprite: npc
+    interactive:
+      text: sign-intro-npc4
+      npc: true
+      reversable: true
+      degrade: true
 layers:
   - |
 
@@ -110,10 +154,10 @@ layers:
     E          ^        S       ^
     E          ^                ^
     E          ^******** *******^
-    E          ^       s        ^
-    E          ^                ^
+    E          ^    3           ^
+    E          ^ 1           4  ^
     E          ^        x       ^
-    E          ^           @    ^
+    E          ^   2       @    ^
     E          ^^^^^,, ____     ^
     E          ^^^^,,,,,__  ^   ^
     E          ^^^,,,,,____ ^   ^
