@@ -114,6 +114,22 @@ func (s *World) Init(ctx states.Context) error {
 		OffsetY: 32,
 		Items:   []string{"p2-keyboard-hint-1", "p2-keyboard-hint-2"},
 	})
+	s.hints.AddHintGroup("p1-controller-deflect", HintGroup{
+		Prefix: prefix,
+		Items:  []string{"p1-controller-hint-deflect"},
+	})
+	s.hints.AddHintGroup("p1-keyboard-deflect", HintGroup{
+		Prefix: prefix,
+		Items:  []string{"p1-keyboard-hint-deflect"},
+	})
+	s.hints.AddHintGroup("p1-controller-shield", HintGroup{
+		Prefix: prefix,
+		Items:  []string{"p1-controller-hint-shield"},
+	})
+	s.hints.AddHintGroup("p1-keyboard-shield", HintGroup{
+		Prefix: prefix,
+		Items:  []string{"p1-keyboard-hint-shield"},
+	})
 
 	// Set our starting state.
 	if len(s.states) == 0 {

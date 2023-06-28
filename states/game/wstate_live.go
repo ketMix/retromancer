@@ -326,21 +326,48 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				}
 
 				// Check snaggable collisions.
-				if s, ok := actor.(*Snaggable); ok {
-					if s.shape.Collides(pl.Actor().Shape()) {
+				if sn, ok := actor.(*Snaggable); ok {
+					if sn.shape.Collides(pl.Actor().Shape()) {
 						// TODO: Bless the player with powers beyond their wildest imaginations (lives, power unlocks, etc.)
-						switch s.spriteName {
+						switch sn.spriteName {
 						case "item-life":
 							if pc.Lives < playerMaxLives {
-								s.destroyed = true
+								sn.destroyed = true
 								pc.Lives++
 							}
 						case "item-book":
 							pc.HasDeflect = true
-							s.destroyed = true
+							sn.destroyed = true
+							for _, p := range s.Players {
+								if pl, ok := p.(*LocalPlayer); ok {
+									if _, ok := pl.actor.(*PC); ok {
+										if pl.GamepadID != -1 {
+											s.hints.ActivateGroup("p1-controller-deflect")
+										} else {
+											s.hints.ActivateGroup("p1-keyboard-deflect")
+										}
+										s.hints.ticker = -30
+										s.hints.active = true
+									}
+								}
+							}
 						case "item-shield":
 							pc.HasShield = true
-							s.destroyed = true
+							sn.destroyed = true
+							for _, p := range s.Players {
+								if pl, ok := p.(*LocalPlayer); ok {
+									if _, ok := pl.actor.(*PC); ok {
+										if pl.GamepadID != -1 {
+											s.hints.ActivateGroup("p1-controller-shield")
+										} else {
+											s.hints.ActivateGroup("p1-keyboard-shield")
+										}
+										s.hints.ticker = -20
+										s.hints.active = true
+									}
+								}
+							}
+
 						}
 
 						continue
