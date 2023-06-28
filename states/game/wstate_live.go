@@ -74,7 +74,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 					// Stupid -4 to make the visual offset look nicer when bumpin' walls
 					checkShape.(*RectangleShape).Y = action.Y - 4
 				}
-				if collision := s.activeMap.Collides(checkShape); collision == nil || !collision.Cell.BlockMove {
+				if collision := s.activeMap.Collides(checkShape); collision == nil || !collision.Cell.blockMove {
 					actor.SetXY(action.X, action.Y)
 				}
 				// forgive me.
@@ -231,7 +231,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	// Okay, this probably isn't great, but let's check bullet collisions here.
 	for _, bullet := range s.activeMap.bullets {
 		// Check for bullet collisions with walls.
-		if collision := s.activeMap.Collides(&bullet.Shape); collision != nil && collision.Cell.BlockView {
+		if collision := s.activeMap.Collides(&bullet.Shape); collision != nil && collision.Cell.blockView {
 			bullet.Destroyed = true
 			continue
 		}
@@ -404,16 +404,16 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	for _, actor := range interactives {
 		if actor.id == "drawbridge" && actor.active { // Need to not run this every update and not tie to id, but drawbridge is kinda special
 			cell := s.activeMap.FindCellById(actor.ID())
-			cells := make([]*resources.Cell, 0)
+			cells := make([]*Cell, 0)
 			if cell != nil {
 				cells = append(cells, cell)
-				cells = append(cells, s.activeMap.GetCell(int(cell.Sprite.X/cellW), int(cell.Sprite.Y/cellH)+1, s.activeMap.currentZ))
-				cells = append(cells, s.activeMap.GetCell(int(cell.Sprite.X/cellW)+1, int(cell.Sprite.Y/cellH)+1, s.activeMap.currentZ))
+				cells = append(cells, s.activeMap.GetCell(int(cell.Shape.X/cellW), int(cell.Shape.Y/cellH)+2, s.activeMap.currentZ))
+				cells = append(cells, s.activeMap.GetCell(int(cell.Shape.X/cellW)+1, int(cell.Shape.Y/cellH)+2, s.activeMap.currentZ))
 			}
 			for _, cell := range cells {
 				if cell != nil {
-					cell.BlockMove = false // No
-					cell.BlockView = false // No
+					cell.blockMove = false // No
+					cell.blockView = false // No
 				}
 			}
 		}
@@ -422,8 +422,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				actor.IncreaseActivation(nil)
 				cell := s.activeMap.FindCellById(actor.ID())
 				if cell != nil {
-					cell.BlockMove = false // No
-					cell.BlockView = false // No
+					cell.blockMove = false // No
+					cell.blockView = false // No
 				}
 			}
 		}
