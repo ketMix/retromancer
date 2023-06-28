@@ -36,10 +36,12 @@ runes:
     sprite: empty
     id: door
     isometric: true
+    blockMove: true
     blockView: true
   "A":
     sprite: empty
     id: door2
+    blockMove: true
     isometric: true
     blockView: true
   "0":
@@ -141,7 +143,139 @@ runes:
   "H":
     sprite: empty
     id: brazier2
-
+  "S":
+    sprite: empty
+    id: sign
+  "!":
+    sprite: empty
+    id: wall0
+    blockMove: true
+    blockView: true
+  "#":
+    sprite: empty
+    id: wall1
+    blockMove: true
+    blockView: true
+  "$":
+    sprite: empty
+    id: wall2
+    blockMove: true
+    blockView: true
+  "%":
+    sprite: empty
+    id: wall3
+    blockMove: true
+    blockView: true
+  "&":
+    sprite: empty
+    id: wall4
+    blockMove: true
+    blockView: true
+  "(":
+    sprite: empty
+    id: wall5
+    blockMove: true
+    blockView: true
+  ")":
+    sprite: empty
+    id: wall6
+    blockMove: true
+    blockView: true
+  "Q":
+    sprite: empty
+    id: wall7
+    blockMove: true
+    blockView: true
+  "W":
+    sprite: empty
+    id: wall8
+    blockMove: true
+    blockView: true
+  "R":
+    sprite: empty
+    id: wall9
+    blockMove: true
+    blockView: true
+  "T":
+    sprite: empty
+    id: wall10
+    blockMove: true
+    blockView: true
+  "Y":
+    sprite: empty
+    id: wall11
+    blockMove: true
+    blockView: true
+  "U":
+    sprite: empty
+    id: wall12
+    blockMove: true
+    blockView: true
+  "O":
+    sprite: empty
+    id: wall13
+    blockMove: true
+    blockView: true
+  "P":
+    sprite: empty
+    id: wall14
+    blockMove: true
+    blockView: true
+  "J":
+    sprite: empty
+    id: wall15
+    blockMove: true
+    blockView: true
+  "K":
+    sprite: empty
+    id: wall16
+    blockMove: true
+    blockView: true
+  "L":
+    sprite: empty
+    id: wall17
+    blockMove: true
+    blockView: true
+  ";":
+    sprite: empty
+    id: wall18
+    blockMove: true
+    blockView: true
+  ":":
+    sprite: empty
+    id: wall19
+    blockMove: true
+    blockView: true
+  "'":
+    sprite: empty
+    id: wall20
+    blockMove: true
+    blockView: true
+  "-":
+    sprite: empty
+    id: wall21
+    blockMove: true
+    blockView: true
+  "Z":
+    sprite: empty
+    id: wall22
+    blockMove: true
+    blockView: true
+  "V":
+    sprite: empty
+    id: wall23
+    blockMove: true
+    blockView: true
+  "N":
+    sprite: empty
+    id: wall24
+    blockMove: true
+    blockView: true
+  "M":
+    sprite: empty
+    id: wall25
+    blockMove: true
+    blockView: true
 actors:
 # Door
   - id: door
@@ -277,6 +411,216 @@ actors:
         - type: active
           args:
             - campfire
+
+# THE WALLS
+  - id: wall0
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - campfire
+  - id: wall1
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall0
+  - id: wall2
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall1
+  - id: wall3
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall2
+  - id: wall4
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall3
+  - id: wall5
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall4
+  - id: wall6
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall5
+  - id: wall7
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall6
+  - id: wall8
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall7
+  - id: wall9
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall8
+  - id: wall10
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall9
+  - id: wall11
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall10
+  - id: wall12
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall11
+  - id: wall13
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - campfire
+  - id: wall14
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall13
+  - id: wall15
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall14
+  - id: wall16
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall15
+  - id: wall17
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall16
+  - id: wall18
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall17
+  - id: wall19
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall18
+  - id: wall20
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall19
+  - id: wall21
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall20
+  - id: wall22
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall21
+  - id: wall23
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall22
+  - id: wall24
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall23
+  - id: wall25
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall24
 layers:
   - |
 
@@ -285,17 +629,17 @@ layers:
 
 
     E          ^********D********^
-    E          ^0^,,,,B...H,,,,^c^
-    E          ^1*,,,,,,.,,,,,,*d^
-    E          ^2^.............^e^
-    E          ^3*.............*f^
-    E          ^4^,,,,     ,,,,^g^
-    E          ^5*,,,       ,,,*h^
-    E          ^6^,,  C    G ,,^i^
-    E          ^7*,,    X    ,,*j^
-    E          ^8^,,         ,,^k^
-    E          ^9*,,         ,,*l^
-    E          ^a^,,  I    F ,,^m^
-    E          ^b*,,,       ,,,*n^
-    E          ^p^,,,,  @  ,,,,^o^
+    E          ^0!,,,,B...H,,,,Oc^
+    E          ^1#,,,,,,.,,,,,,Pd^
+    E          ^2$.............Je^
+    E          ^3%.............Kf^
+    E          ^4&,,,,     ,,,,Lg^
+    E          ^5(,,,       ,,,;h^
+    E          ^6),,  C    G ,,:i^
+    E          ^7Q,,    X    ,,'j^
+    E          ^8W,,         ,,-k^
+    E          ^9R,,         ,,Zl^
+    E          ^aT,,  I    F ,,Vm^
+    E          ^bY,,,       ,,,Nn^
+    E          ^pU,,,,  @  ,,,,Mo^
     E          ^********A********^
