@@ -32,7 +32,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 	})
 	x := 320.0
 	y := 200.0
-	// TODO: Make this text actually good.
+
 	w.vfx.Add(&resources.Text{
 		Text:         ctx.L("Outro1"),
 		Scale:        1.0,
@@ -46,7 +46,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 		Text:         ctx.L("Outro2"),
 		Scale:        1.0,
 		InDuration:   1 * time.Second,
-		HoldDuration: 1 * time.Second,
+		HoldDuration: 2 * time.Second,
 		OutDuration:  1 * time.Second,
 		X:            x,
 		Y:            y,
@@ -74,6 +74,22 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 		InDuration:   1 * time.Second,
 		HoldDuration: 3 * time.Second,
 		OutDuration:  1 * time.Second,
+		X:            x,
+		Y:            y,
+	})
+	w.vfx.Add(&resources.Text{
+		Text:         ctx.L("Outro6"),
+		InDuration:   1 * time.Second,
+		HoldDuration: 3 * time.Second,
+		OutDuration:  1 * time.Second,
+		X:            x,
+		Y:            y,
+	})
+	w.vfx.Add(&resources.Text{
+		Text:         ctx.L("Outro7"),
+		InDuration:   3 * time.Second,
+		HoldDuration: 2 * time.Second,
+		OutDuration:  4 * time.Second,
 		X:            x,
 		Y:            y,
 	})

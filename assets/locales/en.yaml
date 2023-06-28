@@ -13,15 +13,17 @@
 # Intro
 "Intro1": "Beneath the whispers of time..."
 "Intro2": "...a long forgotten echo has started to ripple..."
-"Intro3": "...a friend now corrupted claims dominion over this doomed land..."
+"Intro3": "...a dear friend now corrupted claims dominion over this doomed land..."
 "Intro4": "...you awaken."
 "SkipIntro": "Press <Enter> or <Escape> to skip"
 # Outro
 "Outro1": "You have defeated the Lich..."
-"Outro2": "and reversed them to a time before their corruption..."
-"Outro3": "... a time too long ago..."
-"Outro4": "For they have even forgotten you."
+"Outro2": "...and reversed them to a time before their corruption..."
+"Outro3": "...to a time even further beyond..."
+"Outro4": "...a time before your fates were intertwined..."
 "Outro5": "Is the world worth saving if you lose the only one you ever loved?"
+"Outro6": "Perhaps if you return... and try once more..."
+"Outro7": "An echo reverbates back through time..."
 "SavedNPCs": "Pals Saved: "
 "SkipOutro": "Press <Enter> or <Escape> to return home"
 #
