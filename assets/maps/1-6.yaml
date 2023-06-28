@@ -1,0 +1,144 @@
+title: Calm Before the Storm
+music: start
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "d":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockMove: true
+    blockView: true
+  "b":
+    sprite: empty
+    id: bat1
+  "B":
+    sprite: empty
+    id: bat2
+  "s":
+    sprite: empty
+    id: sign
+  "L":
+    sprite: empty
+    id: life
+  "l":
+    sprite: empty
+    id: life2
+  "M":
+    sprite: empty
+    id: life3
+  "b":
+    sprite: empty
+    id: brazier
+  "B":
+    sprite: empty
+    id: brazier2
+  "x":
+    sprite: empty
+    id: campfire
+
+actors:
+  # Doors
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 1-boss
+      conditions:
+        - type: active
+          args:
+            - campfire
+  - id: door2
+    type: interactive
+    sprite: door
+    
+  # Interactives
+  - id: brazier
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+  - id: brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+  - id: campfire
+    type: interactive
+    sprite: campfire
+    interactive:
+      reversable: true
+
+  # Snaggable
+  - id: life
+    type: snaggable
+    sprite: item-life
+  
+  - id: life2
+    type: snaggable
+    sprite: item-life
+
+  - id: life3
+    type: snaggable
+    sprite: item-life
+
+layers:
+  - |
+
+
+
+
+
+
+
+    E            ^*****D*****^
+    E            ^~,,b...B,,~^
+    E            ^~,       ,~^
+    E            ^~     M   ~^
+    E            ^~  l      ~^      
+    E            ^~    x  L ~^
+    E            ^~         ~^
+    E            ^~,       ,~^ 
+    E            ^~,,  @  ,,~^
+    E            ^*****d*****^

@@ -94,13 +94,14 @@ runes:
   "W":
     sprite: empty
     id: wheel
+
 actors:
   # Doors
   - id: door
     type: interactive
     sprite: door
     interactive:
-      map: 1-boss
+      map: 1-6
       conditions:
         - type: killedEnemies
   - id: door2
