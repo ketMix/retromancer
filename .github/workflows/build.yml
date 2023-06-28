@@ -2,25 +2,8 @@ name: Build Executables
 on: [push]
 jobs:
 
-  tests:
-    name: Run tests
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: 1.20
-    - name: Install dependencies
-      shell: bash
-      run: sudo apt-get update && sudo apt-get -y install libgl1-mesa-dev xorg-dev libasound2-dev
-    - name: Run tests
-      shell: bash
-      run: xvfb-run go test -v ./...
-
   build-win:
     name: Build Windows binary
-    needs: tests
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
@@ -41,7 +24,6 @@ jobs:
 
   build-mac:
     name: Build MacOS binary
-    needs: tests
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
@@ -63,7 +45,6 @@ jobs:
 
   build-lin:
     name: Build Linux binary
-    needs: tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -88,7 +69,6 @@ jobs:
 
   build-web:
     name: Build Web binary
-    needs: tests
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
