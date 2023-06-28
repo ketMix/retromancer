@@ -1,0 +1,203 @@
+title: The Gauntlet
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "d":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockMove: true
+    blockView: true
+  "b":
+    sprite: empty
+    id: bat1
+  "B":
+    sprite: empty
+    id: bat2
+  "s":
+    sprite: empty
+    id: sign
+  "L":
+    sprite: empty
+    id: life
+  "l":
+    sprite: empty
+    id: life2
+  "m":
+    sprite: empty
+    id: life3
+  "M":
+    sprite: empty
+    id: life4
+  "x":
+    sprite: empty
+    id: brazier
+  "X":
+    sprite: empty
+    id: brazier2
+  "z":
+    sprite: empty
+    id: skell
+  "Z":
+    sprite: empty
+    id: skell2
+  "s":
+    sprite: empty
+    id: skell3
+  "S":
+    sprite: empty
+    id: skell4
+  "F":
+    sprite: empty
+    id: skell5
+  "f":
+    sprite: empty
+    id: skell6
+  "G":
+    sprite: empty
+    id: drawbridge
+  "W":
+    sprite: empty
+    id: wheel
+actors:
+  # Doors
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 1-boss
+      conditions:
+        - type: killedEnemies
+  - id: door2
+    type: interactive
+    sprite: door
+  
+  # Enemies
+  - id: bat1
+    type: enemy
+    sprite: bat
+  - id: bat2
+    type: enemy
+    sprite: bat
+  - id: skell
+    type: enemy
+    sprite: skell
+  - id: skell2
+    type: enemy
+    sprite: skell
+  - id: skell3
+    type: enemy
+    sprite: skell
+  - id: skell4
+    type: enemy
+    sprite: skell
+  - id: skell5
+    type: enemy
+    sprite: skell
+  - id: skell6
+    type: enemy
+    sprite: skell
+
+  # Interactives
+  - id: brazier
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+  - id: brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+  - id: drawbridge
+    type: interactive
+    sprite: drawbridge
+  - id: wheel
+    type: interactive
+    sprite: wheel
+    interactive:
+      reversable: true
+      touchable: true
+      linked:
+        - drawbridge
+  # Snaggable
+  - id: life
+    type: snaggable
+    sprite: item-life
+  
+  - id: life2
+    type: snaggable
+    sprite: item-life
+
+  - id: life3
+    type: snaggable
+    sprite: item-life
+
+  - id: life4
+    type: snaggable
+    sprite: item-life
+
+layers:
+  - |
+
+
+
+
+    E      ^********D***************^
+    E      ^      x...X  F          ^
+    E      ^   M   ..............   ^
+    E      ^   s     S         G    ^
+    E      ^~~~~~~~~~~~~~~~~~~~~~~~~^      
+    E      ^****************^   . W ^
+    E      ^ __             *   .   ^
+    E      ^   ..........   *   . B ^ 
+    E      ^   .    ,,,,. Z *   .   ^
+    E      ^   .   ^~,,,.   * b .   ^
+    E      ^   .   *~,, .   *   .   ^
+    E      ^   .   *~ z .   *   .   ^
+    E      ^   .   *~   .   ^   .   ^ 
+    E      ^   .   *~,, . f     .   ^ 
+    E      ^   .   *~,,,......... L ^
+    E      ^   @   *~,,,,,          ^
+    E      ^***d********************^
