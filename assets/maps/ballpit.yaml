@@ -21,18 +21,8 @@ actors:
   - id: spawner
     type: spawner
     bullets: 
-      - alias: daggers
-        bulletCount: 10
-        bullet:
-          color: [0, 0, 0, 255]
-      - alias: chakra
-        bulletCount: 100
-        bullet:
-          color: [255, 0, 0, 255]
-      - alias: chakra
-        bulletCount: 50
-        bullet:
-          color: [0, 255, 0, 255]
+      - alias: blob
+
 layers:
   - |
    ^**************************************^

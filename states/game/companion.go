@@ -126,7 +126,7 @@ func (p *Companion) Update() (actions []Action) {
 				p.Energy -= imp.Cost()
 				p.TicksSinceLastInteraction = 0
 				angle := math.Atan2(imp.Y-p.shape.Y, imp.X-p.shape.X)
-				bullet := CreateBullet(Circular, color.RGBA{0xa0, 0x20, 0xf0, 0xaa}, 1, 4, angle, 1, 2, 2, 1, 1, 0)
+				bullet := CreateBullet(Circular, color.RGBA{0xa0, 0x20, 0xf0, 0xaa}, 1, 4, angle, 1, 2, 0, 2, 1, 1, 0)
 				bullet.friendly = true
 				bullet.Deathtime = 200
 				bullet.Damage = 1

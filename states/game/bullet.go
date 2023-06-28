@@ -27,6 +27,7 @@ type Bullet struct {
 	Angle           float64     // What angle the bullet has
 	Acceleration    float64     // How fast the bullet accelerates
 	AccelAccel      float64     // How fast the bullet accelerates its acceleration
+	MinSpeed        float64     // Minimum speed of the bullet
 	MaxSpeed        float64     // Maximum speed of the bullet
 	AngularVelocity float64     // How fast the bullet rotates
 	Color           color.Color // Color of the bullet
@@ -50,7 +51,7 @@ type Bullet struct {
 func CreateBullet(
 	bulletType BulletType,
 	clr color.Color,
-	radius, speed, angle, acceleration, accelAccel, maxSpeed, angularVelocity float64,
+	radius, speed, angle, acceleration, accelAccel, minSpeed, maxSpeed, angularVelocity float64,
 	aimTime, aimDelay int,
 ) *Bullet {
 	b := &Bullet{
@@ -60,6 +61,7 @@ func CreateBullet(
 		Acceleration:    acceleration,
 		AccelAccel:      accelAccel,
 		Angle:           angle,
+		MinSpeed:        minSpeed,
 		MaxSpeed:        maxSpeed,
 		AngularVelocity: angularVelocity,
 		Color:           clr,
@@ -83,6 +85,7 @@ func BulletFromExisting(b *Bullet, angle float64) *Bullet {
 		angle,
 		b.Acceleration,
 		b.AccelAccel,
+		b.MinSpeed,
 		b.MaxSpeed,
 		b.AngularVelocity,
 		b.aimTime,
@@ -104,6 +107,7 @@ func CreateBulletFromDef(override, alias *resources.Bullet) *Bullet {
 	speed := float64(*alias.Speed)
 	acceleration := float64(*alias.Acceleration)
 	accelAccel := float64(*alias.AccelAccel)
+	minSpeed := float64(*alias.MinSpeed)
 	maxSpeed := float64(*alias.MaxSpeed)
 	angularVelocity := float64(*alias.AngularVelocity)
 	aimTime := *alias.AimTime
@@ -131,6 +135,9 @@ func CreateBulletFromDef(override, alias *resources.Bullet) *Bullet {
 		}
 		if override.AccelAccel != nil {
 			accelAccel = float64(*override.AccelAccel)
+		}
+		if override.MinSpeed != nil {
+			minSpeed = float64(*override.MinSpeed)
 		}
 		if override.MaxSpeed != nil {
 			maxSpeed = float64(*override.MaxSpeed)
@@ -162,6 +169,7 @@ func CreateBulletFromDef(override, alias *resources.Bullet) *Bullet {
 		0,
 		acceleration,
 		accelAccel,
+		minSpeed,
 		maxSpeed,
 		angularVelocity,
 		aimTime,
@@ -229,6 +237,8 @@ func (b *Bullet) Update() (actions []Action) {
 
 	if b.Speed > b.MaxSpeed {
 		b.Speed = b.MaxSpeed
+	} else if b.Speed < b.MinSpeed {
+		b.Speed = b.MinSpeed
 	}
 	b.Shape.X += b.Speed * math.Cos(b.Angle)
 	b.sprite.X = b.Shape.X

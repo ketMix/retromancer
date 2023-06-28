@@ -167,6 +167,7 @@ actors:
   - id: life3
     type: snaggable
     sprite: item-life
+
   - id: life4
     type: snaggable
     sprite: item-life

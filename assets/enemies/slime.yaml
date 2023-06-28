@@ -1,0 +1,7 @@
+sprite: slime
+framerate: 5
+health: 40
+speed: 1
+behavior: random
+bullets:
+  - alias: blob

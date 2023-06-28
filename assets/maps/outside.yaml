@@ -78,7 +78,7 @@ actors:
     type: interactive
     sprite: door
     interactive:
-      map: ballpit
+      map: 2-1
       active: true
   - id: door3
     type: interactive

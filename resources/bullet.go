@@ -8,6 +8,7 @@ type Bullet struct {
 	Speed           *float64 `yaml:"speed,omitempty"`
 	Acceleration    *float64 `yaml:"acceleration,omitempty"`
 	AccelAccel      *float64 `yaml:"accelAccel,omitempty"`
+	MinSpeed        *float64 `yaml:"minSpeed,omitempty"`
 	MaxSpeed        *float64 `yaml:"maxSpeed,omitempty"`
 	AngularVelocity *float64 `yaml:"angularVelocity,omitempty"`
 	AimTime         *int     `yaml:"aimTime,omitempty"`

@@ -1,0 +1,131 @@
+title: The Slime Pit
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "d":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockMove: true
+    blockView: true
+  "0":
+    sprite: empty
+    id: slime1
+  "1":
+    sprite: empty
+    id: slime2
+  "2":
+    sprite: empty
+    id: slime3
+  "L":
+    sprite: empty
+    id: item-life
+  "b":
+    sprite: empty
+    id: brazier
+  "B":
+    sprite: empty
+    id: brazier2
+actors:
+# Doors
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 2-2
+      conditions:
+        - type: killedEnemies
+  - id: door2
+    type: interactive
+    sprite: door
+
+# Enemies
+  - id: slime1
+    type: enemy
+    sprite: slime
+  - id: slime2
+    type: enemy
+    sprite: slime
+  - id: slime3
+    type: enemy
+    sprite: slime
+
+# Interactives
+  - id: brazier
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+  - id: brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+# Snaggable
+  - id: item-life
+    type: snaggable
+    sprite: item-life
+
+layers:
+  - |
+
+
+
+
+    E          ^********D************^
+    E          ^*^    b...B          ^
+    E          ^**^__  ...       2   ^
+    E          ^**^___               ^
+    E          ^**^___^*^*^*^    L   ^
+    E          ^**^___      *^       ^
+    E          ^**^__        **^*****^
+    E          ^*^ 0         ^ __,,,,^
+    E          ^^,         _____  ,,,^
+    E          ^,,,       1   ^    ,,^
+    E          ^****^      __ *      ^
+    E          ^,,,,    __   *^      ^
+    E          ^,,,    ^*^*^*^       ^
+    E          ^,,                   ^
+    E          ^          @      ,,,,^
+    E          ^**********d**********^

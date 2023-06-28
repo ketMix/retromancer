@@ -48,7 +48,7 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 		aliveImages = append(aliveImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 	aliveSprite := resources.NewAnimatedSprite(aliveImages)
-	aliveSprite.Framerate = enemyDef.Framerate
+	aliveSprite.Framerate = enemyDef.Framerate / 2
 	aliveSprite.Loop = true
 
 	deadImageNames := ctx.Manager.GetNamesWithPrefix("images", enemyDef.Sprite+"-dead")
@@ -57,6 +57,8 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 		deadImages = append(deadImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 	deadSprite := resources.NewAnimatedSprite(deadImages)
+	deadSprite.Framerate = enemyDef.Framerate
+	deadSprite.Loop = false
 
 	// Get the hit and dead sounds
 	hitSfx := ctx.Manager.GetAs("sounds", enemyDef.Sprite+"-hit", (*resources.Sound)(nil)).(*resources.Sound)
