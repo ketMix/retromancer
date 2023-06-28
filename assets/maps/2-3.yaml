@@ -282,7 +282,7 @@ actors:
     type: interactive
     sprite: door
     interactive:
-      map: 2-4
+      map: end
       conditions:
         - type: active
           args:
