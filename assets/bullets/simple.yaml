@@ -11,6 +11,7 @@ bullet:
   speed: 2
   acceleration: 0
   accelAccel: 0
+  minSpeed: 2
   maxSpeed: 2
   angularVelocity: 0
   aimTime: 0

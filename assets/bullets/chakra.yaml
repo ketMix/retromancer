@@ -10,6 +10,7 @@ bullet:
   speed: 5
   acceleration: 0
   accelAccel: 0
+  minSpeed: 5
   maxSpeed: 10
   angularVelocity: 0.15
   aimTime: 10
