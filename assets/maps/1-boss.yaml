@@ -1,0 +1,73 @@
+title: Batty Daddy Gets Maddy
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "s":
+    sprite: empty
+    id: bat-boss
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "d":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockMove: true
+    blockView: true
+actors:
+  # Door
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 1-post
+      conditions:
+        - type: killedEnemies
+  - id: door2
+    type: interactive
+    sprite: door
+  
+  # Enemy
+  - id: bat-boss
+    type: enemy
+    sprite: bat-boss
+
+layers:
+  - |
+
+
+   ^*******************D******************^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                   s                  ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^      
+   ^                                      ^
+   ^                                      ^
+   ^                                      ^      
+   ^                                      ^
+   ^                   @                  ^
+   ^*******************d******************^

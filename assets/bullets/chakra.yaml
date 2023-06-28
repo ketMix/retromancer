@@ -11,6 +11,6 @@ bullet:
   acceleration: 0
   accelAccel: 0
   maxSpeed: 10
-  angularVelocity: 0.1
+  angularVelocity: 0.15
   aimTime: 10
   aimDelay: 60

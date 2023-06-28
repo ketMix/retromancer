@@ -1,5 +1,5 @@
-title: Calm Before the Storm
-music: start
+title: The Deflector
+music: outside
 conditions:
   - type: active
     args:
@@ -62,6 +62,9 @@ runes:
   "M":
     sprite: empty
     id: life3
+  "m":
+    sprite: empty
+    id: life4
   "b":
     sprite: empty
     id: brazier
@@ -70,7 +73,19 @@ runes:
     id: brazier2
   "x":
     sprite: empty
-    id: campfire
+    id: item-deflect
+  "s":
+    sprite: empty
+    id: shooter
+  "G":
+    sprite: empty
+    id: drawbridge
+  "C":
+    sprite: empty
+    id: crystal
+  "S":
+    sprite: empty
+    id: sign
 
 actors:
   # Doors
@@ -78,15 +93,22 @@ actors:
     type: interactive
     sprite: door
     interactive:
-      map: 1-boss
+      map: outside
       conditions:
         - type: active
           args:
-            - campfire
+            - drawbridge
   - id: door2
     type: interactive
     sprite: door
-    
+  
+  # Spawner
+  - id: shooter
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+
   # Interactives
   - id: brazier
     type: interactive
@@ -95,7 +117,8 @@ actors:
       conditions:
         - type: active
           args:
-            - door
+            - drawbridge
+
   - id: brazier2
     type: interactive
     sprite: brazier
@@ -103,12 +126,34 @@ actors:
       conditions:
         - type: active
           args:
-            - door
-  - id: campfire
+            - drawbridge
+  - id: brazier2
     type: interactive
-    sprite: campfire
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - drawbridge
+  - id: crystal
+    type: interactive
+    sprite: crystal
+    interactive:
+      health: 1
+  - id: drawbridge
+    type: interactive
+    sprite: drawbridge
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - crystal
+  - id: sign
+    type: interactive
+    sprite: sign
     interactive:
       reversable: true
+      text: sign-deflect
 
   # Snaggable
   - id: life
@@ -122,6 +167,13 @@ actors:
   - id: life3
     type: snaggable
     sprite: item-life
+  - id: life4
+    type: snaggable
+    sprite: item-life
+
+  - id: item-deflect
+    type: snaggable
+    sprite: item-life ## REPLACE WITH DEFLECT PICKUP
 
 layers:
   - |
@@ -131,13 +183,17 @@ layers:
 
 
 
-
     E            ^*****D*****^
-    E            ^~,,b...B,,~^
-    E            ^~,       ,~^
-    E            ^~     M   ~^
-    E            ^~  l      ~^
-    E            ^~    x  L ~^
+    E            ^   b...B C ^
+    E            ^   .....   ^
+    E            ^ s .....   ^
+    E            ^   .....   ^
+    E            ^    G      ^
+    E            ^~~~~~~~~~~~^
+    E            ^~ S       ~^
+    E            ^~         ~^
+    E            ^~ m      M~^
+    E            ^~ l  x   L~^
     E            ^~         ~^
     E            ^~,       ,~^ 
     E            ^~,,  @  ,,~^

@@ -3,6 +3,7 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
+	"fmt"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -17,13 +18,13 @@ const (
 )
 
 type Enemy struct {
+	ctx         *states.Context
 	id          string
 	sprite      *resources.Sprite
 	deadSprite  *resources.Sprite
 	hitSfx      *resources.Sound
 	deadSfx     *resources.Sound
 	shape       RectangleShape
-	phases      []*resources.Enemy
 	target      Actor
 	state       EnemyState
 	alwaysShoot bool
@@ -32,6 +33,7 @@ type Enemy struct {
 	health      int
 	speed       int
 	behavior    string
+	nextPhase   string
 	spawner     *Spawner
 }
 
@@ -72,6 +74,7 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 	}
 
 	return &Enemy{
+		ctx:        &ctx,
 		state:      firstState,
 		sprite:     aliveSprite,
 		deadSprite: deadSprite,
@@ -81,12 +84,12 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 			Width:  aliveSprite.Width(),
 			Height: aliveSprite.Height(),
 		},
-		phases:      enemyDef.Phases,
 		health:      enemyDef.Health,
 		speed:       enemyDef.Speed,
 		behavior:    enemyDef.Behavior,
 		alwaysShoot: enemyDef.AlwaysShoot,
 		spawner:     spawner,
+		nextPhase:   enemyDef.NextPhase,
 	}
 }
 
@@ -166,6 +169,20 @@ func (e *Enemy) Damage(amount int) {
 	e.health -= amount
 	if e.health <= 0 {
 		e.deadSfx.Play(0.5) // TODO: use global volume setting?
+		fmt.Println("Enemy", e.id, "died")
+		fmt.Println("Next phase:", e.nextPhase)
+		if e.nextPhase != "" {
+			fmt.Println("Creating enemy", e.nextPhase)
+			nextPhase := CreateEnemy(*e.ctx, e.id, e.nextPhase)
+			e.health = nextPhase.health
+			e.speed = nextPhase.speed
+			e.sprite = nextPhase.sprite
+			e.deadSprite = nextPhase.deadSprite
+			e.spawner = nextPhase.spawner
+			e.nextPhase = nextPhase.nextPhase
+
+			fmt.Println("Created enemy", e)
+		}
 	} else {
 		e.hitSfx.Play(0.5) // TODO: use global volume setting?
 	}

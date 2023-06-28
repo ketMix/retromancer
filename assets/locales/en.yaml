@@ -56,6 +56,10 @@
 "1-2": "The Skells"
 "1-3": "Reprieve"
 "1-4": "Bat Hell"
+"1-5": "The Gauntlet"
+"1-6": "Calm Before the Storm"
+"1-boss": "Batty Daddy Gets Maddy"
+"1-post": "The Deflector"
 
 # Signs
 "sign-intro-reverse": "Your hand will glow yellow on reversable objects"
@@ -65,3 +69,4 @@
 "sign-outside-bridge": "Some problems can't be solved by the power of reversal...\nPerhaps when you return you will have more power."
 "sign-hp-item": "Pick up the lil' crystals to heal yourself. You can go up to five health!"
 "sign-door-blood": "Sometimes a door requires some... blood to be shed..."
+"sign-deflect": "New found powers bring new challenges..."

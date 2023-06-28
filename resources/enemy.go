@@ -9,7 +9,7 @@ type Enemy struct {
 	Wander      bool           `yaml:"wander"`
 	AlwaysShoot bool           `yaml:"alwaysShoot"`
 	Bullets     []*BulletGroup `yaml:"bullets"`
-	Phases      []*Enemy       `yaml:"phases"`
+	NextPhase   string         `yaml:"nextPhase"`
 }
 
 func (e *Enemy) UnmarshalYAML(unmarshal func(interface{}) error) error {
