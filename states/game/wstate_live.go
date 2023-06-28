@@ -337,6 +337,9 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						case "item-book":
 							pc.HasDeflect = true
 							s.destroyed = true
+						case "item-shield":
+							pc.HasShield = true
+							s.destroyed = true
 						}
 
 						continue

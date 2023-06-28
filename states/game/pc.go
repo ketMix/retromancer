@@ -36,6 +36,7 @@ type PC struct {
 	MaxEnergy                 int
 	EnergyRestoreRate         int
 	HasDeflect                bool
+	HasShield                 bool
 	//
 	previousInteraction Action
 	//
@@ -68,6 +69,7 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		shieldSfx:         ctx.Manager.GetAs("sounds", "shield-sfx", (*resources.Sound)(nil)).(*resources.Sound),
 		//
 		HasDeflect: true, // REMOVE THIS WHEN DONE TESTING
+		HasShield:  true, // REMOVE THIS WHEN DONE TESTING
 	}
 
 	// FIXME: This shouldn't be hardcoded.
@@ -184,7 +186,7 @@ func (p *PC) Update() (actions []Action) {
 				p.previousInteraction = ActionDeflect{}
 			}
 		case ImpulseShield:
-			if p.HasEnergyFor(imp) {
+			if p.HasShield && p.HasEnergyFor(imp) {
 				p.Energy -= imp.Cost()
 				p.TicksSinceLastInteraction = 0
 				actions = append(actions, ActionShield{})
