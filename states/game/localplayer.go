@@ -2,6 +2,7 @@ package game
 
 import (
 	"ebijam23/net"
+	"ebijam23/resources"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -16,7 +17,8 @@ type LocalPlayer struct {
 	hasNewThoughts bool
 	impulses       ImpulseSet
 	queuedImpulses ImpulseSet
-	GamepadID      int // Target gamepad for this player to use.
+	GamepadID      int    // Target gamepad for this player to use.
+	GamepadMap     string // Target mapping to use.
 	hat            string
 	// controller vars
 	cx, cy, ca, cd  float64
@@ -37,17 +39,17 @@ func NewLocalPlayer() *LocalPlayer {
 
 func (p *LocalPlayer) Update() {
 	// FIXME: All of this is pretty rough, but I wanted to test controller usage.
-	if p.GamepadID >= 0 && len(ebiten.AppendGamepadIDs(nil)) > p.GamepadID {
-		lr := ebiten.StandardGamepadAxisValue(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadAxisLeftStickHorizontal)
-		ud := ebiten.StandardGamepadAxisValue(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadAxisLeftStickVertical)
+	if p.GamepadID >= 0 && len(resources.GetFunctionalGamepads()) > p.GamepadID {
+		lr := resources.GetAxis(p.GamepadMap, p.GamepadID, resources.AxisLeftX)
+		ud := resources.GetAxis(p.GamepadMap, p.GamepadID, resources.AxisLeftY)
 
 		if math.Abs(lr) > 0.01 || math.Abs(ud) > 0.01 {
 			a := math.Atan2(ud, lr)
 			p.impulses.Move = &ImpulseMove{Direction: a}
 		}
 
-		r1 := ebiten.StandardGamepadAxisValue(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadAxisRightStickHorizontal)
-		r2 := ebiten.StandardGamepadAxisValue(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadAxisRightStickVertical)
+		r1 := resources.GetAxis(p.GamepadMap, p.GamepadID, resources.AxisRightX)
+		r2 := resources.GetAxis(p.GamepadMap, p.GamepadID, resources.AxisRightY)
 		if math.Abs(r1) > 0.01 || math.Abs(r2) > 0.01 {
 			a := math.Atan2(r2, r1)
 
@@ -78,12 +80,12 @@ func (p *LocalPlayer) Update() {
 			}
 		}
 
-		if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonFrontBottomRight) {
+		if resources.GetButton(p.GamepadMap, p.GamepadID, resources.ButtonBumperRight) {
 			p.cd += 3
 			if p.cd > 300 {
 				p.cd = 300
 			}
-		} else if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonFrontBottomLeft) {
+		} else if resources.GetButton(p.GamepadMap, p.GamepadID, resources.ButtonBumperLeft) {
 			if p.cd-3 > 0 {
 				p.cd -= 3
 			}
@@ -103,14 +105,14 @@ func (p *LocalPlayer) Update() {
 		}
 
 		if _, ok := p.actor.(*PC); ok {
-			if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonRightLeft) {
+			if resources.GetButton(p.GamepadMap, p.GamepadID, resources.ButtonB) {
 				p.impulses.Interaction = ImpulseShield{}
-			} else if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonFrontTopRight) {
+			} else if resources.GetButton(p.GamepadMap, p.GamepadID, resources.ButtonTriggerRight) {
 				p.impulses.Interaction = ImpulseReflect{
 					X: float64(p.cx),
 					Y: float64(p.cy),
 				}
-			} else if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonFrontTopLeft) {
+			} else if resources.GetButton(p.GamepadMap, p.GamepadID, resources.ButtonTriggerLeft) {
 				p.impulses.Interaction = ImpulseDeflect{
 					X: float64(p.cx),
 					Y: float64(p.cy),
@@ -119,7 +121,7 @@ func (p *LocalPlayer) Update() {
 				p.impulses.Interaction = nil
 			}
 		} else if _, ok := p.actor.(*Companion); ok {
-			if ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonFrontTopRight) {
+			if resources.GetButton(p.GamepadMap, p.GamepadID, resources.ButtonTriggerRight) {
 				p.impulses.Interaction = ImpulseShoot{
 					X: float64(p.cx),
 					Y: float64(p.cy),
@@ -191,10 +193,10 @@ func (p *LocalPlayer) Update() {
 
 	// Thoughts
 	thoughts := Thoughts{}
-	if ebiten.IsKeyPressed(ebiten.KeyEnter) || ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonCenterRight) {
+	if ebiten.IsKeyPressed(ebiten.KeyEnter) || resources.GetButton(p.GamepadMap, p.GamepadID, resources.ButtonStart) {
 		thoughts.Thoughts = append(thoughts.Thoughts, ResetThought{})
 		p.hasNewThoughts = true
-	} else if ebiten.IsKeyPressed(ebiten.KeyEscape) || ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonCenterLeft) {
+	} else if ebiten.IsKeyPressed(ebiten.KeyEscape) || resources.GetButton(p.GamepadMap, p.GamepadID, resources.ButtonBack) {
 		thoughts.Thoughts = append(thoughts.Thoughts, QuitThought{})
 		p.hasNewThoughts = true
 	}

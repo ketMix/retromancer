@@ -24,6 +24,7 @@ const (
 type Map struct {
 	filename     string
 	data         *resources.Map
+	Cells        [][][]Cell
 	actors       []Actor
 	interactives []*Interactive
 	enemies      []*Enemy
@@ -33,6 +34,18 @@ type Map struct {
 	currentZ     int // This isn't the right location for this, but we need to keep track of the current/active Z for rendering appropriate fading.
 	vfx          resources.VFXList
 	particles    []*Particle
+}
+
+type Cell struct {
+	Sprite    *resources.Sprite
+	Shape     RectangleShape
+	id        string
+	isometric bool
+	floor     bool
+	wall      bool
+	blockMove bool
+	blockView bool
+	data      *resources.Cell
 }
 
 func (s *World) TravelToMap(ctx states.Context, mapName string) error {
@@ -57,41 +70,44 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	//wallH := 6
 
 	playerStart := []int{0, 0, 0}
+	m.Cells = make([][][]Cell, len(m.data.Layers))
 	for i, l := range m.data.Layers {
+		m.Cells[i] = make([][]Cell, len(l.Cells))
 		//xoffset := float64(wallH * len(m.data.Layers))
 		//yoffset := float64(wallH * 2 * len(m.data.Layers))
 		xoffset := 0.0
 		yoffset := 0.0
 		for j, row := range l.Cells {
+			m.Cells[i][j] = make([]Cell, len(row))
 			for k, cell := range row {
+				c := Cell{
+					data: &cell,
+				}
 				if r, ok := m.data.RuneMap[string(cell.Type)]; ok {
 					if cell.Type == '@' {
 						playerStart = []int{k, j, i}
 					}
-					cell.ID = r.ID
-					cell.BlockMove = r.BlockMove
-					cell.BlockView = r.BlockView
-					cell.Wall = r.Wall
-					cell.Floor = r.Floor
-					cell.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", r.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
-					cell.Sprite.SetXY(
+					c.id = r.ID
+					c.blockMove = r.BlockMove
+					c.blockView = r.BlockView
+					c.wall = r.Wall
+					c.floor = r.Floor
+					c.isometric = r.Isometric
+					c.Shape = RectangleShape{
+						X:      cellW * float64(k),
+						Y:      cellH*float64(j) - 9,
+						Width:  cellW,
+						Height: cellH,
+					}
+					c.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", r.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
+					c.Sprite.SetXY(
 						cellW*float64(k)+xoffset,
 						cellH*float64(j)+yoffset,
 					)
-					// This is gross, but it visually allows the cell to be "isometric" without going the standard walls path.
-					if r.Isometric {
-						cell.Sprite.SetXY(
-							cell.Sprite.X-(cellW/4),
-							cell.Sprite.Y,
-						)
-					}
 				}
-				//cell.Sprite.Centered = true
-				row[k] = cell
+				m.Cells[i][j][k] = c
 			}
-			l.Cells[j] = row
 		}
-		m.data.Layers[i] = l
 	}
 
 	// Create actors.
@@ -106,8 +122,16 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 		// or the cell location (location of rune in map).
 		if cell != nil {
-			x = float64(cell.Sprite.X)
-			y = float64(cell.Sprite.Y)
+			x = float64(cell.Shape.X)
+			y = float64(cell.Shape.Y)
+			if cell.isometric {
+				x -= 4
+				y += 9
+			}
+			if a.ID == "drawbridge" {
+				y += 8
+				y += 1
+			}
 		}
 
 		switch a.Type {
@@ -273,10 +297,10 @@ func (m *Map) Draw(ctx states.DrawContext) {
 		layerOpts.GeoM.Translate(float64(wallH*z), float64(wallH*z)*2)
 
 		// TODO: Draw/render operations should probably be queued, sorted by z-index, then rendered in game.Draw.
-		l := m.data.Layers[z]
-		for _, row := range l.Cells {
+		l := m.Cells[z]
+		for _, row := range l {
 			for _, cell := range row {
-				if cell.Floor {
+				if cell.floor {
 					opts := &ebiten.DrawImageOptions{}
 					opts.GeoM.Concat(layerOpts.GeoM)
 					for i := wallH / 3; i >= 0; i-- {
@@ -286,7 +310,7 @@ func (m *Map) Draw(ctx states.DrawContext) {
 						cell.Sprite.DrawWithOptions(ctx, opts)
 						opts.GeoM.Translate(-1, -2)
 					}
-				} else if cell.Wall {
+				} else if cell.wall {
 					opts := &ebiten.DrawImageOptions{}
 					opts.GeoM.Concat(layerOpts.GeoM)
 					for i := 0; i < wallH; i++ {
@@ -326,19 +350,19 @@ func (m *Map) Draw(ctx states.DrawContext) {
 	}
 }
 
-func (m *Map) GetCell(x, y, z int) *resources.Cell {
-	if z < 0 || z >= len(m.data.Layers) || y < 0 || y >= len(m.data.Layers[z].Cells) || x < 0 || x >= len(m.data.Layers[z].Cells[y]) {
+func (m *Map) GetCell(x, y, z int) *Cell {
+	if z < 0 || z >= len(m.Cells) || y < 0 || y >= len(m.Cells[z]) || x < 0 || x >= len(m.Cells[z][y]) {
 		return nil
 	}
-	return &m.data.Layers[z].Cells[y][x]
+	return &m.Cells[z][y][x]
 }
 
-func (m *Map) FindCellById(id string) *resources.Cell {
-	for z, layer := range m.data.Layers {
-		for y, row := range layer.Cells {
+func (m *Map) FindCellById(id string) *Cell {
+	for z, layer := range m.Cells {
+		for y, row := range layer {
 			for x, cell := range row {
-				if cell.ID == id {
-					return &m.data.Layers[z].Cells[y][x]
+				if cell.id == id {
+					return &m.Cells[z][y][x]
 				}
 			}
 		}
@@ -347,7 +371,7 @@ func (m *Map) FindCellById(id string) *resources.Cell {
 }
 
 type CellCollision struct {
-	Cell resources.Cell
+	Cell Cell
 }
 
 func (m *Map) Collides(s Shape) *CellCollision {
@@ -360,15 +384,10 @@ func (m *Map) Collides(s Shape) *CellCollision {
 	z := m.currentZ
 
 	check := func(x, y int) *CellCollision {
-		if y >= 0 && int(y) < len(m.data.Layers[z].Cells) && x >= 0 && int(x) < len(m.data.Layers[z].Cells[int(y)]) {
-			if m.data.Layers[z].Cells[int(y)][int(x)].BlockMove {
-				cell := m.data.Layers[z].Cells[int(y)][int(x)]
-				if s.Collides(&RectangleShape{
-					X:      cell.Sprite.X,
-					Y:      cell.Sprite.Y,
-					Width:  cell.Sprite.Width(),
-					Height: cell.Sprite.Height(),
-				}) {
+		if y >= 0 && int(y) < len(m.Cells[z]) && x >= 0 && int(x) < len(m.Cells[z][int(y)]) {
+			if m.Cells[z][int(y)][int(x)].blockMove {
+				cell := m.Cells[z][int(y)][int(x)]
+				if s.Collides(&cell.Shape) {
 					return &CellCollision{
 						Cell: cell,
 					}
@@ -435,7 +454,7 @@ func (m *Map) DoesLineCollide(fx1, fy1, fx2, fy2 float64, z int) bool {
 
 	for {
 		if cell := m.GetCell(x1, y1, z); cell != nil {
-			if cell.BlockView {
+			if cell.blockView {
 				return true
 			}
 		}

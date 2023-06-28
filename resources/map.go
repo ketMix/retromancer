@@ -16,14 +16,7 @@ type RuneDef struct {
 }
 
 type Cell struct {
-	Sprite    *Sprite `yaml:"-"`
-	Type      rune    `yaml:"-"` // I guess using runes is okay.
-	BlockView bool    `yaml:"-"`
-	BlockMove bool    `yaml:"-"`
-	Wall      bool    `yaml:"-"`
-	Floor     bool    `yaml:"-"`
-	Isometric bool    `yaml:"-"`
-	ID        string  `yaml:"-"`
+	Type rune `yaml:"-"` // I guess using runes is okay.
 }
 
 type Layer struct {
