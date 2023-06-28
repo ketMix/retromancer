@@ -1,6 +1,7 @@
 package net
 
 import (
+	"encoding/binary"
 	"fmt"
 	"net"
 	"sync"
@@ -14,10 +15,15 @@ type Peer struct {
 	//session *kcp.UDPSession
 	shook bool
 	// Packet reading.
-	packetBuffer  []byte
-	messages      []Message
-	readLock      sync.Mutex
-	readReadyChan chan bool
+	packetBuffer     []byte
+	messageIndex     int
+	outboundMessages []*Envelope
+	reconfirms       []int
+	inboundConfirms  []int
+	inboundMessages  []*Envelope
+	messages         []Message
+	readLock         sync.Mutex
+	readReadyChan    chan bool
 }
 
 type PeerPacket struct {
@@ -67,13 +73,89 @@ func (p *Peer) writeToPacketBuffer(b []byte) {
 	}
 }*/
 
+type Envelope struct {
+	ID        int
+	lastTime  time.Time
+	bytes     []byte
+	confirmed bool
+}
+
+func (e Envelope) ToBytes() (b []byte) {
+	b = append(b, 0)
+	b = binary.LittleEndian.AppendUint64(b, uint64(e.ID))
+	b = append(b, e.bytes...)
+	return b
+}
+
+type Confirm struct {
+	ID int
+}
+
+func (c Confirm) ToBytes() (b []byte) {
+	b = append(b, 1)
+	b = binary.LittleEndian.AppendUint64(b, uint64(c.ID))
+	return b
+}
+
+type Reconfirm struct {
+	ID int
+}
+
+func (c Reconfirm) ToBytes() (b []byte) {
+	b = append(b, 2)
+	b = binary.LittleEndian.AppendUint64(b, uint64(c.ID))
+	return b
+}
+
 // Send sends a Payload to the given peer.
 func (p *Peer) Send(msg Message) error {
-	p.conn.WriteTo(msg.ToBytes(), p.addr)
+	p.readLock.Lock()
+	defer p.readLock.Unlock()
+	envelope := Envelope{
+		ID:    p.messageIndex,
+		bytes: msg.ToBytes(),
+	}
+	p.messageIndex++
+	p.outboundMessages = append(p.outboundMessages, &envelope)
 	return nil
 }
 
-func (p *Peer) Receive(b []byte) (msg Message, err error) {
+func (p *Peer) Receive(b []byte) (err error) {
+	//fmt.Println("Receive", b)
+	p.readLock.Lock()
+	defer p.readLock.Unlock()
+	if len(b) == 0 {
+		return
+	}
+	if b[0] == 0 {
+		var envelope Envelope
+		envelope.ID = int(binary.LittleEndian.Uint64(b[1:9]))
+		envelope.bytes = b[9:]
+
+		// If we already have this envelope, mark it is confirmed.
+		/*for _, env := range p.inboundMessages {
+			if env.ID == envelope.ID {
+				env.confirmed = true
+				return
+			}
+		}*/
+
+		p.inboundMessages = append(p.inboundMessages, &envelope)
+	} else if b[0] == 1 {
+		var confirm Confirm
+		confirm.ID = int(binary.LittleEndian.Uint64(b[1:9]))
+		p.inboundConfirms = append(p.inboundConfirms, confirm.ID)
+		//fmt.Println("got inbound confirm", confirm.ID)
+	} else if b[0] == 2 {
+		var confirm Reconfirm
+		confirm.ID = int(binary.LittleEndian.Uint64(b[1:9]))
+		p.reconfirms = append(p.reconfirms, confirm.ID)
+		//fmt.Println("got inbound reconfirm")
+	}
+	return nil
+}
+
+/*func (p *Peer) Receive(b []byte) (msg Message, err error) {
 	msg, _ = MessageFromBytes(b)
 	if msg == nil {
 		fmt.Println("unknown message ID:", b[0], "passing as raw message.")
@@ -84,7 +166,7 @@ func (p *Peer) Receive(b []byte) (msg Message, err error) {
 		return nil, err
 	}
 	return msg, nil
-}
+}*/
 
 // ReadFrom is used to read from the peer's virtual packet buffer.
 func (p *Peer) ReadFrom(b []byte) (n int, addr net.Addr, err error) {
