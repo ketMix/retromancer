@@ -43,6 +43,12 @@ runes:
     isometric: true
     blockMove: true
     blockView: true
+  "0":
+    sprite: empty
+    id: door3
+    isometric: true
+    blockMove: true
+    blockView: true
   "s":
     sprite: empty
     id: skell1
@@ -72,7 +78,13 @@ actors:
     type: interactive
     sprite: door
     interactive:
-
+      conditions:
+        - type: active
+          args:
+            - lever
+  - id: door3
+    type: interactive
+    sprite: door
 # Enemies
   - id: skell1
     type: enemy
@@ -99,14 +111,6 @@ actors:
     interactive:
       touchable: true
 
-  - id: door2
-    type: interactive
-    sprite: door
-    interactive:
-      conditions:
-        - type: active
-          args:
-            - lever
 layers:
   - |
 
@@ -125,4 +129,4 @@ layers:
     E          ^_____,,,^*d*****^
     E          ^_,,,,,,,*       ^
     E          ^,,,,,,,,*l    @ ^
-    E          ^**************d*^
+    E          ^**************0*^
