@@ -5,17 +5,17 @@ import (
 	"net"
 	"sync"
 	"time"
-
-	"github.com/xtaci/kcp-go"
 )
 
 type Peer struct {
-	id      uint32
-	addr    *net.UDPAddr // Address of the peer
-	conn    *net.UDPConn // Pointer to the serverclient's conn.
-	session *kcp.UDPSession
+	id   uint32
+	addr *net.UDPAddr // Address of the peer
+	conn *net.UDPConn // Pointer to the serverclient's conn.
+	//session *kcp.UDPSession
+	shook bool
 	// Packet reading.
 	packetBuffer  []byte
+	messages      []Message
 	readLock      sync.Mutex
 	readReadyChan chan bool
 }
@@ -45,7 +45,7 @@ func (p *Peer) writeToPacketBuffer(b []byte) {
 	p.readReadyChan <- true
 }
 
-func (p *Peer) loop(ch chan PeerPacket) {
+/*func (p *Peer) loop(ch chan PeerPacket) {
 	for {
 		b := make([]byte, NetBufferSize)
 		n, err := p.session.Read(b)
@@ -65,17 +65,25 @@ func (p *Peer) loop(ch chan PeerPacket) {
 			msg:  msg,
 		}
 	}
-}
+}*/
 
 // Send sends a Payload to the given peer.
 func (p *Peer) Send(msg Message) error {
-	if p.session == nil {
-		return fmt.Errorf("no sesssion")
-	}
-	//p.conn.WriteTo(msg.ToBytes(), p.addr)
-	p.session.Write(msg.ToBytes())
-	//p.encoder.Encode(&msg)
+	p.conn.WriteTo(msg.ToBytes(), p.addr)
 	return nil
+}
+
+func (p *Peer) Receive(b []byte) (msg Message, err error) {
+	msg, _ = MessageFromBytes(b)
+	if msg == nil {
+		fmt.Println("unknown message ID:", b[0], "passing as raw message.")
+		msg, _ = MessageRaw{}.FromBytes(b)
+	}
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return msg, nil
 }
 
 // ReadFrom is used to read from the peer's virtual packet buffer.
