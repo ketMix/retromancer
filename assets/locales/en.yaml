@@ -60,6 +60,8 @@
 "1-6": "Calm Before the Storm"
 "1-boss": "Batty Daddy Gets Maddy"
 "1-post": "The Deflector"
+"2-1": "The Slime Pit"
+"2-2": "The Greedy Slime"
 
 # Signs
 "sign-intro-reverse": "Your hand will glow yellow on reversable objects"
@@ -70,3 +72,4 @@
 "sign-hp-item": "Pick up the lil' crystals to heal yourself. You can go up to five health!"
 "sign-door-blood": "Sometimes a door requires some... blood to be shed..."
 "sign-deflect": "New found powers bring new challenges..."
+"sign-use-enemy": "This slime is invincible with special bullets... Crystals will only be affected by deflected bullets..."

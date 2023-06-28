@@ -37,6 +37,11 @@ runes:
     id: door
     isometric: true
     blockView: true
+  "d":
+    sprite: empty
+    id: door
+    isometric: true
+    blockView: true
   "x":
     sprite: empty
     id: campfire
@@ -130,4 +135,4 @@ layers:
     E          ^~~~~~~~  s      ^
     E          ^~~~~~~~         ^
     E          ^~~~~~~~     @   ^
-    E          ^****************^
+    E          ^************d***^

@@ -1,0 +1,204 @@
+title: The Greedy Slime
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "d":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockMove: true
+    blockView: true
+  "F":
+    sprite: empty
+    id: door3
+    isometric: true
+    blockMove: true
+    blockView: true
+  "f":
+    sprite: empty
+    id: door4
+    isometric: true
+    blockMove: true
+    blockView: true
+  "0":
+    sprite: empty
+    id: slime
+  "1":
+    sprite: empty
+    id: life1
+  "2":
+    sprite: empty
+    id: life2
+  "3":
+    sprite: empty
+    id: life3
+  "4":
+    sprite: empty
+    id: life4
+  "L":
+    sprite: empty
+    id: lever
+  "b":
+    sprite: empty
+    id: brazier
+  "B":
+    sprite: empty
+    id: brazier2
+  "c":
+    sprite: empty
+    id: crystal1
+  "C":
+    sprite: empty
+    id: crystal2
+  "s":
+    sprite: empty
+    id: sign
+
+actors:
+# Doors
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 2-2
+      conditions:
+        - type: active
+          args:
+            - crystal1
+            - crystal2
+  - id: door2
+    type: interactive
+    sprite: door
+
+  - id: door3
+    type: interactive
+    sprite: door
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - lever
+  - id: door4
+    type: interactive
+    sprite: door
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - crystal1
+            - crystal2
+# Enemies
+  - id: slime
+    type: enemy
+    sprite: invincible-slime
+
+# Interactives
+  - id: brazier
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+  - id: brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+
+  - id: crystal1
+    type: interactive
+    sprite: crystal
+    interactive:
+      health: 1
+  - id: crystal2
+    type: interactive
+    sprite: crystal
+    interactive:
+      health: 1
+  - id: sign
+    type: interactive
+    sprite: sign
+    interactive:
+      reversable: true
+      degrade: true
+      text: "sign-use-enemy"
+  - id: lever
+    type: interactive
+    sprite: lever
+    interactive:
+      touchable: true
+  
+# # Snaggables
+  - id: life1
+    type: snaggable
+    sprite: item-life
+  - id: life2
+    type: snaggable
+    sprite: item-life
+  - id: life3
+    type: snaggable
+    sprite: item-life
+  - id: life4
+    type: snaggable
+    sprite: item-life
+
+layers:
+  - |
+
+
+
+
+    E         ^**********D**********^
+    E         ^______^ b...B ^    C ^
+    E         ^ 1 0 2*  ...  *      ^
+    E         ^ 3   4^       ^      ^
+    E         ^      *       *      ^
+    E         ^~~~~~~^***f***^~~~~~~^
+    E         ^                ,,,, ^
+    E         ^                     ^
+    E         ^ ,,,,,               ^
+    E         ^~~~~~~~~^*^*^F^*^*^*^^
+    E         ^        ^ L     s    ^
+    E         ^_  c ___*            ^
+    E         ^_   __^*^         @  ^
+    E         ^******************d**^

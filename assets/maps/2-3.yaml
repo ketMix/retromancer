@@ -1,0 +1,301 @@
+title: Slime Party
+music: outside
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockView: true
+  "A":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockView: true
+  "0":
+    sprite: empty
+    id: slime0
+  "1":
+    sprite: empty
+    id: slime1
+  "2":
+    sprite: empty
+    id: slime2
+  "3":
+    sprite: empty
+    id: slime3
+  "4":
+    sprite: empty
+    id: slime4
+  "5":
+    sprite: empty
+    id: slime5
+  "6":
+    sprite: empty
+    id: slime6
+  "7":
+    sprite: empty
+    id: slime7
+  "8":
+    sprite: empty
+    id: slime8
+  "9":
+    sprite: empty
+    id: slime9
+  "a":
+    sprite: empty
+    id: slime10
+  "b":
+    sprite: empty
+    id: slime11
+  "c":
+    sprite: empty
+    id: slime12
+  "d":
+    sprite: empty
+    id: slime13
+  "e":
+    sprite: empty
+    id: slime14
+  "f":
+    sprite: empty
+    id: slime15
+  "g":
+    sprite: empty
+    id: slime16
+  "h":
+    sprite: empty
+    id: slime17
+  "i":
+    sprite: empty
+    id: slime18
+  "j":
+    sprite: empty
+    id: slime19
+  "k":
+    sprite: empty
+    id: slime20
+  "l":
+    sprite: empty
+    id: slime21
+  "m":
+    sprite: empty
+    id: slime22
+  "n":
+    sprite: empty
+    id: slime23
+  "o":
+    sprite: empty
+    id: slime24
+  "p":
+    sprite: empty
+    id: slime25
+  "C":
+    sprite: empty
+    id: life1
+  "I":
+    sprite: empty
+    id: life2
+  "G":
+    sprite: empty
+    id: life3
+  "F":
+    sprite: empty
+    id: life4
+  "X":
+    sprite: empty
+    id: campfire
+  "B":
+    sprite: empty
+    id: brazier1
+  "H":
+    sprite: empty
+    id: brazier2
+
+actors:
+# Door
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 2-4
+      conditions:
+        - type: active
+          args:
+            - campfire
+  - id: door2
+    type: interactive
+    sprite: door
+
+# Enemies
+  - id: slime0
+    type: enemy
+    sprite: slime
+  - id: slime1
+    type: enemy
+    sprite: slime
+  - id: slime2
+    type: enemy
+    sprite: slime
+  - id: slime3
+    type: enemy
+    sprite: slime
+  - id: slime4
+    type: enemy
+    sprite: slime
+  - id: slime5
+    type: enemy
+    sprite: slime
+  - id: slime6
+    type: enemy
+    sprite: slime
+  - id: slime7
+    type: enemy
+    sprite: slime
+  - id: slime8
+    type: enemy
+    sprite: slime
+  - id: slime9
+    type: enemy
+    sprite: slime
+  - id: slime10
+    type: enemy
+    sprite: slime
+  - id: slime11
+    type: enemy
+    sprite: slime
+  - id: slime12
+    type: enemy
+    sprite: slime
+  - id: slime13
+    type: enemy
+    sprite: slime
+  - id: slime14
+    type: enemy
+    sprite: slime
+  - id: slime15
+    type: enemy
+    sprite: slime
+  - id: slime16
+    type: enemy
+    sprite: slime
+  - id: slime17
+    type: enemy
+    sprite: slime
+  - id: slime18
+    type: enemy
+    sprite: slime
+  - id: slime19
+    type: enemy
+    sprite: slime
+  - id: slime20
+    type: enemy
+    sprite: slime
+  - id: slime21
+    type: enemy
+    sprite: slime
+  - id: slime22
+    type: enemy
+    sprite: slime
+  - id: slime23
+    type: enemy
+    sprite: slime
+  - id: slime24
+    type: enemy
+    sprite: slime
+  - id: slime25
+    type: enemy
+    sprite: slime
+
+# Interactives
+  - id: life1
+    type: snaggable
+    sprite: item-life
+
+  - id: life2
+    type: snaggable
+    sprite: item-life
+
+  - id: life3
+    type: snaggable
+    sprite: item-life
+
+  - id: life4
+    type: snaggable
+    sprite: item-life
+
+  - id: campfire
+    type: interactive
+    sprite: campfire
+    interactive:
+      reversable: true
+      degrade: true
+
+  - id: brazier1
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - campfire
+  - id: brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - campfire
+layers:
+  - |
+
+
+
+
+
+    E          ^********D********^
+    E          ^0^,,,,B...H,,,,^c^
+    E          ^1*,,,,,,.,,,,,,*d^
+    E          ^2^.............^e^
+    E          ^3*.............*f^
+    E          ^4^,,,,     ,,,,^g^
+    E          ^5*,,,       ,,,*h^
+    E          ^6^,,  C    G ,,^i^
+    E          ^7*,,    X    ,,*j^
+    E          ^8^,,         ,,^k^
+    E          ^9*,,         ,,*l^
+    E          ^a^,,  I    F ,,^m^
+    E          ^b*,,,       ,,,*n^
+    E          ^p^,,,,  @  ,,,,^o^
+    E          ^********A********^

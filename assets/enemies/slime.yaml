@@ -3,5 +3,6 @@ framerate: 5
 health: 40
 speed: 1
 behavior: random
+wander: true
 bullets:
   - alias: blob

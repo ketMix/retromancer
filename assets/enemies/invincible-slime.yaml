@@ -1,0 +1,13 @@
+sprite: slime
+framerate: 5
+health: 999999999
+speed: 1
+behavior: random
+bullets:
+  - alias: blob
+    angle: fixed
+    fixedAngle: 180
+    bulletCount: 1
+    bullet:
+      aimDelay: 5
+      aimTime: 20
