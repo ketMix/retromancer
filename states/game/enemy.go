@@ -17,23 +17,25 @@ const (
 )
 
 type Enemy struct {
-	ctx         *states.Context
-	id          string
-	sprite      *resources.Sprite
-	deadSprite  *resources.Sprite
-	hitSfx      *resources.Sound
-	deadSfx     *resources.Sound
-	shape       RectangleShape
-	target      Actor
-	state       EnemyState
-	alwaysShoot bool
-	wanderDir   float64
-	rethinkTime int
-	health      int
-	speed       int
-	behavior    string
-	nextPhase   string
-	spawner     *Spawner
+	ctx               *states.Context
+	id                string
+	sprite            *resources.Sprite
+	deadSprite        *resources.Sprite
+	hitSfx            *resources.Sound
+	deadSfx           *resources.Sound
+	shape             RectangleShape
+	target            Actor
+	state             EnemyState
+	alwaysShoot       bool
+	wanderDir         float64
+	rethinkTime       int
+	health            int
+	speed             int
+	behavior          string
+	nextPhase         string
+	spawner           *Spawner
+	invulnerableTicks int // Ticks the enemy should be invulnerable for
+	hitAccumulator    int // Hits accumulated.
 }
 
 func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
@@ -109,7 +111,7 @@ func (e *Enemy) SetXY(x, y float64) {
 func (e *Enemy) Draw(ctx states.DrawContext) {
 	if e.health <= 0 {
 		e.deadSprite.Draw(ctx)
-	} else {
+	} else if e.invulnerableTicks <= 0 || e.invulnerableTicks%4 < 2 {
 		e.sprite.Draw(ctx)
 		if e.spawner != nil {
 			e.spawner.Draw(ctx)
@@ -127,6 +129,10 @@ func (e *Enemy) SetTarget(a Actor) {
 }
 
 func (e *Enemy) Update() (a []Action) {
+	if e.invulnerableTicks > 0 {
+		e.invulnerableTicks--
+	}
+
 	if e.health <= 0 {
 		e.deadSprite.Update()
 	} else {
@@ -166,7 +172,11 @@ func (e *Enemy) IsAlive() bool {
 	return e.health > 0
 }
 
-func (e *Enemy) Damage(amount int) {
+func (e *Enemy) Damage(amount int) bool {
+	if e.invulnerableTicks > 0 {
+		return false
+	}
+
 	e.health -= amount
 	if e.health <= 0 {
 		e.deadSfx.Play(0.5) // TODO: use global volume setting?
@@ -181,7 +191,13 @@ func (e *Enemy) Damage(amount int) {
 		}
 	} else {
 		e.hitSfx.Play(0.5) // TODO: use global volume setting?
+		e.hitAccumulator += amount
+		if e.hitAccumulator >= e.health/4 {
+			e.invulnerableTicks = 10
+			e.hitAccumulator = 0
+		}
 	}
+	return true
 }
 
 func (e *Enemy) Shape() Shape                    { return &e.shape }

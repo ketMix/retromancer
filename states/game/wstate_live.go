@@ -273,8 +273,9 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				if e, ok := actor.(*Enemy); ok {
 					if e.IsAlive() {
 						if bullet.Shape.Collides(e.Shape()) {
-							bullet.Destroyed = true
-							e.Damage(bullet.Damage)
+							if e.Damage(bullet.Damage) {
+								bullet.Destroyed = true
+							}
 							break
 						}
 					}
