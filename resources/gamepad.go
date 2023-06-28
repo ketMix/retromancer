@@ -137,10 +137,15 @@ func GetAxis(gamemap string, id int, which int) float64 {
 	if !ok {
 		return 0
 	}
+	deadzone := 0.1
+	value := ebiten.GamepadAxisValue(ebiten.GamepadID(id), a)
 	if gamemap == "standard" {
-		return ebiten.StandardGamepadAxisValue(ebiten.GamepadID(id), ebiten.StandardGamepadAxis(a))
+		value = ebiten.StandardGamepadAxisValue(ebiten.GamepadID(id), ebiten.StandardGamepadAxis(a))
 	}
-	return ebiten.GamepadAxisValue(ebiten.GamepadID(id), a)
+	if value < deadzone && value > -deadzone {
+		return 0
+	}
+	return value
 }
 
 func GetButton(gamemap string, id int, which int) bool {
