@@ -49,9 +49,6 @@ runes:
   "c":
     sprite: empty
     id: candle2
-  "s":
-    sprite: empty
-    id: sign
   "S":
     sprite: empty
     id: sign-grats
@@ -99,12 +96,6 @@ actors:
     interactive:
       reversable: true
       degrade: true
-  - id: sign
-    type: interactive
-    sprite: sign
-    interactive:
-      text: sign-intro-reverse
-      reversable: true
   - id: sign-grats
     type: interactive
     sprite: sign
