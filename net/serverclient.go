@@ -7,8 +7,6 @@ import (
 	"os"
 	"strings"
 	"time"
-
-	"github.com/xtaci/kcp-go"
 )
 
 var NetDataShards = 10
@@ -30,6 +28,7 @@ type ServerClient struct {
 	rawChan        chan Packet
 	peerChan       chan PeerPacket
 	EventChan      chan Event
+	peerCheckChan  chan struct{}
 	peers          []*Peer
 }
 
@@ -39,6 +38,7 @@ func (s *ServerClient) Init() {
 	s.rawChan = make(chan Packet, NetChannelSize*2)
 	s.peerChan = make(chan PeerPacket, NetChannelSize)
 	s.EventChan = make(chan Event, NetChannelSize)
+	s.peerCheckChan = make(chan struct{}, 10)
 	s.Matchmaker = "gamu.group:20220"
 }
 
@@ -77,6 +77,7 @@ func (s *ServerClient) Open(address string) error {
 
 	go s.LogicLoop()
 	go s.ReadLoop()
+	go s.PeerLoop()
 
 	return nil
 }
@@ -89,12 +90,12 @@ func (s *ServerClient) ConnectTo(address string) error {
 	peer := NewPeer(addr, s.localConn)
 	s.peers = append(s.peers, peer)
 
-	session, err := kcp.NewConn3(0, addr, nil, NetDataShards, NetParityShards, peer)
+	/*session, err := kcp.NewConn3(0, addr, nil, NetDataShards, NetParityShards, peer)
 	if err != nil {
 		panic(err)
 	}
-	peer.session = session
-	go peer.loop(s.peerChan)
+	peer.session = session*/
+	//go peer.loop(s.peerChan)
 
 	s.EventChan <- EventJoining{}
 
@@ -114,37 +115,37 @@ func (s *ServerClient) LogicLoop() {
 	for s.Running {
 		select {
 		case <-s.closeChan:
-			for _, p := range s.peers {
+			/*for _, p := range s.peers {
 				p.session.Close()
-			}
+			}*/
 			s.localConn.Close()
 			s.Running = false
 			s.EventChan <- EventClosed{}
 			return
-		case msg := <-s.peerChan:
-			switch msg.msg.(type) {
-			case MessageID:
-				if msg.peer.id == 0 {
-					if !s.Hosting {
-						s.EventChan <- EventJoined{}
-					}
-				}
-				msg.peer.id = msg.msg.(MessageID).ID
-				s.EventChan <- EventConnect{
-					Peer: msg.peer,
-					ID:   msg.peer.id,
-				}
-			case MessageClose:
-				s.EventChan <- EventDisconnect{
-					Peer: msg.peer,
-					ID:   msg.peer.id,
-				}
-			default:
-				s.EventChan <- EventMessage{
-					Peer:    msg.peer,
-					Message: msg.msg,
+		/*case msg := <-s.peerChan:
+		switch msg.msg.(type) {
+		case MessageID:
+			if msg.peer.id == 0 {
+				if !s.Hosting {
+					s.EventChan <- EventJoined{}
 				}
 			}
+			msg.peer.id = msg.msg.(MessageID).ID
+			s.EventChan <- EventConnect{
+				Peer: msg.peer,
+				ID:   msg.peer.id,
+			}
+		case MessageClose:
+			s.EventChan <- EventDisconnect{
+				Peer: msg.peer,
+				ID:   msg.peer.id,
+			}
+		default:
+			s.EventChan <- EventMessage{
+				Peer:    msg.peer,
+				Message: msg.msg,
+			}
+		}*/
 		case packet := <-s.rawChan:
 			// If the packet is from the matchmaker, handle it.
 			if s.matchmakerAddr != nil && packet.addr.String() == s.matchmakerAddr.String() {
@@ -165,24 +166,58 @@ func (s *ServerClient) LogicLoop() {
 				s.peers = append(s.peers, peer)
 			}
 
-			if packet.readBytes > 0 {
-				peer.writeToPacketBuffer(packet.buffer[:packet.readBytes])
-			}
-
-			// Session is nil, try to set up a kcp session.
-			if peer.session == nil {
-				session, err := kcp.NewConn3(0, packet.addr, nil, NetDataShards, NetParityShards, peer)
-				if err != nil {
-					panic(err)
+			// Session is nil, try to get shook.
+			if !peer.shook {
+				if packet.readBytes > 0 {
+					msg, _ := peer.Receive(packet.buffer[:packet.readBytes])
+					peer.messages = append(peer.messages, msg)
+					s.peerCheckChan <- struct{}{}
 				}
-				peer.session = session
-				go peer.loop(s.peerChan)
-
 				peer.Send(MessageID{ID: s.id})
+				peer.shook = true
 			} else {
-				// Send packet data to peer's virtual buffer.
-				peer.writeToPacketBuffer(packet.buffer[:packet.readBytes])
+				msg, _ := peer.Receive(packet.buffer[:packet.readBytes])
+				peer.messages = append(peer.messages, msg)
+				s.peerCheckChan <- struct{}{}
 			}
+		}
+	}
+}
+
+func (s *ServerClient) HandleMessage(packet PeerPacket) {
+	switch packet.msg.(type) {
+	case MessageID:
+		if packet.peer.id == 0 {
+			if !s.Hosting {
+				s.EventChan <- EventJoined{}
+			}
+		}
+		packet.peer.id = packet.msg.(MessageID).ID
+		s.EventChan <- EventConnect{
+			Peer: packet.peer,
+			ID:   packet.peer.id,
+		}
+	case MessageClose:
+		s.EventChan <- EventDisconnect{
+			Peer: packet.peer,
+			ID:   packet.peer.id,
+		}
+	default:
+		s.EventChan <- EventMessage{
+			Peer:    packet.peer,
+			Message: packet.msg,
+		}
+	}
+}
+
+func (s *ServerClient) PeerLoop() {
+	for s.Running {
+		<-s.peerCheckChan
+		for _, peer := range s.peers {
+			for _, msg := range peer.messages {
+				s.HandleMessage(PeerPacket{peer: peer, msg: msg})
+			}
+			peer.messages = nil
 		}
 	}
 }
