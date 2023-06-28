@@ -129,6 +129,7 @@ actors:
     type: interactive
     sprite: tree
     interactive:
+      text: sign-stump
       reversable: true
       degrade: true
 layers:
