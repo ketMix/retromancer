@@ -57,7 +57,7 @@ func (i *Intro) Enter(ctx states.Context) error {
 		Text:         ctx.L("MenuIntro3"),
 		InDuration:   1450 * time.Millisecond,
 		HoldDuration: 1250 * time.Millisecond,
-		OutDuration:  2900 * time.Millisecond,
+		OutDuration:  3000 * time.Millisecond,
 		X:            x,
 		Y:            y,
 	})
