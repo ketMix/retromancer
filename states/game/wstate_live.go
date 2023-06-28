@@ -110,6 +110,12 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 							if a.Reverseable() {
 								a.Reverse()
 								s.SpawnParticle(ctx, "reverse", action.X, action.Y, rng.Float64()*math.Pi*2, rng.Float64()*2.0, 30)
+
+								// Store saved NPCs for a later tally.
+								if a.active && a.npc {
+									s.savedNPCs[a.text] = true
+								}
+
 								if a.active {
 									// FIXME: This isn't the right place for this, as it would be best if the interactive actor created an action containing its VFX remove, but this is the most obvious place.
 									for _, v := range a.removeVFX {

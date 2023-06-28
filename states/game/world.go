@@ -27,6 +27,7 @@ type World struct {
 	states      []WorldState
 	Net         net.ServerClient
 	Seed        int64
+	savedNPCs   map[string]bool
 }
 
 var (
@@ -61,6 +62,8 @@ func (s *World) Init(ctx states.Context) error {
 
 	// Initialize the the game package specific RNG with the passed in sneed.
 	rng = rand.New(rand.NewSource(s.Seed))
+
+	s.savedNPCs = make(map[string]bool)
 
 	// Create actors for our players.
 	for i, p := range s.Players {
