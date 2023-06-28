@@ -101,7 +101,7 @@ actors:
       reversable: true
 layers:
   - |
-    E          ^                ^
+
     E          ^********D*******^
     E          ^      c   C     ^
     E          ^                ^

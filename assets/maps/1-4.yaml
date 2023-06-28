@@ -137,12 +137,6 @@ actors:
     sprite: bat
 
   # Interactives
-  - id: candle1
-    type: interactive
-    sprite: candle
-    interactive:
-      reversable: true
-      degrade: true
   - id: candle2
     type: interactive
     sprite: candle
@@ -162,7 +156,6 @@ actors:
       conditions:
         - type: active
           args:
-            - candle1
             - candle2
             - candle3
   - id: brazier2

@@ -37,50 +37,74 @@ runes:
     isometric: true
     blockMove: true
     blockView: true
+  "d":
+    sprite: empty
+    id: door2
+    isometric: true
+    blockMove: true
+    blockView: true
   "b":
     sprite: empty
     id: bat1
   "B":
     sprite: empty
     id: bat2
+  "C":
+    sprite: empty
+    id: bat3
   "c":
     sprite: empty
     id: candle
 actors:
+
+# Doors
   - id: door
     type: interactive
     sprite: door
     interactive:
       map: 1-2
       conditions:
-        - type: killedEnemies
-  - id: candle
+        - type: active
+          args:
+            - candle
+  - id: door2
     type: interactive
-    sprite: candle
-    interactive:
-      active: true
+    sprite: door
+
+# Enemies
   - id: bat1
     type: enemy
     sprite: bat
   - id: bat2
     type: enemy
     sprite: bat
+  - id: bat3
+    type: enemy
+    sprite: bat
+
+# Interactives
+  - id: candle
+    type: interactive
+    sprite: candle
+
 layers:
   - |
 
 
 
 
-
-
-    E          ^********D*******^
-    E          ^**^     .  ^*^,,^
-    E          ^*^ b  ^*^    ,,,^
-    E          ^^,            ,,^
-    E          ^,,,       B    ,^
-    E          ^****^           ^
-    E          ^,,,,            ^
-    E          ^,,,     ^*^     ^
-    E          ^,,          ^***^
-    E          ^        @    ,,,^
-    E          ^****************^
+    E          ^********D********^
+    E          ^*****^.....      ^
+    E          ^****^  ... ^  C  ^
+    E          ^***^       *  c  ^
+    E          ^**^        *     ^
+    E          ^**^        ^*****^
+    E          ^*^ b  ^*^    ,,,,^
+    E          ^^,            ,,,^
+    E          ^,,,       B    ,,^
+    E          ^****^            ^
+    E          ^,,,,             ^
+    E          ^,,,     ^*^      ^
+    E          ^,,          ^****^
+    E          ^        @    ,,,,^
+    E          ^********d********^
