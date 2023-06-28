@@ -79,11 +79,13 @@ actors:
     sprite: door
     interactive:
       map: 2-1
-      active: true
+      conditions:
+        - type: active
+          args:
+            - drawbridge
   - id: door3
     type: interactive
     sprite: door
-    interactive:
   - id: crystal
     type: interactive
     sprite: crystal
