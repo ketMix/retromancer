@@ -7,6 +7,10 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
+      with:
+        lfs: true
+    - name: Checkout LFS objects
+      run: git lfs checkout
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
@@ -29,6 +33,10 @@ jobs:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v3
+      with:
+        lfs: true
+    - name: Checkout LFS objects
+      run: git lfs checkout
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
@@ -50,6 +58,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+      with:
+        lfs: true
+    - name: Checkout LFS objects
+      run: git lfs checkout
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
@@ -74,6 +86,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+      with:
+        lfs: true
+    - name: Checkout LFS objects
+      run: git lfs checkout
     - name: Set up Go
       uses: actions/setup-go@v3
       with:
