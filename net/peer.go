@@ -1,7 +1,6 @@
 package net
 
 import (
-	"encoding/gob"
 	"fmt"
 	"net"
 	"sync"
@@ -15,8 +14,6 @@ type Peer struct {
 	addr    *net.UDPAddr // Address of the peer
 	conn    *net.UDPConn // Pointer to the serverclient's conn.
 	session *kcp.UDPSession
-	encoder *gob.Encoder
-	decoder *gob.Decoder
 	// Packet reading.
 	packetBuffer  []byte
 	readLock      sync.Mutex
@@ -32,7 +29,7 @@ func NewPeer(addr *net.UDPAddr, conn *net.UDPConn) *Peer {
 	return &Peer{
 		addr:          addr,
 		conn:          conn,
-		readReadyChan: make(chan bool, 120),
+		readReadyChan: make(chan bool, NetChannelSize),
 	}
 }
 
@@ -50,15 +47,22 @@ func (p *Peer) writeToPacketBuffer(b []byte) {
 
 func (p *Peer) loop(ch chan PeerPacket) {
 	for {
-		var msg *Message
-		err := p.decoder.Decode(&msg)
+		b := make([]byte, NetBufferSize)
+		n, err := p.session.Read(b)
+
+		msg, _ := MessageFromBytes(b[:n])
+		if msg == nil {
+			fmt.Println("unknown message ID:", b[0], "passing as raw message.")
+			msg, _ = MessageRaw{}.FromBytes(b[:n])
+		}
+
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
 		ch <- PeerPacket{
 			peer: p,
-			msg:  *msg,
+			msg:  msg,
 		}
 	}
 }
@@ -68,7 +72,9 @@ func (p *Peer) Send(msg Message) error {
 	if p.session == nil {
 		return fmt.Errorf("no sesssion")
 	}
-	p.encoder.Encode(&msg)
+	//p.conn.WriteTo(msg.ToBytes(), p.addr)
+	p.session.Write(msg.ToBytes())
+	//p.encoder.Encode(&msg)
 	return nil
 }
 

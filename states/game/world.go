@@ -182,7 +182,7 @@ func (s *World) Update(ctx states.Context) error {
 	}
 	if s.ebitenTicks >= 2 { // Basically tick every 3 ebiten ticks.
 		if readyCount == len(s.Players) {
-			fmt.Println("now ticking", s.tick)
+			//fmt.Println("now ticking", s.tick)
 			// Process the players' current tick think -- this also sends impulses to their respective actors.
 			for _, player := range s.Players {
 				player.Tick()

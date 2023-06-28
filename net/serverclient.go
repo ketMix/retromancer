@@ -1,7 +1,6 @@
 package net
 
 import (
-	"encoding/gob"
 	"fmt"
 	"math/rand"
 	"net"
@@ -95,8 +94,6 @@ func (s *ServerClient) ConnectTo(address string) error {
 		panic(err)
 	}
 	peer.session = session
-	peer.encoder = gob.NewEncoder(session)
-	peer.decoder = gob.NewDecoder(session)
 	go peer.loop(s.peerChan)
 
 	s.EventChan <- EventJoining{}
@@ -179,8 +176,6 @@ func (s *ServerClient) LogicLoop() {
 					panic(err)
 				}
 				peer.session = session
-				peer.encoder = gob.NewEncoder(session)
-				peer.decoder = gob.NewDecoder(session)
 				go peer.loop(s.peerChan)
 
 				peer.Send(MessageID{ID: s.id})

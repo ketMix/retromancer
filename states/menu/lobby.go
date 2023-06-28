@@ -4,7 +4,6 @@ import (
 	"ebijam23/resources"
 	"ebijam23/states"
 	"ebijam23/states/game"
-	"encoding/gob"
 	"fmt"
 	"image/color"
 	"net"
@@ -31,16 +30,9 @@ type Lobby struct {
 	net             rnet.ServerClient
 }
 
-type HatMessage struct {
-	Hat int
-}
-
-type StartMessage struct {
-}
-
 func init() {
-	gob.Register(HatMessage{})
-	gob.Register(StartMessage{})
+	rnet.RegisterMessage(HatMessage{})
+	rnet.RegisterMessage(StartMessage{})
 }
 
 func (s *Lobby) Init(ctx states.Context) error {

@@ -1,14 +1,18 @@
 package game
 
-import "encoding/gob"
+import (
+	"ebijam23/net"
+	"encoding/binary"
+	"math"
+)
 
 func init() {
-	gob.Register(ImpulseMove{})
-	gob.Register(ImpulseSet{})
-	gob.Register(ImpulseReflect{})
-	gob.Register(ImpulseDeflect{})
-	gob.Register(ImpulseShield{})
-	gob.Register(ImpulseShoot{})
+	net.RegisterMessage(ImpulseMove{})
+	net.RegisterMessage(ImpulseSet{})
+	net.RegisterMessage(ImpulseReflect{})
+	net.RegisterMessage(ImpulseDeflect{})
+	net.RegisterMessage(ImpulseShield{})
+	net.RegisterMessage(ImpulseShoot{})
 }
 
 type ImpulseSet struct {
@@ -18,6 +22,9 @@ type ImpulseSet struct {
 
 type Impulse interface {
 	Cost() int
+	Ident() uint8
+	ToBytes() []byte
+	FromBytes([]byte) (net.Message, int)
 }
 
 type ImpulseMove struct {
@@ -53,4 +60,144 @@ type ImpulseShoot struct {
 
 func (i ImpulseShoot) Cost() int {
 	return 6
+}
+
+// Networking crap
+
+func (i ImpulseMove) Ident() uint8 {
+	return 30
+}
+
+func (i ImpulseMove) ToBytes() (b []byte) {
+	b = append(b, i.Ident())
+	b = binary.LittleEndian.AppendUint64(b, uint64(math.Float64bits(i.Direction)))
+	return
+}
+
+func (i ImpulseMove) FromBytes(b []byte) (net.Message, int) {
+	i.Direction = math.Float64frombits(binary.LittleEndian.Uint64(b[1:]))
+	return i, 9
+}
+
+func (i ImpulseReflect) Ident() uint8 {
+	return 31
+}
+
+func (i ImpulseReflect) ToBytes() (b []byte) {
+	b = append(b, i.Ident())
+	b = binary.LittleEndian.AppendUint64(b, uint64(math.Float64bits(i.X)))
+	b = binary.LittleEndian.AppendUint64(b, uint64(math.Float64bits(i.Y)))
+	return
+}
+
+func (i ImpulseReflect) FromBytes(b []byte) (net.Message, int) {
+	i.X = math.Float64frombits(binary.LittleEndian.Uint64(b[1:]))
+	i.Y = math.Float64frombits(binary.LittleEndian.Uint64(b[9:]))
+	return i, 17
+}
+
+func (i ImpulseDeflect) Ident() uint8 {
+	return 32
+}
+
+func (i ImpulseDeflect) ToBytes() (b []byte) {
+	b = append(b, i.Ident())
+	b = binary.LittleEndian.AppendUint64(b, uint64(math.Float64bits(i.X)))
+	b = binary.LittleEndian.AppendUint64(b, uint64(math.Float64bits(i.Y)))
+	return
+}
+
+func (i ImpulseDeflect) FromBytes(b []byte) (net.Message, int) {
+	i.X = math.Float64frombits(binary.LittleEndian.Uint64(b[1:]))
+	i.Y = math.Float64frombits(binary.LittleEndian.Uint64(b[9:]))
+	return i, 17
+}
+
+func (i ImpulseShield) Ident() uint8 {
+	return 33
+}
+
+func (i ImpulseShield) ToBytes() (b []byte) {
+	b = append(b, i.Ident())
+	return
+}
+
+func (i ImpulseShield) FromBytes(b []byte) (net.Message, int) {
+	return i, 1
+}
+
+func (i ImpulseShoot) Ident() uint8 {
+	return 34
+}
+
+func (i ImpulseShoot) ToBytes() (b []byte) {
+	b = append(b, i.Ident())
+	b = binary.LittleEndian.AppendUint64(b, uint64(math.Float64bits(i.X)))
+	b = binary.LittleEndian.AppendUint64(b, uint64(math.Float64bits(i.Y)))
+	return
+}
+
+func (i ImpulseShoot) FromBytes(b []byte) (net.Message, int) {
+	i.X = math.Float64frombits(binary.LittleEndian.Uint64(b[1:]))
+	i.Y = math.Float64frombits(binary.LittleEndian.Uint64(b[9:]))
+	return i, 17
+}
+
+func (i ImpulseSet) Ident() uint8 {
+	return 35
+}
+
+func (i ImpulseSet) ToBytes() (b []byte) {
+	b = append(b, i.Ident())
+	if i.Move != nil {
+		b = append(b, byte(1))
+		b = append(b, i.Move.ToBytes()...)
+	} else {
+		b = append(b, byte(0))
+	}
+	if i.Interaction != nil {
+		b = append(b, byte(1))
+		b = append(b, i.Interaction.ToBytes()...)
+	}
+	return
+}
+
+func (i ImpulseSet) FromBytes(b []byte) (net.Message, int) {
+	i.Move = nil
+	i.Interaction = nil
+	offset := 1
+	if b[offset] == 1 {
+		offset++
+		m, n := (ImpulseMove{}).FromBytes(b[offset:])
+		argh := m.(ImpulseMove)
+		i.Move = &argh
+		offset += n
+	} else {
+		offset++
+	}
+	if len(b) == offset {
+		return i, offset
+	}
+	if b[offset] == 1 {
+		offset++
+		switch b[offset] {
+		case (ImpulseReflect{}).Ident():
+			m, n := (ImpulseReflect{}).FromBytes(b[offset:])
+			i.Interaction = m.(Impulse)
+			offset += n
+		case (ImpulseDeflect{}).Ident():
+			m, n := (ImpulseDeflect{}).FromBytes(b[offset:])
+			i.Interaction = m.(Impulse)
+			offset += n
+		case (ImpulseShield{}).Ident():
+			m, n := (ImpulseShield{}).FromBytes(b[offset:])
+			i.Interaction = m.(Impulse)
+			offset += n
+		case (ImpulseShoot{}).Ident():
+			m, n := (ImpulseShoot{}).FromBytes(b[offset:])
+			i.Interaction = m.(Impulse)
+			offset += n
+		}
+	}
+	return i, offset
 }
