@@ -57,15 +57,7 @@ func (e *PlayerEntry) SyncHat(ctx states.Context) {
 }
 
 func (e *PlayerEntry) SyncController(ctx states.Context) {
-	controllers := ebiten.AppendGamepadIDs(nil)
-	// Filter controllers that are not standard layout.
-	for i := 0; i < len(controllers); {
-		if !ebiten.IsStandardGamepadLayoutAvailable(controllers[i]) {
-			controllers = append(controllers[:i], controllers[i+1:]...)
-		} else {
-			i++
-		}
-	}
+	controllers := resources.GetFunctionalGamepads()
 
 	if player, ok := e.player.(*game.LocalPlayer); ok {
 		if !e.useController {
@@ -73,7 +65,8 @@ func (e *PlayerEntry) SyncController(ctx states.Context) {
 			e.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "keyboard").(*ebiten.Image))
 			e.controllerIdText.Text = ""
 		} else {
-			player.GamepadID = int(controllers[e.controllerIndex])
+			player.GamepadID = controllers[e.controllerIndex]
+			player.GamepadMap = resources.GetBestGamemap(player.GamepadID)
 			e.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "controller").(*ebiten.Image))
 			e.controllerIdText.Text = fmt.Sprintf("%d", player.GamepadID)
 		}
@@ -81,15 +74,7 @@ func (e *PlayerEntry) SyncController(ctx states.Context) {
 }
 
 func (e *PlayerEntry) SetController(dir int) {
-	controllers := ebiten.AppendGamepadIDs(nil)
-	// Filter controllers that are not standard layout.
-	for i := 0; i < len(controllers); {
-		if !ebiten.IsStandardGamepadLayoutAvailable(controllers[i]) {
-			controllers = append(controllers[:i], controllers[i+1:]...)
-		} else {
-			i++
-		}
-	}
+	controllers := resources.GetFunctionalGamepads()
 
 	if len(controllers) == 0 {
 		e.useController = false

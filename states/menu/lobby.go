@@ -187,11 +187,9 @@ func (s *Lobby) Update(ctx states.Context) error {
 	s.lobbyItem.Update()
 
 	// Check for controller button hit to activate player 2.
-	for i, gamepadID := range ebiten.AppendGamepadIDs(nil) {
-		if !ebiten.IsStandardGamepadLayoutAvailable(gamepadID) {
-			continue
-		}
-		if ebiten.IsStandardGamepadButtonPressed(gamepadID, ebiten.StandardGamepadButtonCenterRight) {
+	for i, gamepadID := range resources.GetFunctionalGamepads() {
+		m := resources.GetBestGamemap(gamepadID)
+		if resources.GetButton(m, gamepadID, resources.ButtonStart) {
 			if len(s.playerEntries) == 1 {
 				s.playerEntries = append(s.playerEntries, &PlayerEntry{})
 				s.playerEntries[len(s.playerEntries)-1].Init(s, ctx)
@@ -201,7 +199,8 @@ func (s *Lobby) Update(ctx states.Context) error {
 			s.playerEntries[1].controllerIndex = i
 			s.playerEntries[1].useController = true
 			s.playerEntries[1].SyncController(ctx)
-			pl.GamepadID = int(gamepadID)
+			pl.GamepadID = gamepadID
+			pl.GamepadMap = m
 			// TODO: Stop network stuff and hide host/join.
 			s.hostItem.SetHidden(true)
 			s.joinItem.SetHidden(true)
