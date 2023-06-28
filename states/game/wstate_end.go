@@ -35,6 +35,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 	// TODO: Make this text actually good.
 	w.vfx.Add(&resources.Text{
 		Text:         ctx.L("Outro1"),
+		Scale:        1.0,
 		InDuration:   1 * time.Second,
 		HoldDuration: 2 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -43,6 +44,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 	})
 	w.vfx.Add(&resources.Text{
 		Text:         ctx.L("Outro2"),
+		Scale:        1.0,
 		InDuration:   1 * time.Second,
 		HoldDuration: 1 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -51,6 +53,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 	})
 	w.vfx.Add(&resources.Text{
 		Text:         ctx.L("Outro3"),
+		Scale:        1.0,
 		InDuration:   1 * time.Second,
 		HoldDuration: 2 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -59,6 +62,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 	})
 	w.vfx.Add(&resources.Text{
 		Text:         ctx.L("Outro4"),
+		Scale:        1.0,
 		InDuration:   1 * time.Second,
 		HoldDuration: 2 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -101,6 +105,7 @@ func (w *WorldStateEnd) Draw(s *World, ctx states.DrawContext) {
 	w.vfx.Process(ctx, nil)
 
 	if w.vfx.Empty() {
+		ctx.Text.SetScale(1.0)
 		ctx.Text.SetColor(color.White)
 		ctx.Text.SetAlign(etxt.XCenter | etxt.YCenter)
 		ctx.Text.Draw(ctx.Screen, ctx.L("SavedNPCs"), ctx.Screen.Bounds().Dx()/2, 100)
