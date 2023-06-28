@@ -4,7 +4,6 @@ import (
 	"ebijam23/resources"
 	"ebijam23/states"
 	"math"
-	"math/rand"
 )
 
 type Snaggable struct {
@@ -43,8 +42,8 @@ func (s *Snaggable) Update() (actions []Action) {
 			Img:   img,
 			X:     s.shape.X,
 			Y:     s.shape.Y,
-			Angle: math.Pi + rand.Float64()*math.Pi,
-			Speed: rand.Float64() * 0.5,
+			Angle: math.Pi + rng.Float64()*math.Pi,
+			Speed: rng.Float64() * 0.5,
 			Life:  40,
 		})
 		s.nextParticle = -10

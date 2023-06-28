@@ -5,7 +5,6 @@ import (
 	"ebijam23/states"
 	"image/color"
 	"math"
-	"math/rand"
 	"reflect"
 	"strings"
 
@@ -109,7 +108,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						if a, ok := actor.(*Interactive); ok {
 							if a.Reverseable() {
 								a.Reverse()
-								s.SpawnParticle(ctx, "reverse", action.X, action.Y, rand.Float64()*math.Pi*2, rand.Float64()*2.0, 30)
+								s.SpawnParticle(ctx, "reverse", action.X, action.Y, rng.Float64()*math.Pi*2, rng.Float64()*2.0, 30)
 								if a.active {
 									// FIXME: This isn't the right place for this, as it would be best if the interactive actor created an action containing its VFX remove, but this is the most obvious place.
 									for _, v := range a.removeVFX {
@@ -239,7 +238,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 					if bullet.Shape.Collides(actor.Shape()) {
 						x, y, _, _ := actor.Bounds()
 						for i := 0; i < 6; i++ {
-							s.SpawnParticle(ctx, "hurt", x, y, bullet.Angle-math.Pi/4+(math.Pi/2*rand.Float64()), rand.Float64()*2.0, 30)
+							s.SpawnParticle(ctx, "hurt", x, y, bullet.Angle-math.Pi/4+(math.Pi/2*rng.Float64()), rng.Float64()*2.0, 30)
 						}
 						bullet.Destroyed = true
 						p.Hurtie()
@@ -377,15 +376,6 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	if !s.activeMap.cleared {
 		if CheckConditions(s.activeMap.conditions, interactives, enemies) {
 			s.activeMap.cleared = true
-		}
-	}
-
-	// Queue up the local player's impulses for the next tick!
-	for _, player := range s.Players {
-		if _, ok := player.(*LocalPlayer); ok {
-			player.QueueImpulses(player.Impulses())
-			player.ClearImpulses()
-			// TODO: Send network message to peers with our impulses!
 		}
 	}
 

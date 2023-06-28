@@ -11,7 +11,7 @@ type RemotePlayer struct {
 	actor          Actor
 	impulses       ImpulseSet
 	queuedImpulses ImpulseSet
-	thoughts       []Thought
+	thoughts       Thoughts
 	hat            string
 }
 
@@ -28,6 +28,10 @@ func (p *RemotePlayer) Update() {
 }
 
 func (p *RemotePlayer) Tick() {
+	if p.actor != nil {
+		p.actor.SetImpulses(p.queuedImpulses)
+		p.queuedImpulses = ImpulseSet{}
+	}
 }
 
 func (p *RemotePlayer) Impulses() ImpulseSet {
@@ -42,7 +46,7 @@ func (p *RemotePlayer) ClearImpulses() {
 	p.impulses = ImpulseSet{}
 }
 
-func (p *RemotePlayer) Thoughts() []Thought {
+func (p *RemotePlayer) Thoughts() Thoughts {
 	return p.thoughts
 }
 
@@ -69,4 +73,13 @@ func (p *RemotePlayer) SetHat(hat string) {
 
 func (p *RemotePlayer) Peer() *net.Peer {
 	return p.peer
+}
+
+func (s *World) PlayerFromPeer(peer *net.Peer) *RemotePlayer {
+	for _, player := range s.Players {
+		if player, ok := player.(*RemotePlayer); ok && player.Peer() == peer {
+			return player
+		}
+	}
+	return nil
 }

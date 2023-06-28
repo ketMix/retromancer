@@ -225,7 +225,9 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 		Text: ctx.L("Start"),
 		Callback: func() bool {
 			e.clickSound.Play(1.0)
-			s.shouldStart = true
+			if !s.net.Running || s.net.Hosting {
+				s.shouldStart = true
+			}
 			return false
 		},
 	}

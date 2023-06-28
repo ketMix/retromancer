@@ -1,5 +1,16 @@
 package game
 
+import "encoding/gob"
+
+func init() {
+	gob.Register(ImpulseMove{})
+	gob.Register(ImpulseSet{})
+	gob.Register(ImpulseReflect{})
+	gob.Register(ImpulseDeflect{})
+	gob.Register(ImpulseShield{})
+	gob.Register(ImpulseShoot{})
+}
+
 type ImpulseSet struct {
 	Move        *ImpulseMove
 	Interaction Impulse

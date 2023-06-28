@@ -11,7 +11,9 @@ import (
 type LocalPlayer struct {
 	connection     net.ServerClient // Only used if the player is a server.
 	actor          Actor
-	thoughts       []Thought
+	thoughts       Thoughts
+	thoughtReset   int
+	hasNewThoughts bool
 	impulses       ImpulseSet
 	queuedImpulses ImpulseSet
 	GamepadID      int // Target gamepad for this player to use.
@@ -188,11 +190,18 @@ func (p *LocalPlayer) Update() {
 	}
 
 	// Thoughts
-	p.thoughts = []Thought{}
+	thoughts := Thoughts{}
 	if ebiten.IsKeyPressed(ebiten.KeyEnter) || ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonCenterRight) {
-		p.thoughts = append(p.thoughts, ResetThought{})
+		thoughts.Thoughts = append(thoughts.Thoughts, ResetThought{})
+		p.hasNewThoughts = true
 	} else if ebiten.IsKeyPressed(ebiten.KeyEscape) || ebiten.IsStandardGamepadButtonPressed(ebiten.GamepadID(p.GamepadID), ebiten.StandardGamepadButtonCenterLeft) {
-		p.thoughts = append(p.thoughts, QuitThought{})
+		thoughts.Thoughts = append(thoughts.Thoughts, QuitThought{})
+		p.hasNewThoughts = true
+	}
+	p.thoughtReset++
+	if p.thoughtReset > 300 || p.hasNewThoughts {
+		p.thoughtReset = 0
+		p.thoughts = thoughts
 	}
 }
 
@@ -217,7 +226,7 @@ func (p *LocalPlayer) ClearImpulses() {
 	p.impulses = ImpulseSet{}
 }
 
-func (p *LocalPlayer) Thoughts() []Thought {
+func (p *LocalPlayer) Thoughts() Thoughts {
 	return p.thoughts
 }
 

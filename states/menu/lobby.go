@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"image/color"
 	"net"
+	"time"
 
 	rnet "ebijam23/net"
 
@@ -34,8 +35,12 @@ type HatMessage struct {
 	Hat int
 }
 
+type StartMessage struct {
+}
+
 func init() {
 	gob.Register(HatMessage{})
+	gob.Register(StartMessage{})
 }
 
 func (s *Lobby) Init(ctx states.Context) error {
@@ -176,6 +181,10 @@ func (s *Lobby) Update(ctx states.Context) error {
 					e.hatIndex = msg.Hat
 					e.SyncHat(ctx)
 				}
+			case StartMessage:
+				if !s.net.Hosting {
+					s.shouldStart = true
+				}
 			}
 		}
 	default:
@@ -228,6 +237,24 @@ func (s *Lobby) Update(ctx states.Context) error {
 	}
 
 	if s.shouldStart {
+		if s.net.Hosting {
+			for _, p := range s.net.Peers() {
+				p.Send(StartMessage{})
+			}
+		}
+
+		var seed int64
+		// Seed rand with the host's id.
+		if s.net.Running {
+			if s.net.Hosting {
+				seed = int64(s.net.ID())
+			} else {
+				seed = int64(s.net.Peers()[0].ID())
+			}
+		} else {
+			seed = time.Now().UnixNano()
+		}
+
 		players := make([]game.Player, len(s.playerEntries))
 		for i, e := range s.playerEntries {
 			players[i] = e.player
@@ -237,6 +264,8 @@ func (s *Lobby) Update(ctx states.Context) error {
 			StartingMap: "start",
 			ShowHints:   true,
 			Players:     players,
+			Net:         s.net,
+			Seed:        seed,
 		})
 	}
 

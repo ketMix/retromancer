@@ -1,9 +1,12 @@
 package game
 
 import (
+	"ebijam23/net"
 	"ebijam23/resources"
 	"ebijam23/states"
+	"fmt"
 	"math"
+	"math/rand"
 	"reflect"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -22,7 +25,13 @@ type World struct {
 	hints       Hints
 	activeMap   *Map
 	states      []WorldState
+	Net         net.ServerClient
+	Seed        int64
 }
+
+var (
+	rng *rand.Rand
+)
 
 func (s *World) PushState(state WorldState, ctx states.Context) {
 	s.states = append(s.states, state)
@@ -50,9 +59,12 @@ func (s *World) Init(ctx states.Context) error {
 		return err
 	}
 
+	// Initialize the the game package specific RNG with the passed in sneed.
+	rng = rand.New(rand.NewSource(s.Seed))
+
 	// Create actors for our players.
 	for i, p := range s.Players {
-		if i == 0 {
+		if (!s.Net.Running && i == 0) || (s.Net.Hosting && i == 0) || (!s.Net.Hosting && s.Net.Running && i == 1) {
 			pc := s.NewPC(ctx)
 
 			pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
@@ -124,10 +136,45 @@ func (s *World) Enter(ctx states.Context) error {
 func (s *World) Update(ctx states.Context) error {
 	s.overlay.Update(ctx)
 
+	if s.Net.Running {
+		select {
+		case ev := <-s.Net.EventChan:
+			switch e := ev.(type) {
+			case net.EventMessage:
+				player := s.PlayerFromPeer(e.Peer)
+				if player != nil {
+					switch msg := e.Message.(type) {
+					case Thoughts:
+						player.thoughts = msg
+					case TickState:
+						if s.tick == player.lastTick+1 {
+							player.QueueImpulses(msg.Impulses)
+							player.ClearImpulses()
+							player.lastTick++
+						}
+					}
+				}
+			default:
+				fmt.Println("uhoh", e)
+			}
+		default:
+		}
+		// Send our local thoughts?
+		if local, ok := s.Players[0].(*LocalPlayer); ok {
+			if local.hasNewThoughts {
+				local.hasNewThoughts = false
+				for _, p := range s.Players {
+					if remote, ok := p.(*RemotePlayer); ok {
+						remote.peer.Send(local.Thoughts())
+					}
+				}
+			}
+		}
+	}
+
 	s.ebitenTicks++
 	readyCount := 0
 	for _, player := range s.Players {
-		// Passing context to players seems a bit of a violation.
 		player.Update()
 		if player.Ready(s.tick + 1) {
 			readyCount++
@@ -171,6 +218,23 @@ func (s *World) Update(ctx states.Context) error {
 
 			// Process the world!!!
 			s.CurrentState().Tick(s, ctx)
+
+			// Queue up the local player's impulses for the next tick!
+			for _, player := range s.Players {
+				if _, ok := player.(*LocalPlayer); ok {
+					player.QueueImpulses(player.Impulses())
+					for _, p := range s.Players {
+						if remote, ok := p.(*RemotePlayer); ok {
+							remote.peer.Send(TickState{
+								Impulses: player.Impulses(),
+							})
+						}
+					}
+					player.ClearImpulses()
+					// TODO: Send network message to peers with our impulses!
+				}
+			}
+
 			s.HandleTrash()
 		}
 		s.ebitenTicks = 0
@@ -198,7 +262,7 @@ func (s *World) ArePlayersDead() bool {
 func (s *World) DoPlayersShareThought(thought Thought) bool {
 	for _, p := range s.Players {
 		match := false
-		for _, t := range p.Thoughts() {
+		for _, t := range p.Thoughts().Thoughts {
 			// More reflection, woo.
 			if reflect.TypeOf(t) == reflect.TypeOf(thought) {
 				match = true

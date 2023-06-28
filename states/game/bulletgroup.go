@@ -3,7 +3,6 @@ package game
 import (
 	"ebijam23/resources"
 	"math"
-	"math/rand"
 )
 
 type GroupAngle string
@@ -108,7 +107,7 @@ func (bg *BulletGroup) Update() (actions []Action) {
 			case Random:
 				// TODO: Random angle
 				// Generate a random angle
-				angle = rand.Float64() * math.Pi / 180
+				angle = rng.Float64() * math.Pi / 180
 			case Fixed:
 				// Use the fixed angle
 				angle = float64(bg.fixedAngle-90) * math.Pi / 180

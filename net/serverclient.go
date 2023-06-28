@@ -32,10 +32,14 @@ type ServerClient struct {
 func (s *ServerClient) Init() {
 	s.id = uint32(rand.Int31())
 	s.closeChan = make(chan struct{})
-	s.rawChan = make(chan Packet, 10)
-	s.peerChan = make(chan PeerPacket, 10)
-	s.EventChan = make(chan Event, 10)
+	s.rawChan = make(chan Packet, 60)
+	s.peerChan = make(chan PeerPacket, 60)
+	s.EventChan = make(chan Event, 60)
 	s.Matchmaker = "gamu.group:20220"
+}
+
+func (s *ServerClient) ID() uint32 {
+	return s.id
 }
 
 func (s *ServerClient) Open(address string) error {
@@ -218,4 +222,8 @@ func (s *ServerClient) Close() {
 	}
 	<-time.After(1 * time.Second)
 	s.closeChan <- struct{}{}
+}
+
+func (s *ServerClient) Peers() []*Peer {
+	return s.peers
 }

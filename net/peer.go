@@ -32,8 +32,12 @@ func NewPeer(addr *net.UDPAddr, conn *net.UDPConn) *Peer {
 	return &Peer{
 		addr:          addr,
 		conn:          conn,
-		readReadyChan: make(chan bool, 10),
+		readReadyChan: make(chan bool, 60),
 	}
+}
+
+func (p *Peer) ID() uint32 {
+	return p.id
 }
 
 // writeToPacketBuffer is used internally to write from the single UDP connection to a virtual packet buffer for use by the Peer.

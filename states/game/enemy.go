@@ -4,7 +4,6 @@ import (
 	"ebijam23/resources"
 	"ebijam23/states"
 	"math"
-	"math/rand"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -139,8 +138,8 @@ func (e *Enemy) Update() (a []Action) {
 		case EnemyStateWander:
 			e.rethinkTime++
 			if e.rethinkTime > 0 {
-				e.rethinkTime = -(30 + rand.Intn(20))
-				e.wanderDir = math.Pi * 2 * rand.Float64()
+				e.rethinkTime = -(30 + rng.Intn(20))
+				e.wanderDir = math.Pi * 2 * rng.Float64()
 				if e.target == nil {
 					a = append(a, ActionFindNearestActor{Actor: (*PC)(nil)})
 				}
