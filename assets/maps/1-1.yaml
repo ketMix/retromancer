@@ -86,6 +86,9 @@ actors:
   - id: candle
     type: interactive
     sprite: candle
+    interactive:
+      reversable: true
+      degrade: true
 
 layers:
   - |
