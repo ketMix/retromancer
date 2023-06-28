@@ -22,11 +22,11 @@ func (m *Menu) Init(ctx states.Context) error {
 	m.overlay.Init(ctx)
 
 	x := 320.0
-	y := 25.0
+	y := -20.0
 	m.logo = resources.NewSprite(ctx.Manager.GetAs("images", "logo", (*ebiten.Image)(nil)).(*ebiten.Image))
 	m.logo.X = x - m.logo.Width()/2
 	m.logo.Y = y
-	y += m.logo.Height() + 100
+	y += m.logo.Height()
 	m.play = resources.NewSprite(ctx.Manager.GetAs("images", "play", (*ebiten.Image)(nil)).(*ebiten.Image))
 	m.play.X = x - m.play.Width()/2
 	m.play.Y = y
