@@ -14,6 +14,7 @@ import (
 	"github.com/hajimehoshi/ebiten/v2/audio"
 	"github.com/kettek/go-multipath/v2"
 	"golang.org/x/image/font/sfnt"
+	"gopkg.in/yaml.v2"
 
 	gaem "ebijam23/states/game"
 )
@@ -56,6 +57,19 @@ func main() {
 	// Might as well load all assets up front (for now -- might not want to with music later).
 	if err := game.Manager.LoadAll(); err != nil {
 		panic(err)
+	}
+
+	// Load up our gamepad maps.
+	if b, err := game.Manager.files.ReadFile("gamepad.yaml"); err != nil {
+		panic(err)
+	} else {
+		var m []resources.GamepadDefinition
+		if err := yaml.Unmarshal(b, &m); err != nil {
+			panic(err)
+		}
+		for _, v := range m {
+			resources.AddGamepadDefinition(v)
+		}
 	}
 
 	// Set our locale.

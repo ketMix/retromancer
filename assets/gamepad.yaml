@@ -1,0 +1,51 @@
+- Name: Xbox
+  Match: ["Xbox", "X-Box", "360", "XInput"]
+  Map:
+    AxisLeftX:  0
+    AxisLeftY:  1
+    AxisRightX: 3
+    AxisRightY: 4
+    ButtonBumperLeft:  102 # +100 means it's technically an axis, but with -1=0 and 1=1
+    ButtonBumperRight: 105
+    ButtonTriggerLeft:  4
+    ButtonTriggerRight: 5
+    ButtonBack:         6
+    ButtonStart:        7
+    ButtonA:            1
+    ButtonB:            0
+    ButtonX:            3
+    ButtonY:            2
+- Name: Cyborg
+  Match: ["Cyborg", "Saitek"]
+  Map:
+    AxisLeftX:  0
+    AxisLeftY:  1
+    AxisRightX: 3
+    AxisRightY: 4
+    ButtonBumperLeft:  4
+    ButtonBumperRight: 5
+    ButtonTriggerLeft:  6
+    ButtonTriggerRight: 7
+    ButtonBack:         8
+    ButtonStart:        9
+    ButtonA:            2
+    ButtonB:            1
+    ButtonX:            3
+    ButtonY:            0
+- Name: PS
+  Match: ["PS", "PlayStation", "Dual", "Wireless", "USB Joystick"]
+  Map:
+    AxisLeftX:  0
+    AxisLeftY:  1
+    AxisRightX: 2
+    AxisRightY: 3
+    ButtonBumperLeft:  4
+    ButtonBumperRight: 5
+    ButtonTriggerLeft:  6
+    ButtonTriggerRight: 7
+    ButtonBack:         8
+    ButtonStart:        9
+    ButtonA:            1
+    ButtonB:            0
+    ButtonX:            3
+    ButtonY:            2

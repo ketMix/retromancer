@@ -8,6 +8,28 @@ import (
 
 type GamepadMap map[int]int
 
+type GamepadDefinition struct {
+	Name  string     `yaml:"Name"`
+	Match []string   `yaml:"Match"`
+	Map   GamepadMap `yaml:"Map"`
+}
+
+func (g *GamepadMap) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	var m map[string]int
+	if err := unmarshal(&m); err != nil {
+		return err
+	}
+
+	*g = make(GamepadMap)
+	for k, v := range m {
+		id, ok := idToInt[strings.TrimSpace(k)]
+		if ok {
+			(*g)[id] = v
+		}
+	}
+	return nil
+}
+
 const (
 	AxisLeftX = iota
 	AxisLeftY
@@ -24,41 +46,51 @@ const (
 	ButtonA
 	ButtonB
 	ButtonX
+	ButtonY
 )
 
-var GamepadMaps = map[string]GamepadMap{
-	"standard": {
-		AxisLeftX:          int(ebiten.StandardGamepadAxisLeftStickHorizontal),
-		AxisLeftY:          int(ebiten.StandardGamepadAxisLeftStickVertical),
-		AxisRightX:         int(ebiten.StandardGamepadAxisRightStickHorizontal),
-		AxisRightY:         int(ebiten.StandardGamepadAxisRightStickVertical),
-		ButtonBumperLeft:   int(ebiten.StandardGamepadButtonFrontBottomLeft),
-		ButtonBumperRight:  int(ebiten.StandardGamepadButtonFrontBottomRight),
-		ButtonTriggerLeft:  int(ebiten.StandardGamepadButtonFrontTopLeft),
-		ButtonTriggerRight: int(ebiten.StandardGamepadButtonFrontTopRight),
-		ButtonBack:         int(ebiten.StandardGamepadButtonCenterLeft),
-		ButtonStart:        int(ebiten.StandardGamepadButtonCenterRight),
-		ButtonA:            int(ebiten.StandardGamepadButtonRightBottom),
-		ButtonB:            int(ebiten.StandardGamepadButtonRightRight),
-		ButtonX:            int(ebiten.StandardGamepadButtonRightLeft),
+var idToInt = map[string]int{
+	"AxisLeftX":          AxisLeftX,
+	"AxisLeftY":          AxisLeftY,
+	"AxisRightX":         AxisRightX,
+	"AxisRightY":         AxisRightY,
+	"ButtonBumperLeft":   ButtonBumperLeft,
+	"ButtonBumperRight":  ButtonBumperRight,
+	"ButtonTriggerLeft":  ButtonTriggerLeft,
+	"ButtonTriggerRight": ButtonTriggerRight,
+	"ButtonBack":         ButtonBack,
+	"ButtonStart":        ButtonStart,
+	"ButtonA":            ButtonA,
+	"ButtonB":            ButtonB,
+	"ButtonX":            ButtonX,
+	"ButtonY":            ButtonY,
+}
+
+var GamepadDefinitions = []GamepadDefinition{
+	{
+		Name:  "standard",
+		Match: []string{},
+		Map: GamepadMap{
+			AxisLeftX:          int(ebiten.StandardGamepadAxisLeftStickHorizontal),
+			AxisLeftY:          int(ebiten.StandardGamepadAxisLeftStickVertical),
+			AxisRightX:         int(ebiten.StandardGamepadAxisRightStickHorizontal),
+			AxisRightY:         int(ebiten.StandardGamepadAxisRightStickVertical),
+			ButtonBumperLeft:   int(ebiten.StandardGamepadButtonFrontBottomLeft),
+			ButtonBumperRight:  int(ebiten.StandardGamepadButtonFrontBottomRight),
+			ButtonTriggerLeft:  int(ebiten.StandardGamepadButtonFrontTopLeft),
+			ButtonTriggerRight: int(ebiten.StandardGamepadButtonFrontTopRight),
+			ButtonBack:         int(ebiten.StandardGamepadButtonCenterLeft),
+			ButtonStart:        int(ebiten.StandardGamepadButtonCenterRight),
+			ButtonA:            int(ebiten.StandardGamepadButtonRightBottom),
+			ButtonB:            int(ebiten.StandardGamepadButtonRightRight),
+			ButtonX:            int(ebiten.StandardGamepadButtonRightTop),
+			ButtonY:            int(ebiten.StandardGamepadButtonRightLeft),
+		},
 	},
-	"Xbox360": {
-		AxisLeftX:  0,
-		AxisLeftY:  1,
-		AxisRightX: 3,
-		AxisRightY: 4,
-		//
-		ButtonBumperLeft:  102, // 100 means it's technically an axis, but with -1=0 and 1=1
-		ButtonBumperRight: 105,
-		//
-		ButtonTriggerLeft:  4,
-		ButtonTriggerRight: 5,
-		ButtonBack:         6,
-		ButtonStart:        7,
-		ButtonA:            1,
-		ButtonB:            0,
-		ButtonX:            2,
-	},
+}
+
+func AddGamepadDefinition(g GamepadDefinition) {
+	GamepadDefinitions = append(GamepadDefinitions, g)
 }
 
 func GetFunctionalGamepads() (c []int) {
@@ -80,16 +112,28 @@ func GetBestGamemap(id int) string {
 	if ebiten.IsStandardGamepadLayoutAvailable(ebiten.GamepadID(id)) {
 		return "standard"
 	}
-	name := ebiten.GamepadName(ebiten.GamepadID(id))
-	if strings.Contains(name, "Xbox") || strings.Contains(name, "X-Box") || strings.Contains(name, "360") {
-		return "Xbox360"
+	name := strings.ToLower(ebiten.GamepadName(ebiten.GamepadID(id)))
+	for _, g := range GamepadDefinitions {
+		for _, m := range g.Match {
+			if strings.Contains(name, strings.ToLower(m)) {
+				return g.Name
+			}
+		}
 	}
-	// TODO: Add PS5 or something.
 	return ""
 }
 
+func GetGamemap(name string) GamepadMap {
+	for _, g := range GamepadDefinitions {
+		if g.Name == name {
+			return g.Map
+		}
+	}
+	return nil
+}
+
 func GetAxis(gamemap string, id int, which int) float64 {
-	a, ok := GamepadMaps[gamemap][which]
+	a, ok := GetGamemap(gamemap)[which]
 	if !ok {
 		return 0
 	}
@@ -100,7 +144,7 @@ func GetAxis(gamemap string, id int, which int) float64 {
 }
 
 func GetButton(gamemap string, id int, which int) bool {
-	b, ok := GamepadMaps[gamemap][which]
+	b, ok := GetGamemap(gamemap)[which]
 	if !ok {
 		return false
 	}
