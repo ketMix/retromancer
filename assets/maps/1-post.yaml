@@ -127,14 +127,7 @@ actors:
         - type: active
           args:
             - drawbridge
-  - id: brazier2
-    type: interactive
-    sprite: brazier
-    interactive:
-      conditions:
-        - type: active
-          args:
-            - drawbridge
+
   - id: crystal
     type: interactive
     sprite: crystal
