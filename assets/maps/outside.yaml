@@ -64,6 +64,9 @@ runes:
   "x":
     sprite: empty
     id: sign-outside-power
+  "T":
+    sprite: empty
+    id: tree
 actors:
   - id: door1
     type: interactive
@@ -122,6 +125,12 @@ actors:
       npc: true
       text: sign-outside-power
       reversable: true
+  - id: tree
+    type: interactive
+    sprite: tree
+    interactive:
+      reversable: true
+      degrade: true
 layers:
   - |
 
@@ -138,7 +147,7 @@ layers:
     E     ~   , .   ,          . S    ~
     E     ~     ................      ~
     E     ~            x.             ~
-    E     ~        ,    .      ,,,,   ~
+    E     ~        ,    .   T  ,,,,   ~
     E     ~     ,,      .         ,   ~
     E     ~             @           , ~
     E     ~~~~~~^*******b*******^~~~~~~
