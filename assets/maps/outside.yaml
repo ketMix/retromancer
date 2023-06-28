@@ -48,7 +48,7 @@ runes:
     blockView: true
   "c":
     sprite: empty
-    id: lever
+    id: crystal
   "s":
     sprite: empty
     id: shooter
@@ -86,9 +86,9 @@ actors:
     interactive:
       active: true
       map: 0-1
-  - id: lever # CHANGE THIS TO A GEM OR SOMETHING SHOOTABLE
+  - id: crystal
     type: interactive
-    sprite: lever
+    sprite: crystal
     interactive:
       health: 1
   - id: drawbridge
@@ -98,7 +98,7 @@ actors:
       conditions:
         - type: active
           args:
-            - lever
+            - crystal
   - id: shooter
     type: spawner
     bullets: 
