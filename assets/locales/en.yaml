@@ -12,12 +12,12 @@
 "MenuIntro3": "sometimes you need..."
 # Intro
 "Intro1": "Beneath the whispers of time..."
-"Intro2": "...the forgotten echo has started to..."
-"Intro3": "...ripple once more..."
+"Intro2": "...a forgotten echo has started to ripple..."
+"Intro3": "...the Lich now claims dominion over this doomed land..."
 "Intro4": "...you awaken."
 "SkipIntro": "Press <Enter> or <Escape> to skip"
 # Outro
-"Outro1": "You have defeated the Necromancer..."
+"Outro1": "You have defeated the Lich..."
 "Outro2": "and reversed them to a time before their corruption..."
 "Outro3": "... a time too long ago..."
 "Outro4": "For they have even forgotten you."
@@ -76,12 +76,12 @@
 # NPCs
 "sign-intro-npc1": "Ugh... I'm alive... Thank you,\n Retromancer..."
 "sign-intro-npc2": "I'm not sure what happened, but I'm glad you're here."
-"sign-intro-npc3": "That terrible Necromancer's minions fell upon us..."
-"sign-intro-npc4": "I am thankful for your power, but I fear it will not be enough to defeat the Necromancer..."
+"sign-intro-npc3": "That terrible Lich's minions fell upon us..."
+"sign-intro-npc4": "I am thankful for your power, but I fear it will not be enough to defeat the Lich..."
 "npc-skells-1": "I'm so glad you're here! If not, I surely would've become a mindless minion!"
 "npc-skells-2": "Stop for a bite to eat and this is what happens..."
-"npc-1-post-1": "*cough* *cough* I managed to keep that book safe from the Necromancer's minions..."
-"npc-1-6-1": "Beware of the great bat that lies ahead."
+"npc-1-post-1": "*cough* *cough* I managed to keep that book safe from the Lich's minions..."
+"npc-1-6-1": "The great bat protects an ancient power... my greed has doomed me..."
 
 # Signs
 "sign-intro-reverse": "Your hand will glow yellow on reversable objects"
