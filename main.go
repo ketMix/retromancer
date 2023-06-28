@@ -103,7 +103,7 @@ func main() {
 	}
 
 	ebiten.SetWindowSize(1280, 720)
-	ebiten.SetWindowTitle("ebijam23")
+	ebiten.SetWindowTitle("Retromancer")
 	ebiten.SetCursorMode(ebiten.CursorModeHidden)
 
 	if game.Flags.Fullscreen {
