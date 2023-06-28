@@ -42,6 +42,7 @@ type Map struct {
 	Actors       []ActorSpawn       `yaml:"actors"`
 	VFX          []VFXDef           `yaml:"vfx"`
 	Hints        []string           `yaml:"hints"`
+	End          bool               `yaml:"end"`
 }
 
 type Interactive struct {

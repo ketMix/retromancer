@@ -402,7 +402,10 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	// Show hints as needed.
 	s.hints.Update(ctx)
 
-	if s.ArePlayersDead() {
+	if s.activeMap.data.End {
+		s.PopState(ctx)
+		s.PushState(&WorldStateEnd{}, ctx)
+	} else if s.ArePlayersDead() {
 		s.PopState(ctx)
 		s.PushState(&WorldStateDead{}, ctx)
 	}

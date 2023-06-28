@@ -10,11 +10,21 @@
 "MenuIntro1": "They say time heals all wounds..."
 "MenuIntro2": "but some injuries are stubborn..."
 "MenuIntro3": "sometimes you need..."
+# Intro
 "Intro1": "Beneath the whispers of time..."
 "Intro2": "...the forgotten echo has started to..."
 "Intro3": "...ripple once more..."
 "Intro4": "...you awaken."
 "SkipIntro": "Press <Enter> or <Escape> to skip"
+# Outro
+"Outro1": "You have reversed the Necromancer..."
+"Outro2": "to a time before their corruption..."
+"Outro3": "... a time too long ago..."
+"Outro4": "for they have even forgotten your name."
+"Outro5": "Was it worth saving the world, if you lost the only one you ever loved?"
+"SavedNPCs": "People Saved: "
+"SkipOutro": "Press <Enter> or <Escape> to return home"
+#
 "SignExit": "Press <Enter> to return"
 "Generate": "Generate"
 "GPTOptions": "GPT Options"
