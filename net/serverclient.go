@@ -96,6 +96,7 @@ func (s *ServerClient) ConnectTo(address string) error {
 	}
 	peer.session = session*/
 	//go peer.loop(s.peerChan)
+	peer.shook = true
 
 	s.EventChan <- EventJoining{}
 
@@ -147,6 +148,7 @@ func (s *ServerClient) LogicLoop() {
 			}
 		}*/
 		case packet := <-s.rawChan:
+			//fmt.Println("got raw packet", packet)
 			// If the packet is from the matchmaker, handle it.
 			if s.matchmakerAddr != nil && packet.addr.String() == s.matchmakerAddr.String() {
 				fmt.Println("handling as matchmaker")
@@ -169,16 +171,18 @@ func (s *ServerClient) LogicLoop() {
 			// Session is nil, try to get shook.
 			if !peer.shook {
 				if packet.readBytes > 0 {
-					msg, _ := peer.Receive(packet.buffer[:packet.readBytes])
-					peer.messages = append(peer.messages, msg)
-					s.peerCheckChan <- struct{}{}
+					//msg, _ :=
+					peer.Receive(packet.buffer[:packet.readBytes])
+					//peer.messages = append(peer.messages, msg)
+					//s.peerCheckChan <- struct{}{}
 				}
 				peer.Send(MessageID{ID: s.id})
 				peer.shook = true
 			} else {
-				msg, _ := peer.Receive(packet.buffer[:packet.readBytes])
-				peer.messages = append(peer.messages, msg)
-				s.peerCheckChan <- struct{}{}
+				//msg, _ :=
+				peer.Receive(packet.buffer[:packet.readBytes])
+				//peer.messages = append(peer.messages, msg)
+				//s.peerCheckChan <- struct{}{}
 			}
 		}
 	}
@@ -212,12 +216,73 @@ func (s *ServerClient) HandleMessage(packet PeerPacket) {
 
 func (s *ServerClient) PeerLoop() {
 	for s.Running {
-		<-s.peerCheckChan
+		t := time.Now()
+		//<-s.peerCheckChan
+
 		for _, peer := range s.peers {
-			for _, msg := range peer.messages {
-				s.HandleMessage(PeerPacket{peer: peer, msg: msg})
+			peer.readLock.Lock()
+
+			var out []*Envelope
+			for _, msg := range peer.outboundMessages {
+				confirmed := false
+				for i, c := range peer.inboundConfirms {
+					if c == msg.ID {
+						confirmed = true
+						reconfirm := Reconfirm{ID: msg.ID}
+						peer.conn.WriteTo(reconfirm.ToBytes(), peer.addr)
+						//fmt.Println("wrote reconfirm", reconfirm)
+						peer.inboundConfirms = append(peer.inboundConfirms[:i], peer.inboundConfirms[i+1:]...)
+						break
+					}
+				}
+				//fmt.Println("confirmed", confirmed, msg.ID)
+				if !confirmed {
+					if t.Sub(msg.lastTime).Milliseconds() > 100 {
+						peer.conn.WriteTo(msg.ToBytes(), peer.addr)
+						//fmt.Println("wrote message", msg)
+						msg.lastTime = t
+					}
+					out = append(out, msg)
+				}
 			}
-			peer.messages = nil
+			peer.outboundMessages = out
+
+			var in []*Envelope
+			for _, msg := range peer.inboundMessages {
+				/*for i, c := range peer.reconfirms {
+					if c == msg.ID {
+						msg.confirmed = true
+						peer.reconfirms = append(peer.reconfirms[:i], peer.reconfirms[i+1:]...)
+						fmt.Println("MESSAGE ", msg.ID, "CONFIRMED", c)
+						break
+					}
+				}*/
+
+				confirmed := Confirm{ID: msg.ID}
+				peer.conn.WriteTo(confirmed.ToBytes(), peer.addr)
+				//fmt.Println("wrote confirm", confirmed)
+
+				/*if !msg.confirmed {
+					if t.Sub(msg.lastTime).Milliseconds() > 100 {
+						confirmed := Confirm{ID: msg.ID}
+						peer.conn.WriteTo(confirmed.ToBytes(), peer.addr)
+						fmt.Println("wrote confirm", confirmed)
+						msg.lastTime = t
+					}
+					in = append(in, msg)
+				} else {*/
+				m, _ := MessageFromBytes(msg.bytes)
+				if m == nil {
+					m, _ = MessageRaw{}.FromBytes(msg.bytes)
+				}
+				s.HandleMessage(PeerPacket{
+					peer: peer,
+					msg:  m,
+				})
+			}
+			peer.inboundMessages = in
+
+			peer.readLock.Unlock()
 		}
 	}
 }
