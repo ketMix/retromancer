@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 	"time"
+
+	"github.com/xtaci/kcp-go"
 )
 
 var NetDataShards = 10
@@ -28,7 +30,6 @@ type ServerClient struct {
 	rawChan        chan Packet
 	peerChan       chan PeerPacket
 	EventChan      chan Event
-	peerCheckChan  chan struct{}
 	peers          []*Peer
 }
 
@@ -38,7 +39,6 @@ func (s *ServerClient) Init() {
 	s.rawChan = make(chan Packet, NetChannelSize*2)
 	s.peerChan = make(chan PeerPacket, NetChannelSize)
 	s.EventChan = make(chan Event, NetChannelSize)
-	s.peerCheckChan = make(chan struct{}, 10)
 	s.Matchmaker = "gamu.group:20220"
 }
 
@@ -77,7 +77,6 @@ func (s *ServerClient) Open(address string) error {
 
 	go s.LogicLoop()
 	go s.ReadLoop()
-	go s.PeerLoop()
 
 	return nil
 }
@@ -90,13 +89,12 @@ func (s *ServerClient) ConnectTo(address string) error {
 	peer := NewPeer(addr, s.localConn)
 	s.peers = append(s.peers, peer)
 
-	/*session, err := kcp.NewConn3(0, addr, nil, NetDataShards, NetParityShards, peer)
+	session, err := kcp.NewConn3(0, addr, nil, NetDataShards, NetParityShards, peer)
 	if err != nil {
 		panic(err)
 	}
-	peer.session = session*/
-	//go peer.loop(s.peerChan)
-	peer.shook = true
+	peer.session = session
+	go peer.loop(s.peerChan)
 
 	s.EventChan <- EventJoining{}
 
@@ -116,37 +114,37 @@ func (s *ServerClient) LogicLoop() {
 	for s.Running {
 		select {
 		case <-s.closeChan:
-			/*for _, p := range s.peers {
+			for _, p := range s.peers {
 				p.session.Close()
-			}*/
+			}
 			s.localConn.Close()
 			s.Running = false
 			s.EventChan <- EventClosed{}
 			return
-		/*case msg := <-s.peerChan:
-		switch msg.msg.(type) {
-		case MessageID:
-			if msg.peer.id == 0 {
-				if !s.Hosting {
-					s.EventChan <- EventJoined{}
+		case msg := <-s.peerChan:
+			switch msg.msg.(type) {
+			case MessageID:
+				if msg.peer.id == 0 {
+					if !s.Hosting {
+						s.EventChan <- EventJoined{}
+					}
+				}
+				msg.peer.id = msg.msg.(MessageID).ID
+				s.EventChan <- EventConnect{
+					Peer: msg.peer,
+					ID:   msg.peer.id,
+				}
+			case MessageClose:
+				s.EventChan <- EventDisconnect{
+					Peer: msg.peer,
+					ID:   msg.peer.id,
+				}
+			default:
+				s.EventChan <- EventMessage{
+					Peer:    msg.peer,
+					Message: msg.msg,
 				}
 			}
-			msg.peer.id = msg.msg.(MessageID).ID
-			s.EventChan <- EventConnect{
-				Peer: msg.peer,
-				ID:   msg.peer.id,
-			}
-		case MessageClose:
-			s.EventChan <- EventDisconnect{
-				Peer: msg.peer,
-				ID:   msg.peer.id,
-			}
-		default:
-			s.EventChan <- EventMessage{
-				Peer:    msg.peer,
-				Message: msg.msg,
-			}
-		}*/
 		case packet := <-s.rawChan:
 			//fmt.Println("got raw packet", packet)
 			// If the packet is from the matchmaker, handle it.
@@ -168,121 +166,24 @@ func (s *ServerClient) LogicLoop() {
 				s.peers = append(s.peers, peer)
 			}
 
-			// Session is nil, try to get shook.
-			if !peer.shook {
-				if packet.readBytes > 0 {
-					//msg, _ :=
-					peer.Receive(packet.buffer[:packet.readBytes])
-					//peer.messages = append(peer.messages, msg)
-					//s.peerCheckChan <- struct{}{}
+			if packet.readBytes > 0 {
+				peer.writeToPacketBuffer(packet.buffer[:packet.readBytes])
+			}
+
+			// Session is nil, try to set up a kcp session.
+			if peer.session == nil {
+				session, err := kcp.NewConn3(0, packet.addr, nil, NetDataShards, NetParityShards, peer)
+				if err != nil {
+					panic(err)
 				}
+				peer.session = session
+				go peer.loop(s.peerChan)
+
 				peer.Send(MessageID{ID: s.id})
-				peer.shook = true
 			} else {
-				//msg, _ :=
-				peer.Receive(packet.buffer[:packet.readBytes])
-				//peer.messages = append(peer.messages, msg)
-				//s.peerCheckChan <- struct{}{}
+				// Send packet data to peer's virtual buffer.
+				peer.writeToPacketBuffer(packet.buffer[:packet.readBytes])
 			}
-		}
-	}
-}
-
-func (s *ServerClient) HandleMessage(packet PeerPacket) {
-	switch packet.msg.(type) {
-	case MessageID:
-		if packet.peer.id == 0 {
-			if !s.Hosting {
-				s.EventChan <- EventJoined{}
-			}
-		}
-		packet.peer.id = packet.msg.(MessageID).ID
-		s.EventChan <- EventConnect{
-			Peer: packet.peer,
-			ID:   packet.peer.id,
-		}
-	case MessageClose:
-		s.EventChan <- EventDisconnect{
-			Peer: packet.peer,
-			ID:   packet.peer.id,
-		}
-	default:
-		s.EventChan <- EventMessage{
-			Peer:    packet.peer,
-			Message: packet.msg,
-		}
-	}
-}
-
-func (s *ServerClient) PeerLoop() {
-	for s.Running {
-		t := time.Now()
-		//<-s.peerCheckChan
-
-		for _, peer := range s.peers {
-			peer.readLock.Lock()
-
-			var out []*Envelope
-			for _, msg := range peer.outboundMessages {
-				confirmed := false
-				for i, c := range peer.inboundConfirms {
-					if c == msg.ID {
-						confirmed = true
-						reconfirm := Reconfirm{ID: msg.ID}
-						peer.conn.WriteTo(reconfirm.ToBytes(), peer.addr)
-						//fmt.Println("wrote reconfirm", reconfirm)
-						peer.inboundConfirms = append(peer.inboundConfirms[:i], peer.inboundConfirms[i+1:]...)
-						break
-					}
-				}
-				//fmt.Println("confirmed", confirmed, msg.ID)
-				if !confirmed {
-					if t.Sub(msg.lastTime).Milliseconds() > 100 {
-						peer.conn.WriteTo(msg.ToBytes(), peer.addr)
-						//fmt.Println("wrote message", msg)
-						msg.lastTime = t
-					}
-					out = append(out, msg)
-				}
-			}
-			peer.outboundMessages = out
-
-			var in []*Envelope
-			for _, msg := range peer.inboundMessages {
-				/*for i, c := range peer.reconfirms {
-					if c == msg.ID {
-						msg.confirmed = true
-						peer.reconfirms = append(peer.reconfirms[:i], peer.reconfirms[i+1:]...)
-						fmt.Println("MESSAGE ", msg.ID, "CONFIRMED", c)
-						break
-					}
-				}*/
-
-				confirmed := Confirm{ID: msg.ID}
-				peer.conn.WriteTo(confirmed.ToBytes(), peer.addr)
-				//fmt.Println("wrote confirm", confirmed)
-
-				/*if !msg.confirmed {
-					if t.Sub(msg.lastTime).Milliseconds() > 100 {
-						confirmed := Confirm{ID: msg.ID}
-						peer.conn.WriteTo(confirmed.ToBytes(), peer.addr)
-						fmt.Println("wrote confirm", confirmed)
-						msg.lastTime = t
-					}
-					in = append(in, msg)
-				} else {*/
-				m, _ := MessageFromBytes(msg.bytes)
-				if m == nil {
-					m, _ = MessageRaw{}.FromBytes(msg.bytes)
-				}
-				s.HandleMessage(PeerPacket{
-					peer: peer,
-					msg:  m,
-				})
-			}
-			peer.inboundMessages = in
-
-			peer.readLock.Unlock()
 		}
 	}
 }
