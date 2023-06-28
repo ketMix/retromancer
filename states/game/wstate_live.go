@@ -288,7 +288,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	// Check for collisions between player characters and interactives/snaggables.
 	touchingSign := false
 	for _, pl := range s.Players {
-		if _, ok := pl.Actor().(*Companion); ok {
+		if c, ok := pl.Actor().(*Companion); ok {
 			// Allow companions to touch interactives.
 			for _, actor := range s.activeMap.actors {
 				if i, ok := actor.(*Interactive); ok {
@@ -296,6 +296,16 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 					if i.touchable && i.shape.Collides(pl.Actor().Shape()) {
 						i.Reverse()
 						continue
+					}
+				}
+				if sn, ok := actor.(*Snaggable); ok {
+					if sn.shape.Collides(pl.Actor().Shape()) {
+						// Allow companion to snarf life.
+						switch sn.spriteName {
+						case "item-life":
+							c.Snarf()
+							sn.destroyed = true
+						}
 					}
 				}
 			}

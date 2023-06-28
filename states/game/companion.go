@@ -22,6 +22,7 @@ type Companion struct {
 	Energy            int
 	MaxEnergy         int
 	EnergyRestoreRate int
+	snarfTicks        int
 	//
 	fireAllow                 int
 	TicksSinceLastInteraction int
@@ -72,19 +73,32 @@ func (p *Companion) Player() Player {
 }
 
 func (p *Companion) Update() (actions []Action) {
+	p.snarfTicks--
+	multiplier := 1.0
+	if p.snarfTicks > 0 {
+		multiplier = 2.0
+		actions = append(actions, ActionSpawnParticle{
+			Img:   "life",
+			X:     p.shape.X,
+			Y:     p.shape.Y,
+			Angle: math.Pi + rng.Float64()*math.Pi,
+			Speed: rng.Float64() * 0.5,
+			Life:  40,
+		})
+	}
 
 	p.fireAllow++
 
 	p.TicksSinceLastInteraction++
-	if p.TicksSinceLastInteraction > 20 {
+	if p.TicksSinceLastInteraction > 20/int(multiplier) {
 		if p.Energy+p.EnergyRestoreRate <= p.MaxEnergy {
-			p.Energy += p.EnergyRestoreRate
+			p.Energy += int(float64(p.EnergyRestoreRate) * multiplier)
 		}
 	}
 	// Do not handle movement until we are resurrected.
 	if p.impulses.Move != nil {
-		p.momentumX = 0.3*p.momentumX + 4.7*math.Cos((*p.impulses.Move).Direction)
-		p.momentumY = 0.3*p.momentumY + 4.7*math.Sin((*p.impulses.Move).Direction)
+		p.momentumX = 0.3*p.momentumX + 4.7*math.Cos((*p.impulses.Move).Direction)*multiplier
+		p.momentumY = 0.3*p.momentumY + 4.7*math.Sin((*p.impulses.Move).Direction)*multiplier
 		/*x := 5 * math.Cos((*p.impulses.Move).Direction)
 		y := 5 * math.Sin((*p.impulses.Move).Direction)
 		if x < 0 {
@@ -138,6 +152,9 @@ func (p *Companion) Update() (actions []Action) {
 				})
 				p.previousInteraction = ActionSpawnBullets{}
 				p.fireAllow = -10
+				if p.snarfTicks > 0 {
+					p.fireAllow = -1
+				}
 			}
 		default:
 			// Do nothing.
@@ -227,4 +244,12 @@ func (p *Companion) SetSize(r float64) {
 
 func (p *Companion) Destroyed() bool {
 	return false
+}
+
+func (p *Companion) Snarf() {
+	if p.snarfTicks <= 0 {
+		p.snarfTicks = 300
+	} else {
+		p.snarfTicks += 300
+	}
 }
