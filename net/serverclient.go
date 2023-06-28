@@ -82,6 +82,9 @@ func (s *ServerClient) Open(address string) error {
 }
 
 func (s *ServerClient) ConnectTo(address string) error {
+	if address != "" && address[0] == ':' {
+		address = "127.0.0.1" + address
+	}
 	addr, err := net.ResolveUDPAddr("udp", address)
 	if err != nil {
 		return err
