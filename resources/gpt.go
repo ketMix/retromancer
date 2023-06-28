@@ -97,9 +97,14 @@ func (g *GPT) Fetch(method, url string, requestBody *[]byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	defer resp.Body.Close()
-
+	if resp.StatusCode > 299 {
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return nil, err
+		}
+		return nil, fmt.Errorf("error: %s", string(body))
+	}
 	body, err := ioutil.ReadAll(resp.Body)
 	return body, err
 }

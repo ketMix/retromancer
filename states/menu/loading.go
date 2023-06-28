@@ -41,6 +41,9 @@ func (l *Loading) Update(ctx states.Context) error {
 	l.ticks++
 	if l.ticks > 20 {
 		ctx.SetLocale(ctx.Locale(), true)
+
+		// Pop the loading and the GPT question screen
+		ctx.StateMachine.PopState()
 		ctx.StateMachine.PopState()
 	}
 	return nil

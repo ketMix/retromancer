@@ -29,9 +29,16 @@ func (i *Intro) Enter(ctx states.Context) error {
 	xOffset := 50.0
 	yOffset := 30.0
 
+	// There's a little difference in timing if loading intro first
+	// which we do when the key is invalid
+	introHold := 900 * time.Millisecond
+	if !ctx.CheckGPTKey() {
+		introHold = 50 * time.Millisecond
+	}
+
 	i.vfx.Add(&resources.Text{
 		Text:         "",
-		HoldDuration: 900 * time.Millisecond,
+		HoldDuration: introHold,
 	})
 	i.vfx.Add(&resources.Text{
 		Text:         ctx.L("MenuIntro1"),

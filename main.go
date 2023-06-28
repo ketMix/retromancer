@@ -110,7 +110,7 @@ func main() {
 	} else {
 		if !game.Flags.SkipIntro {
 			game.PushState(&menu.Intro{})
-			game.PushState(&menu.Loading{})
+			game.PushState(&menu.PreIntro{})
 		}
 	}
 
