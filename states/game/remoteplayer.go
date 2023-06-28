@@ -6,7 +6,7 @@ import (
 
 // RemotePlayer is a networked player.
 type RemotePlayer struct {
-	connection     *net.Conn // Remote connection, wowee.
+	peer           *net.Peer
 	lastTick       int
 	actor          Actor
 	impulses       ImpulseSet
@@ -15,9 +15,9 @@ type RemotePlayer struct {
 	hat            string
 }
 
-func NewRemotePlayer(conn *net.Conn) *RemotePlayer {
+func NewRemotePlayer(peer *net.Peer) *RemotePlayer {
 	return &RemotePlayer{
-		connection:     conn,
+		peer:           peer,
 		impulses:       ImpulseSet{},
 		queuedImpulses: ImpulseSet{},
 		hat:            "hat-",
@@ -65,4 +65,8 @@ func (p *RemotePlayer) Hat() string {
 
 func (p *RemotePlayer) SetHat(hat string) {
 	p.hat = hat
+}
+
+func (p *RemotePlayer) Peer() *net.Peer {
+	return p.peer
 }

@@ -38,6 +38,7 @@ type PlayerEntry struct {
 	//
 	waitingText *resources.TextItem
 	//
+	id     uint32 // ID. Only set if it is a networked player.
 	player game.Player
 }
 
@@ -138,6 +139,7 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 			}
 			e.clickSound.Play(1.0)
 			e.SyncHat(ctx)
+			s.SendToNetPlayers(HatMessage{Hat: e.hatIndex})
 			return false
 		},
 	}
@@ -161,6 +163,7 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 			}
 			e.clickSound.Play(1.0)
 			e.SyncHat(ctx)
+			s.SendToNetPlayers(HatMessage{Hat: e.hatIndex})
 			return false
 		},
 	}
