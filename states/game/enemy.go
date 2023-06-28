@@ -3,7 +3,6 @@ package game
 import (
 	"ebijam23/resources"
 	"ebijam23/states"
-	"fmt"
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -171,10 +170,7 @@ func (e *Enemy) Damage(amount int) {
 	e.health -= amount
 	if e.health <= 0 {
 		e.deadSfx.Play(0.5) // TODO: use global volume setting?
-		fmt.Println("Enemy", e.id, "died")
-		fmt.Println("Next phase:", e.nextPhase)
 		if e.nextPhase != "" {
-			fmt.Println("Creating enemy", e.nextPhase)
 			nextPhase := CreateEnemy(*e.ctx, e.id, e.nextPhase)
 			e.health = nextPhase.health
 			e.speed = nextPhase.speed
@@ -182,8 +178,6 @@ func (e *Enemy) Damage(amount int) {
 			e.deadSprite = nextPhase.deadSprite
 			e.spawner = nextPhase.spawner
 			e.nextPhase = nextPhase.nextPhase
-
-			fmt.Println("Created enemy", e)
 		}
 	} else {
 		e.hitSfx.Play(0.5) // TODO: use global volume setting?
