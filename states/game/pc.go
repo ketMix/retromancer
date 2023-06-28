@@ -56,6 +56,8 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		MaxEnergy:         100,
 		EnergyRestoreRate: 2,
 		Lives:             playerStartLives,
+
+		HasDeflect: true, // REMOVE THIS WHEN DONE TESTING
 	}
 
 	// FIXME: This shouldn't be hardcoded.
