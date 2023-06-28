@@ -157,7 +157,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 			m.actors = append(m.actors, snaggable)
 		case "enemy":
 			enemy := CreateEnemy(ctx, a.ID, a.Sprite)
-			enemy.SetXY(x, y)
+			enemy.SetXY(x, y+4) // +4 makes it so they don't get stuck...
 
 			m.actors = append(m.actors, enemy)
 			m.enemies = append(m.enemies, enemy)
