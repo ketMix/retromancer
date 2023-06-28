@@ -71,6 +71,9 @@ runes:
   "x":
     sprite: empty
     id: campfire
+  "1":
+    sprite: empty
+    id: npc-1-6-1
 
 actors:
   # Doors
@@ -110,6 +113,16 @@ actors:
     interactive:
       reversable: true
 
+  # Signs
+  - id: npc-1-6-1
+    type: interactive
+    sprite: npc
+    interactive:
+      text: npc-1-6-1
+      npc: true
+      reversable: true
+      degrade: true
+
   # Snaggable
   - id: life
     type: snaggable
@@ -134,7 +147,7 @@ layers:
 
     E            ^*****D*****^
     E            ^~,,b...B,,~^
-    E            ^~,       ,~^
+    E            ^~,  1    ,~^
     E            ^~     M   ~^
     E            ^~  l      ~^
     E            ^~    x  L ~^
