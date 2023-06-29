@@ -145,6 +145,14 @@ func (e *Enemy) Update() (a []Action) {
 		if !e.hasDied {
 			e.hasDied = true
 			e.deadSfx.Play(0.5) // TODO: use global volume setting?
+			for _, spawn := range e.spawnOnDeath {
+				a = append(a, ActionSpawnEnemy{
+					ID:   "",
+					Name: spawn,
+					X:    e.shape.X,
+					Y:    e.shape.Y,
+				})
+			}
 			if e.nextPhase != "" {
 				nextPhase := CreateEnemy(*e.ctx, e.id, e.nextPhase)
 				e.health = nextPhase.health
@@ -153,14 +161,8 @@ func (e *Enemy) Update() (a []Action) {
 				e.deadSprite = nextPhase.deadSprite
 				e.spawner = nextPhase.spawner
 				e.nextPhase = nextPhase.nextPhase
-			}
-			for _, spawn := range e.spawnOnDeath {
-				a = append(a, ActionSpawnEnemy{
-					ID:   "",
-					Name: spawn,
-					X:    e.shape.X,
-					Y:    e.shape.Y,
-				})
+				e.hasDied = false
+				e.spawnOnDeath = nextPhase.spawnOnDeath
 			}
 		}
 		e.deadSprite.Update()
@@ -198,7 +200,7 @@ func (e *Enemy) Update() (a []Action) {
 }
 
 func (e *Enemy) IsAlive() bool {
-	return e.health > 0
+	return e.health > 0 && !e.hasDied
 }
 
 func (e *Enemy) Damage(amount int) bool {
