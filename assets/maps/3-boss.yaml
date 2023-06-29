@@ -5,6 +5,8 @@ runes:
     sprite: empty
   " ":
     sprite: empty
+  "E":
+    sprite: empty
   "L":
     sprite: lava
     blockMove: true
