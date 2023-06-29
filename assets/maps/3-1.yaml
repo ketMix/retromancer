@@ -1,4 +1,4 @@
-title: The Hero's Journey
+title: A Stalwart Shield
 music: start
 conditions:
   - type: active
@@ -28,7 +28,7 @@ runes:
     sprite: dirt
     floor: true
   "~":
-    sprite: water
+    sprite: lava
     blockMove: true
   ",":
     sprite: dead-grass
@@ -85,10 +85,10 @@ runes:
     id: shooter12
   "d":
     sprite: empty
-    id: shooter26
+    id: shooter13
   "e":
     sprite: empty
-    id: shooter27
+    id: shooter14
   "f":
     sprite: empty
     id: shooter15
@@ -101,39 +101,21 @@ runes:
   "i":
     sprite: empty
     id: shooter18
-  "j":
+
+  "L":
     sprite: empty
-    id: shooter19
-  "k":
-    sprite: empty
-    id: shooter20
+    id: life
   "l":
     sprite: empty
-    id: shooter21
-  "m":
+    id: life2
+
+  "z":
     sprite: empty
-    id: shooter22
-  "n":
+    id: npc-3-1-1
+  "x":
     sprite: empty
-    id: shooter23
-  "o":
-    sprite: empty
-    id: shooter24
-  "p":
-    sprite: empty
-    id: shooter25
-  "q":
-    sprite: empty
-    id: shooter13
-  "r":
-    sprite: empty
-    id: shooter14
-  "s":
-    sprite: empty
-    id: shooter28
-  "t":
-    sprite: empty
-    id: shooter29
+    id: sign-3-1-1
+
   "B":
     sprite: empty
     id: brazier1
@@ -160,184 +142,118 @@ actors:
   - id: shooter0
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter1
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter2
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter3
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter4
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter5
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter6
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter7
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter8
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter9
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter10
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter11
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter12
     type: spawner
     bullets: 
-      - alias: simple
+      - alias: simple-end
         fixedAngle: 90
-        spawnRate: 5
+        spawnRate: 10
   - id: shooter13
     type: spawner
     bullets: 
-      - alias: simple
-        fixedAngle: 90
-        spawnRate: 5
+      - alias: simple-end
+        fixedAngle: 180
+        spawnRate: 10
   - id: shooter14
     type: spawner
     bullets: 
-      - alias: simple
-        fixedAngle: 90
-        spawnRate: 5
+      - alias: simple-end
+        fixedAngle: 180
+        spawnRate: 10
   - id: shooter15
     type: spawner
     bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
+      - alias: simple-end
+        fixedAngle: 180
+        spawnRate: 10
   - id: shooter16
     type: spawner
     bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
+      - alias: simple-end
+        fixedAngle: 180
+        spawnRate: 10
   - id: shooter17
     type: spawner
     bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
+      - alias: simple-end
+        fixedAngle: 180
+        spawnRate: 10
   - id: shooter18
     type: spawner
     bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter19
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter20
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter21
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter22
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter23
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter24
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter25
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter26
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter27
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter28
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  - id: shooter29
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 270
-        spawnRate: 5
-  
+      - alias: simple-end
+        fixedAngle: 180
+        spawnRate: 10
+
   - id: brazier1
     type: interactive
     sprite: brazier
@@ -348,24 +264,55 @@ actors:
     sprite: brazier
     interactive:
       active: true
+
+  # Snaggable
+  - id: life
+    type: snaggable
+    sprite: item-life
+  
+  - id: life2
+    type: snaggable
+    sprite: item-life
+
+  # Signs
+  - id: sign-3-1-1
+    type: interactive
+    sprite: sign
+    interactive:
+      text: sign-3-1-1
+      reversable: true
+  - id: npc-3-1-1
+    type: interactive
+    sprite: npc
+    interactive:
+      text: npc-3-1-1
+      npc: true
+      reversable: true
+      degrade: true
+
+
 layers:
   - |
-
-
-    E       ^**********D**********^
-    E       ^.0.~~~~*B...H*~~~~.d.^
-    E       ^.1.~~~~^  .  ^~~~~.e.^
-    E       ^.2.~~~~~  .  ~~~~~.f.^
-    E       ^.3.~~~~~  .  ~~~~~.g.^
-    E       ^.4.~~~~~  .  ~~~~~.h.^
-    E       ^.5.~~~~~  .  ~~~~~.i.^
-    E       ^.6.~~~~~  .  ~~~~~.j.^
-    E       ^.7.~~~~~  .  ~~~~~.k.^
-    E       ^.8.~~~~~  .  ~~~~~.l.^  
-    E       ^.9.~~~~~  .  ~~~~~.m.^
-    E       ^.a.~~~~~  .  ~~~~~.n.^
-    E       ^.b.~~~~~  .  ~~~~~.o.^
-    E       ^.c.~~~~~  .  ~~~~~.p.^
-    E       ^.q.~~~~~^ . ^~~~~~.s.^
-    E       ^.r.~~~~~* @ *~~~~~.t.^
-    E       ^**********A**********^
+    E^.^*****............*^**D**^
+    E*.*~~~~~ df  eg  hi ~*B . H*
+    E*.*~~~~~~~~~~~~~~~~~~*  .  *
+    E*.*~~~~~~~~~~~~~~~~~~* z.  *
+    E*.*~~.....~~~.....~~~*l . L*
+    E*.*~~.~~~.~~~.~~~.~~~^* . *^
+    E*.0~~.~~~.~~~.~~~.~~~*  .  *
+    E*.1~~.~~~.~~~.~~~.~~~*  .  *
+    E*.2~~.~~~.~~~.~~~.~~~*  .  *
+    E*.3~~.~~~.~~~.~~~.~~~*  .  *
+    E*.4~~.~~~.~~~.~~~.~~~*  .  *
+    E*.5~~.~~~.~~~.~~~.~~~*  .  *
+    E*.6~~.~~~.~~~.~~~.~~~*  .  *
+    E*.7~~.~~~.~~~.~~~.~~~*  .  *
+    E*.8~~.~~~.~~~.~~~.~~~*  .  *
+    E*.9~~.~~~.~~~.~~~.~~~*  .  *
+    E*.a~~.~~~.~~~.~~~.~~~*  .  *
+    E*.b~~.~~~.~~~.~~~.~~~*  .  *
+    E*.c~~.~~~.....~~~........  *
+    E*~~^*.*^~~~~~~~~~~~~~~~~~~~*
+     ^**^x. ^*******************^
+     *@.... *                
+     ^****^*^                
