@@ -251,6 +251,7 @@ func (s *Lobby) Update(ctx states.Context) error {
 			players[i] = e.player
 		}
 		// FIXME: Need to agree w/ players to start (or assume host has full control).
+		ctx.StateMachine.PopState()
 		ctx.StateMachine.PushState(&game.World{
 			StartingMap: "start",
 			ShowHints:   true,

@@ -2,10 +2,8 @@ package main
 
 import (
 	"ebijam23/states"
-	"fmt"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 	"github.com/tinne26/etxt"
 )
@@ -113,7 +111,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		opts.GeoM.Translate(-float64(g.Cursor.image.Bounds().Dx())/2, -float64(g.Cursor.image.Bounds().Dy())/2)
 		screen.DrawImage(g.Cursor.image, opts)
 	}
-	ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %0.2f TPS: %0.2f", ebiten.ActualFPS(), ebiten.ActualTPS()))
+	//ebitenutil.DebugPrint(screen, fmt.Sprintf("FPS: %0.2f TPS: %0.2f", ebiten.ActualFPS(), ebiten.ActualTPS()))
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (int, int) {

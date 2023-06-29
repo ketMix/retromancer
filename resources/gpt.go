@@ -28,6 +28,8 @@ type GPTRequestBody struct {
 	Messages []MessageBody `json:"messages"`
 }
 
+var gptKey string
+
 type GPT struct {
 	Key          string
 	SystemPrompt string // The prompt to use for the system
@@ -37,16 +39,22 @@ type GPT struct {
 }
 
 // Does some set up for GPT
-//  - finds the api key from "assets/key.txt"
-//	- sets default values
+//   - uses the gptKey variable that is set during release builds
+//   - or finds the api key from "assets/key.txt"
+//   - sets default values
 func InitGPT(fs multipath.FS) *GPT {
-	fileName := "key.txt"
-	file, err := fs.ReadFile(fileName)
+	var k string
 
-	k := ""
-	// Check if an error was returned
-	if err == nil {
-		k = string(file)
+	if gptKey != "" {
+		k = gptKey
+	} else {
+		fileName := "key.txt"
+		file, err := fs.ReadFile(fileName)
+
+		// Check if an error was returned
+		if err == nil {
+			k = string(file)
+		}
 	}
 
 	return &GPT{
