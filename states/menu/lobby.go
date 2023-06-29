@@ -75,7 +75,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 		X:           350,
 		Y:           20,
 		Width:       150,
-		Placeholder: ctx.L("Lobby or Address"),
+		Placeholder: ctx.L("Address"),
 		Callback: func() bool {
 			return false
 		},
