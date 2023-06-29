@@ -38,6 +38,7 @@ type Enemy struct {
 	spawner           *Spawner
 	invulnerableTicks int // Ticks the enemy should be invulnerable for
 	hitAccumulator    int // Hits accumulated.
+	ticksUntilSfx     int // Ticks since last hit sound effect.
 }
 
 func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
@@ -132,6 +133,10 @@ func (e *Enemy) SetTarget(a Actor) {
 }
 
 func (e *Enemy) Update() (a []Action) {
+	if e.ticksUntilSfx > 0 {
+		e.ticksUntilSfx--
+	}
+
 	if e.invulnerableTicks > 0 {
 		e.invulnerableTicks--
 	}
@@ -203,7 +208,10 @@ func (e *Enemy) Damage(amount int) bool {
 
 	e.health -= amount
 	if e.health > 0 {
-		e.hitSfx.Play(0.5) // TODO: use global volume setting?
+		if e.ticksUntilSfx <= 0 {
+			e.ticksUntilSfx = 10
+			e.hitSfx.Play(0.5) // TODO: use global volume setting?
+		}
 		e.hitAccumulator += amount
 		if e.hitAccumulator >= e.health/4 {
 			e.invulnerableTicks = 10

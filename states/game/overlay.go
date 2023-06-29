@@ -79,9 +79,9 @@ func (o *Overlay) Update(ctx states.Context) error {
 		if o.musicButton.Hit(float64(x), float64(y)) {
 			// toggle 'em, gois
 			if ctx.MusicPlayer.Volume() == 0.0 {
+				ctx.MusicPlayer.SetVolume(0.25)
+			} else if ctx.MusicPlayer.Volume() == 0.25 {
 				ctx.MusicPlayer.SetVolume(0.5)
-			} else if ctx.MusicPlayer.Volume() == 0.5 {
-				ctx.MusicPlayer.SetVolume(1.0)
 			} else {
 				ctx.MusicPlayer.SetVolume(0.0)
 			}
