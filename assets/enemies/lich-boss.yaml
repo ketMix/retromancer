@@ -1,53 +1,77 @@
 sprite: lich-boss
 framerate: 20
 health: 500
-speed: 2
+speed: 4
 behavior: random
-wander: true
-alwaysShoot: true
 bullets:
-  - alias: daggers
-    bulletCount: 5
-    spawnRate: 50
+# Chakras
+  - alias: chakra
+    bulletCount: 25
+    spawnRate: 100
+    lastSpawnedAt: 100 
+    bullet:
+      speed: 0.1
+      accelAccel: 0.002
+      angularVelocity: 0.2
+      color: [255, 255, 255, 0]
+      aimDelay: 30
+      aimTime: 50
+  - alias: chakra
+    bulletCount: 25
+    spawnRate: 100
+    lastSpawnedAt: 90
+    bullet:
+      speed: 0.1
+      accelAccel: 0.002
+      angularVelocity: 0.2
+      color: [0, 255, 0, 0]
+      aimDelay: 30
+      aimTime: 50
+  - alias: chakra
+    bulletCount: 25
+    spawnRate: 100
+    lastSpawnedAt: 80
+    bullet:
+      speed: 0.1
+      accelAccel: 0.002
+      angularVelocity: 0.2
+      color: [255, 0, 255, 0]
+      aimDelay: 30
+      aimTime: 50
+# Radial
+  - alias: echo
+    bulletCount: 100
+    spawnRate: 200
     lastSpawnedAt: 0
     bullet:
-      speed: 0.05
+      bulletType: directional
+      speed: 1
       accelAccel: 0.005
+      angularVelocity: 0.05
       color: [255, 0, 0, 0]
-      aimDelay: 15
-      aimTime: 5
-  - alias: daggers
-    bulletCount: 5
-    spawnRate: 50
-    lastSpawnedAt: 25
-    bullet:
-      speed: 0.05
-      accelAccel: 0.005
-      color: [255, 0, 0, 0]
-      aimDelay: 15
-      aimTime: 5
-  - alias: daggers
-    bulletCount: 6
-    spawnRate: 200
-    lastSpawnedAt: 75
-    bullet:
-      radius: 6
-      speed: 4
-      accelAccel: 0
-      angularVelocity: 0.2
-      color: [0, 0, 0, 0]
       aimDelay: 0
       aimTime: 0
-  - alias: daggers
-    bulletCount: 6
+  - alias: echo
+    bulletCount: 100
     spawnRate: 200
-    lastSpawnedAt: 150
+    lastSpawnedAt: 10
     bullet:
-      radius: 6
-      speed: 4
-      accelAccel: 0
-      angularVelocity: -0.2
-      color: [0, 0, 0, 0]
+      bulletType: directional
+      speed: 1
+      accelAccel: 0.005
+      color: [255, 0, 0, 0]
+      aimDelay: 0
+      aimTime: 0
+  - alias: echo
+    bulletCount: 100
+    spawnRate: 200
+    lastSpawnedAt: 20
+    bullet:
+      bulletType: directional
+      speed: 1
+      accelAccel: 0.005
+      angularVelocity: -0.05
+      color: [255, 0, 0, 0]
       aimDelay: 0
       aimTime: 0
 spawnOnDeath:

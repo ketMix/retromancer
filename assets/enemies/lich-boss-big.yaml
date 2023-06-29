@@ -15,7 +15,7 @@ bullets:
       accelAccel: 0.005
       color: [255, 0, 0, 0]
       aimDelay: 15
-      aimTime: 5
+      aimTime: 
   - alias: daggers
     bulletCount: 5
     spawnRate: 50

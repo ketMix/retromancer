@@ -555,25 +555,23 @@ actors:
   
 layers:
   - |
-
-    E
-    E
-    E
     E    ^*************D*************^
     E   ^*LLLLLLLLLLLb...BLLLLLLLLLLL*^
     E  ^*LL.........................LL*^
     E ^*LL...........................LL*^
-    E^*LL           X  S  x           LL*^
-    E^LL            ![$%&()QW          LL^
-    E^L            0.........R          L^
-    E^            1.         .T          ^
-    E^           2.           .Y         ^
-    E^           3.  c  @  C  .U         ^
-    E^           4.           .O         ^
-    E^            5.         .P          ^
-    E^             6.........J           ^
-    E^              Kz;]'-ZVN            ^
-    E^                                   ^
-    E^                                   ^
-    E^                                   ^
-    E^***********************************^
+    E^*LL.          X  S  x          .LL*^
+    E^LL.                             .LL^
+    E^LL.                             .LL^
+    E^LL.          ![$%&()QW          .LL^
+    E^LL.         0.........R         .LL^
+    E^LL.        1.         .T        .LL^
+    E^LL.       2.           .Y       .LL^
+    E^LL.       3.  c  @  C  .U       .LL^
+    E^LL.       4.           .O       .LL^
+    E^LL.        5.         .P        .LL^
+    E^LL.         6.........J         .LL^
+    E^LL.          Kz;]'-ZVN          .LL^
+    E^LL.                             .LL^
+    E^LL.                             .LL^
+    E^LL...............................LL^
+    E^LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL
