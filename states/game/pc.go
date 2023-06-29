@@ -71,9 +71,6 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		deflectSfx:        ctx.Manager.GetAs("sounds", "deflect-sfx", (*resources.Sound)(nil)).(*resources.Sound),
 		shieldSfx:         ctx.Manager.GetAs("sounds", "shield-sfx", (*resources.Sound)(nil)).(*resources.Sound),
 		hurtSfx:           ctx.Manager.GetAs("sounds", "hurt-sfx", (*resources.Sound)(nil)).(*resources.Sound),
-		//
-		HasDeflect: true, // REMOVE THIS WHEN DONE TESTING
-		HasShield:  true, // REMOVE THIS WHEN DONE TESTING
 	}
 
 	// FIXME: This shouldn't be hardcoded.
