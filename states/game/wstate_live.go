@@ -26,13 +26,6 @@ func (w *WorldStateLive) Leave(s *World, ctx states.Context) {
 func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	var actorActions []ActorActions
 	for _, actor := range s.activeMap.actors {
-		// Don't process spawners if the map is cleared.
-		if _, ok := actor.(*Spawner); ok {
-			if s.activeMap.cleared {
-				continue
-			}
-		}
-
 		actorActions = append(actorActions, ActorActions{
 			Actor:   actor,
 			Actions: actor.Update(),
@@ -230,12 +223,6 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 
 	// Okay, this probably isn't great, but let's check bullet collisions here.
 	for _, bullet := range s.activeMap.bullets {
-		// Check for bullet collisions with walls.
-		if collision := s.activeMap.Collides(&bullet.Shape); collision != nil && collision.Cell.blockView {
-			bullet.Destroyed = true
-			continue
-		}
-
 		// Check for bullet collisions with actors.
 		for _, actor := range s.activeMap.actors {
 			// Check player collisions.
@@ -280,6 +267,12 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						}
 					}
 				}
+			}
+
+			// Check for bullet collisions with walls.
+			if collision := s.activeMap.Collides(&bullet.Shape); collision != nil && collision.Cell.blockView {
+				bullet.Destroyed = true
+				continue
 			}
 		}
 	}
@@ -420,11 +413,12 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 		if !actor.active {
 			if CheckConditions(actor.Conditions(), interactives, enemies) {
 				actor.IncreaseActivation(nil)
-				cell := s.activeMap.FindCellById(actor.ID())
-				if cell != nil {
-					cell.blockMove = false // No
-					cell.blockView = false // No
-				}
+			}
+		} else {
+			cell := s.activeMap.FindCellById(actor.ID())
+			if cell != nil {
+				cell.blockMove = false // No
+				cell.blockView = false // No
 			}
 		}
 	}
