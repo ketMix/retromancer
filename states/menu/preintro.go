@@ -18,7 +18,7 @@ func (p *PreIntro) Init(ctx states.Context) error {
 	if !ctx.CheckGPTKey() {
 		ctx.StateMachine.PopState(nil)
 	}
-	x, y := 640, 360
+	x, y := 1280, 720
 	centerX := x / 4
 	centerY := y / 4
 	p.buttons = append(p.buttons,

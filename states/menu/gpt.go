@@ -24,7 +24,7 @@ func (s *GPTOptions) Init(ctx states.Context) error {
 	s.gptKeyIsValid = ctx.CheckGPTKey()
 	s.click = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
-	x, y := 640, 360
+	x, y := 1280, 720
 	centerX := float64(x / 4)
 
 	s.style = &resources.InputItem{
@@ -131,7 +131,7 @@ func (s *GPTOptions) Draw(ctx states.DrawContext) {
 	for _, m := range s.inputs {
 		m.Draw(ctx)
 	}
-	x, y := 640, 360
+	x, y := 1280, 720
 
 	if !s.gptKeyIsValid {
 		ctx.Text.SetScale(1.0)
