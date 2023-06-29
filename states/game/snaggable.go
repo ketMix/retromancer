@@ -54,6 +54,8 @@ func (s *Snaggable) Update() (actions []Action) {
 			img = "life"
 		case "item-book":
 			img = "book"
+		case "item-shield":
+			img = "shield"
 		}
 		actions = append(actions, ActionSpawnParticle{
 			Img:   img,

@@ -73,7 +73,7 @@ runes:
     id: brazier2
   "x":
     sprite: empty
-    id: item-deflect
+    id: item-shield
   "s":
     sprite: empty
     id: shooter
@@ -149,7 +149,7 @@ actors:
     sprite: sign
     interactive:
       reversable: true
-      text: sign-deflect
+      text: sign-shield
   - id: npc1
     type: interactive
     sprite: npc
@@ -176,7 +176,7 @@ actors:
     type: snaggable
     sprite: item-life
 
-  - id: item-deflect
+  - id: item-shield
     type: snaggable
     sprite: item-shield
 

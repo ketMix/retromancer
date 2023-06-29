@@ -51,7 +51,7 @@ type ImpulseShield struct {
 }
 
 func (i ImpulseShield) Cost() int {
-	return 4
+	return 1
 }
 
 type ImpulseShoot struct {
