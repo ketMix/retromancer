@@ -44,12 +44,6 @@ runes:
     isometric: true
     blockMove: true
     blockView: true
-  "b":
-    sprite: empty
-    id: bat1
-  "B":
-    sprite: empty
-    id: bat2
   "s":
     sprite: empty
     id: sign

@@ -35,10 +35,10 @@ runes:
     id: brazier2
   "X":
     sprite: empty
-    id: boss-brazier1
+    id: brazier3
   "x":
     sprite: empty
-    id: boss-brazier2
+    id: brazier4
   "c":
     sprite: empty
     id: candle1
@@ -84,7 +84,7 @@ actors:
           args:
             - door
 
-  - id: boss-brazier1
+  - id: brazier3
     type: interactive
     sprite: brazier
     interactive:
@@ -93,7 +93,7 @@ actors:
           args:
             - candle1
             - candle2
-  - id: boss-brazier2
+  - id: brazier4
     type: interactive
     sprite: brazier
     interactive:
@@ -108,6 +108,7 @@ actors:
     sprite: candle
     interactive:
       reversable: true
+
   - id: candle2
     type: interactive
     sprite: candle
@@ -117,21 +118,21 @@ actors:
 layers:
   - |
 
-         ^*************D*************^
-        ^*LLLLLLLLLLLb...BLLLLLLLLLLL*^
-       ^*LL.........................LL*^
-      ^*LL...........................LL*^
-     ^*LL           X  S  x           LL*^
-     ^LL                               LL^
-     ^             .........             ^
-     ^            .         .            ^
-     ^           .           .           ^
-     ^           .  c  @  C  .           ^
-     ^           .           .           ^
-     ^            .         .            ^
-     ^             .........             ^
-     ^                                   ^
-     ^                                   ^
-     ^                                   ^
-     ^                                   ^
-     ^***********************************^
+    E    ^*************D*************^
+    E   ^*LLLLLLLLLLLb...BLLLLLLLLLLL*^
+    E  ^*LL.........................LL*^
+    E ^*LL...........................LL*^
+    E^*LL           X  S  x           LL*^
+    E^LL                               LL^
+    E^L            .........            L^
+    E^            .         .            ^
+    E^           .           .           ^
+    E^           .  c  @  C  .           ^
+    E^           .           .           ^
+    E^            .         .            ^
+    E^             .........             ^
+    E^                                   ^
+    E^                                   ^
+    E^                                   ^
+    E^                                   ^
+    E^***********************************^

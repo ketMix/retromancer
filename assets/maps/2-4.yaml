@@ -71,7 +71,6 @@ runes:
     blockView: true
     wall: true
     isometric: true
-    wall: true
   "W":
     sprite: empty
     id: wall1
