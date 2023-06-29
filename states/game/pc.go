@@ -53,6 +53,7 @@ type PC struct {
 	reflectSfx  *resources.Sound
 	deflectSfx  *resources.Sound
 	shieldSfx   *resources.Sound
+	hurtSfx     *resources.Sound
 }
 
 func (s *World) NewPC(ctx states.Context) *PC {
@@ -69,6 +70,7 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		reflectSfx:        ctx.Manager.GetAs("sounds", "reflect-sfx", (*resources.Sound)(nil)).(*resources.Sound),
 		deflectSfx:        ctx.Manager.GetAs("sounds", "deflect-sfx", (*resources.Sound)(nil)).(*resources.Sound),
 		shieldSfx:         ctx.Manager.GetAs("sounds", "shield-sfx", (*resources.Sound)(nil)).(*resources.Sound),
+		hurtSfx:           ctx.Manager.GetAs("sounds", "hurt-sfx", (*resources.Sound)(nil)).(*resources.Sound),
 		//
 		HasDeflect: true, // REMOVE THIS WHEN DONE TESTING
 		HasShield:  true, // REMOVE THIS WHEN DONE TESTING
@@ -333,6 +335,7 @@ func (p *PC) Hurtie() {
 	if p.InvulnerableTicks <= 0 {
 		p.Lives--
 		p.InvulnerableTicks = 40
+		p.hurtSfx.Play(0.5)
 	}
 }
 
