@@ -92,6 +92,7 @@ func main() {
 
 	// Initialize audio.
 	audio.NewContext(44100)
+	game.MusicPlayer.SetVolume(0.5) // Default to 50% volume.
 
 	// Set initial mute/volume
 	if game.Flags.Muted {
