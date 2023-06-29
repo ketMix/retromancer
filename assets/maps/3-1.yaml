@@ -108,6 +108,9 @@ runes:
   "l":
     sprite: empty
     id: life2
+  "j":
+    sprite: empty
+    id: life3
 
   "z":
     sprite: empty
@@ -274,6 +277,10 @@ actors:
     type: snaggable
     sprite: item-life
 
+  - id: life3
+    type: snaggable
+    sprite: item-life
+
   # Signs
   - id: sign-3-1-1
     type: interactive
@@ -295,9 +302,9 @@ layers:
   - |
     E^.^*****............*^**D**^
     E*.*~~~~~ df  eg  hi ~*B . H*
-    E*.*~~~~~~~~~~~~~~~~~~*  .  *
-    E*.*~~~~~~~~~~~~~~~~~~* z.  *
-    E*.*~~.....~~~.....~~~*l . L*
+    E*.*~~~~~~~~~~~~~~~~~~*  . j*
+    E*.*~~~~~~~~~~~~~~~~~~* z. l*
+    E*.*~~.....~~~.....~~~*  . L*
     E*.*~~.~~~.~~~.~~~.~~~^* . *^
     E*.0~~.~~~.~~~.~~~.~~~*  .  *
     E*.1~~.~~~.~~~.~~~.~~~*  .  *
