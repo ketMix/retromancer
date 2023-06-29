@@ -13,6 +13,7 @@ type Credits struct {
 	clickSound *resources.Sound
 	items      []resources.MenuItem
 	sections   []CreditSection
+	jam        *resources.Sprite
 	logo       *resources.Sprite
 	backItem   *resources.TextItem
 	overlay    game.Overlay
@@ -44,6 +45,10 @@ func (c *Credits) Init(ctx states.Context) error {
 		},
 	}
 	c.items = append(c.items, c.backItem)
+
+	c.jam = resources.NewSprite(ctx.Manager.GetAs("images", "jam", (*ebiten.Image)(nil)).(*ebiten.Image))
+	c.jam.X = 80
+	c.jam.Y = c.logo.Y + c.logo.Height()/2 + 20
 
 	x := 320.0
 	y := c.logo.Y + c.logo.Height()/2
@@ -144,6 +149,11 @@ func (c *Credits) Update(ctx states.Context) error {
 	}
 
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
+		if c.jam.Hit(float64(x), float64(y)) {
+			OpenURL("https://itch.io/jam/ebitengine-game-jam-2023")
+			return nil
+		}
+
 		for _, b := range c.items {
 			if b.Hovered() {
 				if b.Activate() {
@@ -167,6 +177,7 @@ func (c *Credits) Update(ctx states.Context) error {
 
 func (c *Credits) Draw(ctx states.DrawContext) {
 	c.logo.Draw(ctx)
+	c.jam.Draw(ctx)
 	for _, b := range c.items {
 		b.Draw(ctx)
 	}
