@@ -17,7 +17,7 @@ func (i *Intro) Init(ctx states.Context) error {
 	return nil
 }
 
-func (i *Intro) Enter(ctx states.Context) error {
+func (i *Intro) Enter(ctx states.Context, v interface{}) error {
 	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "title-intro", (*resources.Song)(nil)).(states.Song))
 
 	i.vfx.SetMode(resources.Sequential)
@@ -77,7 +77,7 @@ func (i *Intro) Finalize(ctx states.Context) error {
 
 func (i *Intro) Update(ctx states.Context) error {
 	if ebiten.IsKeyPressed(ebiten.KeyEnter) || ebiten.IsKeyPressed(ebiten.KeyEscape) || i.vfx.Empty() {
-		ctx.StateMachine.PopState()
+		ctx.StateMachine.PopState(nil)
 	}
 
 	return nil

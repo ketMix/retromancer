@@ -32,7 +32,7 @@ func (w *WorldStateDead) Tick(s *World, ctx states.Context) {
 		s.PushState(&WorldStateLive{}, ctx)
 		s.ResetActiveMap(ctx)
 	} else if s.DoPlayersShareThought(QuitThought{}) {
-		ctx.StateMachine.PopState()
+		ctx.StateMachine.PopState(nil)
 	}
 }
 

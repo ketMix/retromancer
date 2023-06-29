@@ -75,7 +75,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 		X:           350,
 		Y:           20,
 		Width:       150,
-		Placeholder: ctx.L("Lobby or Address"),
+		Placeholder: ctx.L("Address"),
 		Callback: func() bool {
 			return false
 		},
@@ -132,7 +132,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 		Y:    335,
 		Callback: func() bool {
 			s.clickSound.Play(1.0)
-			ctx.StateMachine.PopState()
+			ctx.StateMachine.PopState(nil)
 			return false
 		},
 	}
@@ -145,7 +145,7 @@ func (s *Lobby) Finalize(ctx states.Context) error {
 	return nil
 }
 
-func (s *Lobby) Enter(ctx states.Context) error {
+func (s *Lobby) Enter(ctx states.Context, v interface{}) error {
 	return nil
 }
 
@@ -251,7 +251,7 @@ func (s *Lobby) Update(ctx states.Context) error {
 			players[i] = e.player
 		}
 		// FIXME: Need to agree w/ players to start (or assume host has full control).
-		ctx.StateMachine.PopState()
+		ctx.StateMachine.PopState(nil)
 		ctx.StateMachine.PushState(&game.World{
 			StartingMap: "start",
 			ShowHints:   true,

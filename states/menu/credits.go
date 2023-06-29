@@ -40,7 +40,7 @@ func (c *Credits) Init(ctx states.Context) error {
 		Y:    335,
 		Callback: func() bool {
 			c.clickSound.Play(1.0)
-			ctx.StateMachine.PopState()
+			ctx.StateMachine.PopState(nil)
 			return false
 		},
 	}
@@ -130,7 +130,7 @@ func (c *Credits) Init(ctx states.Context) error {
 	return nil
 }
 
-func (c *Credits) Enter(ctx states.Context) error {
+func (c *Credits) Enter(ctx states.Context, v interface{}) error {
 	return nil
 }
 

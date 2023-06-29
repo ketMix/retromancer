@@ -92,8 +92,20 @@ func (m *Menu) Finalize(ctx states.Context) error {
 	return nil
 }
 
-func (m *Menu) Enter(ctx states.Context) error {
+func (m *Menu) Enter(ctx states.Context, v interface{}) error {
 	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "title-menu", (*resources.Song)(nil)).(states.Song))
+
+	if v, ok := v.(bool); ok && v {
+		m.bg1.Hidden = false
+		m.bg1logo.Hidden = false
+		m.bg2.Hidden = true
+		m.bg2logo.Hidden = true
+	} else {
+		m.bg2.Hidden = false
+		m.bg2logo.Hidden = false
+		m.bg1.Hidden = true
+		m.bg1logo.Hidden = true
+	}
 
 	return nil
 }
@@ -122,10 +134,12 @@ func (m *Menu) Update(ctx states.Context) error {
 func (m *Menu) Draw(ctx states.DrawContext) {
 	if !m.firstVfx.Empty() {
 		m.bg2logo.Draw(ctx)
+		m.bg1logo.Draw(ctx)
 		m.firstVfx.Process(ctx, nil)
 		return
 	}
 	m.bg2.Draw(ctx)
+	m.bg1.Draw(ctx)
 
 	for _, sprite := range m.sprites {
 		sprite.Draw(ctx)
@@ -144,4 +158,5 @@ func (m *Menu) Draw(ctx states.DrawContext) {
 
 	m.secondVfx.Process(ctx, nil)
 	m.bg2logo.Draw(ctx)
+	m.bg1logo.Draw(ctx)
 }

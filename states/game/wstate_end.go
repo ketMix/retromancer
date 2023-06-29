@@ -165,7 +165,7 @@ func (w *WorldStateEnd) Tick(s *World, ctx states.Context) {
 		return
 	}
 
-	ctx.StateMachine.PopState()
+	ctx.StateMachine.PopState(len(s.savedNPCs) >= 14)
 }
 
 func (w *WorldStateEnd) Draw(s *World, ctx states.DrawContext) {

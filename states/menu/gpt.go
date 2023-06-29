@@ -69,7 +69,7 @@ func (s *GPTOptions) Init(ctx states.Context) error {
 		Y:    335,
 		Callback: func() bool {
 			s.click.Play(1.0)
-			ctx.StateMachine.PopState()
+			ctx.StateMachine.PopState(nil)
 			return false
 		},
 	}
@@ -82,7 +82,7 @@ func (s *GPTOptions) Finalize(ctx states.Context) error {
 	return nil
 }
 
-func (s *GPTOptions) Enter(ctx states.Context) error {
+func (s *GPTOptions) Enter(ctx states.Context, v interface{}) error {
 	return nil
 }
 
