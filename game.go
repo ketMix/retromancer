@@ -39,7 +39,7 @@ func (g *Game) PushState(state states.State) {
 	state.Init(ctx)
 }
 
-func (g *Game) PopState() {
+func (g *Game) PopState(v interface{}) {
 	if len(g.States) == 0 {
 		return
 	}
@@ -57,7 +57,7 @@ func (g *Game) PopState() {
 	}
 	g.States[len(g.States)-1].Finalize(ctx)
 	g.States = g.States[:len(g.States)-1]
-	g.States[len(g.States)-1].Enter(ctx)
+	g.States[len(g.States)-1].Enter(ctx, v)
 }
 
 func (g *Game) Init() error {

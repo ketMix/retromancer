@@ -29,7 +29,7 @@ func (l *Loading) Init(ctx states.Context) error {
 	return nil
 }
 
-func (l *Loading) Enter(ctx states.Context) error {
+func (l *Loading) Enter(ctx states.Context, v interface{}) error {
 	return nil
 }
 
@@ -43,8 +43,8 @@ func (l *Loading) Update(ctx states.Context) error {
 		ctx.SetLocale(ctx.Locale(), true)
 
 		// Pop the loading and the GPT question screen
-		ctx.StateMachine.PopState()
-		ctx.StateMachine.PopState()
+		ctx.StateMachine.PopState(nil)
+		ctx.StateMachine.PopState(nil)
 	}
 	return nil
 }

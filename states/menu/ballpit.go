@@ -16,12 +16,12 @@ func (s *Ballpit) Finalize(ctx states.Context) error {
 	return nil
 }
 
-func (s *Ballpit) Enter(ctx states.Context) error {
+func (s *Ballpit) Enter(ctx states.Context, v interface{}) error {
 	return nil
 }
 
 func (s *Ballpit) Update(ctx states.Context) error {
-	ctx.StateMachine.PopState()
+	ctx.StateMachine.PopState(nil)
 	world := game.World{
 		StartingMap: "ballpit",
 		Players: []game.Player{

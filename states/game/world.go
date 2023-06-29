@@ -148,7 +148,7 @@ func (s *World) Finalize(ctx states.Context) error {
 	return nil
 }
 
-func (s *World) Enter(ctx states.Context) error {
+func (s *World) Enter(ctx states.Context, v interface{}) error {
 	return nil
 }
 

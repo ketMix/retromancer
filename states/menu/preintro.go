@@ -16,7 +16,7 @@ type PreIntro struct {
 
 func (p *PreIntro) Init(ctx states.Context) error {
 	if !ctx.CheckGPTKey() {
-		ctx.StateMachine.PopState()
+		ctx.StateMachine.PopState(nil)
 	}
 	x, y := ebiten.WindowSize()
 	centerX := x / 4
@@ -36,7 +36,7 @@ func (p *PreIntro) Init(ctx states.Context) error {
 			X:    float64(centerX) + 25,
 			Y:    float64(centerY) + 100,
 			Callback: func() bool {
-				ctx.StateMachine.PopState()
+				ctx.StateMachine.PopState(nil)
 				return false
 			},
 		},
@@ -60,7 +60,7 @@ func (p *PreIntro) Init(ctx states.Context) error {
 	return nil
 }
 
-func (p *PreIntro) Enter(ctx states.Context) error {
+func (p *PreIntro) Enter(ctx states.Context, v interface{}) error {
 	return nil
 }
 
