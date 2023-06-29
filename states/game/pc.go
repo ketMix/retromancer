@@ -38,6 +38,8 @@ type PC struct {
 	HasDeflect                bool
 	HasShield                 bool
 	//
+	shielding bool
+	//
 	previousInteraction Action
 	//
 	impulses    ImpulseSet
