@@ -172,6 +172,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				e := CreateEnemy(ctx, action.ID, action.Name)
 				e.SetXY(action.X, action.Y)
 				s.activeMap.actors = append(s.activeMap.actors, e)
+				s.activeMap.enemies = append(s.activeMap.enemies, e)
 			case ActionFindNearestActor:
 				if e, ok := actor.(*Enemy); ok {
 					target := s.FindNearestActor(&e.shape, action.Actor)

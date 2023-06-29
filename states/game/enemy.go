@@ -80,6 +80,7 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 	}
 
 	return &Enemy{
+		id:         id,
 		ctx:        &ctx,
 		state:      firstState,
 		sprite:     aliveSprite,
@@ -147,22 +148,19 @@ func (e *Enemy) Update() (a []Action) {
 			e.deadSfx.Play(0.5) // TODO: use global volume setting?
 			for _, spawn := range e.spawnOnDeath {
 				a = append(a, ActionSpawnEnemy{
-					ID:   "",
+					ID:   spawn,
 					Name: spawn,
 					X:    e.shape.X,
 					Y:    e.shape.Y,
 				})
 			}
 			if e.nextPhase != "" {
-				nextPhase := CreateEnemy(*e.ctx, e.id, e.nextPhase)
-				e.health = nextPhase.health
-				e.speed = nextPhase.speed
-				e.sprite = nextPhase.sprite
-				e.deadSprite = nextPhase.deadSprite
-				e.spawner = nextPhase.spawner
-				e.nextPhase = nextPhase.nextPhase
-				e.hasDied = false
-				e.spawnOnDeath = nextPhase.spawnOnDeath
+				a = append(a, ActionSpawnEnemy{
+					ID:   e.nextPhase,
+					Name: e.nextPhase,
+					X:    e.shape.X,
+					Y:    e.shape.Y,
+				})
 			}
 		}
 		e.deadSprite.Update()
