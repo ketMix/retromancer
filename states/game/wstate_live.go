@@ -461,6 +461,22 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 		}
 	}
 
+	// Bad check for final boss logic.
+	if s.activeMap.filename == "3-boss" {
+		for _, e := range enemies {
+			if e.friendly {
+				// Destroy all bullets once the lich b. dead.
+				s.activeMap.bullets = make([]*Bullet, 0)
+				if len(s.savedNPCs) < 14 { // In theory npcs + stump should = 14
+					e.Damage(50)
+					if !e.IsAlive() {
+						e.friendly = false
+					}
+				}
+			}
+		}
+	}
+
 	// Check our map conditions if not yet cleared
 	if !s.activeMap.cleared {
 		if CheckConditions(s.activeMap.conditions, interactives, enemies) {

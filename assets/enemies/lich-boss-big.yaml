@@ -87,3 +87,5 @@ bullets:
       color: [255, 0, 0, 0]
       aimDelay: 0
       aimTime: 0
+spawnOnDeath:
+  - lich-okay

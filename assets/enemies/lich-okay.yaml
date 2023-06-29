@@ -1,6 +1,6 @@
 sprite: lich-okay
 framerate: 10
-health: 9999
+health: 1000
 speed: 4
 behavior: random
 wander: true
