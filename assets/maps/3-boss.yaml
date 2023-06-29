@@ -1,5 +1,8 @@
 title: Lich
 music: final-boss
+vfx: 
+  - type: "darkness"
+    duration: 2s
 runes:
   "@":
     sprite: empty
@@ -264,6 +267,7 @@ actors:
     type: interactive
     sprite: brazier
     interactive:
+      removeVFX: ["darkness"]
       conditions:
         - type: active
           args:
@@ -555,21 +559,21 @@ layers:
     E
     E
     E
-    E     ^*************D*************^
-    E    ^*LLLLLLLLLLLb...BLLLLLLLLLLL*^
-    E   ^*LL.........................LL*^
-    E  ^*LL...........................LL*^
-    E ^*LL           X  S  x           LL*^
-    E ^LL            ![$%&()QW          LL^
-    E ^L            0.........R          L^
-    E ^            1.         .T          ^
-    E ^           2.           .Y         ^
-    E ^           3.  c  @  C  .U         ^
-    E ^           4.           .O         ^
-    E ^            5.         .P          ^
-    E ^             6.........J           ^
-    E ^              Kz;]'-ZVN            ^
-    E ^                                   ^
-    E ^                                   ^
-    E ^                                   ^
-    E ^***********************************^
+    E    ^*************D*************^
+    E   ^*LLLLLLLLLLLb...BLLLLLLLLLLL*^
+    E  ^*LL.........................LL*^
+    E ^*LL...........................LL*^
+    E^*LL           X  S  x           LL*^
+    E^LL            ![$%&()QW          LL^
+    E^L            0.........R          L^
+    E^            1.         .T          ^
+    E^           2.           .Y         ^
+    E^           3.  c  @  C  .U         ^
+    E^           4.           .O         ^
+    E^            5.         .P          ^
+    E^             6.........J           ^
+    E^              Kz;]'-ZVN            ^
+    E^                                   ^
+    E^                                   ^
+    E^                                   ^
+    E^***********************************^
