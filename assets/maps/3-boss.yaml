@@ -218,7 +218,18 @@ runes:
     id: wall32
     blockMove: true
     blockView: true
-
+  "y":
+    sprite: empty
+    id: life1
+  "u":
+    sprite: empty
+    id: life2
+  "i":
+    sprite: empty
+    id: life3
+  "o":
+    sprite: empty
+    id: life4
 actors:
   # Door
   - id: door
@@ -231,6 +242,20 @@ actors:
           args:
             - lich-boss-big
   
+  # Snagable
+  - id: life1
+    type: snaggable
+    sprite: item-life
+  - id: life2
+    type: snaggable
+    sprite: item-life
+  - id: life3
+    type: snaggable
+    sprite: item-life
+  - id: life4
+    type: snaggable
+    sprite: item-life
+
   # Enemy
   - id: lich-boss
     type: enemy
@@ -562,7 +587,7 @@ layers:
     E^*LL.          X  S  x          .LL*^
     E^LL.                             .LL^
     E^LL.                             .LL^
-    E^LL.          ![$%&()QW          .LL^
+    E^LL.  y       ![$%&()QW       i  .LL^
     E^LL.         0.........R         .LL^
     E^LL.        1.         .T        .LL^
     E^LL.       2.           .Y       .LL^
@@ -571,7 +596,7 @@ layers:
     E^LL.        5.         .P        .LL^
     E^LL.         6.........J         .LL^
     E^LL.          Kz;]'-ZVN          .LL^
-    E^LL.                             .LL^
+    E^LL.  u                       o  .LL^
     E^LL.                             .LL^
     E^LL...............................LL^
     E^LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL

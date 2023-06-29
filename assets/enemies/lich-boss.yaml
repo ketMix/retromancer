@@ -1,6 +1,6 @@
 sprite: lich-boss
 framerate: 20
-health: 500
+health: 300
 speed: 4
 behavior: random
 bullets:
@@ -41,38 +41,36 @@ bullets:
 # Radial
   - alias: echo
     bulletCount: 100
-    spawnRate: 200
-    lastSpawnedAt: 0
+    spawnRate: 100
+    lastSpawnedAt: 50
     bullet:
       bulletType: directional
       speed: 1
-      accelAccel: 0.005
-      angularVelocity: 0.05
       color: [255, 0, 0, 0]
       aimDelay: 0
       aimTime: 0
-  - alias: echo
-    bulletCount: 100
-    spawnRate: 200
-    lastSpawnedAt: 10
-    bullet:
-      bulletType: directional
-      speed: 1
-      accelAccel: 0.005
-      color: [255, 0, 0, 0]
-      aimDelay: 0
-      aimTime: 0
-  - alias: echo
-    bulletCount: 100
-    spawnRate: 200
-    lastSpawnedAt: 20
-    bullet:
-      bulletType: directional
-      speed: 1
-      accelAccel: 0.005
-      angularVelocity: -0.05
-      color: [255, 0, 0, 0]
-      aimDelay: 0
-      aimTime: 0
+  # - alias: echo
+  #   bulletCount: 100
+  #   spawnRate: 250
+  #   lastSpawnedAt: 10
+  #   bullet:
+  #     bulletType: directional
+  #     speed: 1
+  #     accelAccel: 0.005
+  #     color: [255, 0, 0, 0]
+  #     aimDelay: 0
+  #     aimTime: 0
+  # - alias: echo
+  #   bulletCount: 100
+  #   spawnRate: 250
+  #   lastSpawnedAt: 20
+  #   bullet:
+  #     bulletType: directional
+  #     speed: 1
+  #     accelAccel: 0.005
+  #     angularVelocity: -0.05
+  #     color: [255, 0, 0, 0]
+  #     aimDelay: 0
+  #     aimTime: 0
 spawnOnDeath:
   - lich-boss-big
