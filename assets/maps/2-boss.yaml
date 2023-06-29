@@ -7,7 +7,7 @@ runes:
     sprite: empty
   "s":
     sprite: empty
-    id: bat-boss
+    id: skell-boss
   "*":
     sprite: wall
     blockMove: true
@@ -44,9 +44,9 @@ actors:
     sprite: door
   
   # Enemy
-  - id: bat-boss
+  - id: skell-boss
     type: enemy
-    sprite: bat-boss
+    sprite: skell-boss
 
 layers:
   - |

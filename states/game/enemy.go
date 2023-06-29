@@ -33,6 +33,8 @@ type Enemy struct {
 	speed             int
 	behavior          string
 	nextPhase         string
+	hasDied           bool // Set to true during Update when health < 0
+	spawnOnDeath      []string
 	spawner           *Spawner
 	invulnerableTicks int // Ticks the enemy should be invulnerable for
 	hitAccumulator    int // Hits accumulated.
@@ -88,12 +90,13 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 			Width:  aliveSprite.Width(),
 			Height: aliveSprite.Height(),
 		},
-		health:      enemyDef.Health,
-		speed:       enemyDef.Speed,
-		behavior:    enemyDef.Behavior,
-		alwaysShoot: enemyDef.AlwaysShoot,
-		spawner:     spawner,
-		nextPhase:   enemyDef.NextPhase,
+		health:       enemyDef.Health,
+		speed:        enemyDef.Speed,
+		behavior:     enemyDef.Behavior,
+		alwaysShoot:  enemyDef.AlwaysShoot,
+		spawner:      spawner,
+		nextPhase:    enemyDef.NextPhase,
+		spawnOnDeath: enemyDef.SpawnOnDeath,
 	}
 }
 
@@ -139,6 +142,27 @@ func (e *Enemy) Update() (a []Action) {
 	}
 
 	if e.health <= 0 {
+		if !e.hasDied {
+			e.hasDied = true
+			e.deadSfx.Play(0.5) // TODO: use global volume setting?
+			if e.nextPhase != "" {
+				nextPhase := CreateEnemy(*e.ctx, e.id, e.nextPhase)
+				e.health = nextPhase.health
+				e.speed = nextPhase.speed
+				e.sprite = nextPhase.sprite
+				e.deadSprite = nextPhase.deadSprite
+				e.spawner = nextPhase.spawner
+				e.nextPhase = nextPhase.nextPhase
+			}
+			for _, spawn := range e.spawnOnDeath {
+				a = append(a, ActionSpawnEnemy{
+					ID:   "",
+					Name: spawn,
+					X:    e.shape.X,
+					Y:    e.shape.Y,
+				})
+			}
+		}
 		e.deadSprite.Update()
 	} else {
 		e.sprite.Update()
@@ -183,18 +207,7 @@ func (e *Enemy) Damage(amount int) bool {
 	}
 
 	e.health -= amount
-	if e.health <= 0 {
-		e.deadSfx.Play(0.5) // TODO: use global volume setting?
-		if e.nextPhase != "" {
-			nextPhase := CreateEnemy(*e.ctx, e.id, e.nextPhase)
-			e.health = nextPhase.health
-			e.speed = nextPhase.speed
-			e.sprite = nextPhase.sprite
-			e.deadSprite = nextPhase.deadSprite
-			e.spawner = nextPhase.spawner
-			e.nextPhase = nextPhase.nextPhase
-		}
-	} else {
+	if e.health > 0 {
 		if e.ticksUntilSfx <= 0 {
 			e.ticksUntilSfx = 10
 			e.hitSfx.Play(0.5) // TODO: use global volume setting?

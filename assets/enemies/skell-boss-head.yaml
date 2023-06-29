@@ -1,0 +1,16 @@
+sprite: skell-boss-head
+framerate: 4
+health: 200
+speed: 6
+behavior: random
+wander: true
+alwaysShoot: true
+bullets:
+  - alias: echo
+    spawnRate: 100
+    lastSpawnedAt: 40
+  - alias: chakra
+    spawnRate: 100
+    lastSpawnedAt: 20
+    bullet:
+      color: [255, 0, 0, 255]
