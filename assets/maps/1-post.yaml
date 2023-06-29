@@ -44,15 +44,6 @@ runes:
     isometric: true
     blockMove: true
     blockView: true
-  "b":
-    sprite: empty
-    id: bat1
-  "B":
-    sprite: empty
-    id: bat2
-  "s":
-    sprite: empty
-    id: sign
   "L":
     sprite: empty
     id: life
@@ -187,10 +178,10 @@ layers:
 
 
     E            ^*****D*****^
-    E            ^   b...B C ^
+    E            ^   b...B   ^
+    E            ^   ..... C ^
     E            ^   .....   ^
     E            ^ s .....   ^
-    E            ^   .....   ^
     E            ^    G      ^
     E            ^~~~~~~~~~~~^
     E            ^~ S       ~^
