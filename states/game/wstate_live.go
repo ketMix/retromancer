@@ -79,6 +79,10 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			case ActionReflect:
 				reflecting = true
 				x, y, _, _ := actor.Bounds()
+				// Adjust x and y by the direction the actor wishes to shoot.
+				a := math.Atan2(action.Y-y, action.X-x)
+				x += math.Cos(a) * 6
+				y += math.Sin(a) * 6
 				if !s.activeMap.DoesLineCollide(x, y, action.X, action.Y, s.activeMap.currentZ) {
 
 					// Reflect bullets
@@ -135,6 +139,10 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			case ActionDeflect:
 				deflecting = true
 				x, y, _, _ := actor.Bounds()
+				// Adjust x and y by the direction the actor wishes to shoot.
+				a := math.Atan2(action.Y-y, action.X-x)
+				x += math.Cos(a) * 6
+				y += math.Sin(a) * 6
 				if !s.activeMap.DoesLineCollide(x, y, action.X, action.Y, s.activeMap.currentZ) {
 					bullets := s.IntersectingBullets(&CircleShape{
 						X:      action.X,
