@@ -63,6 +63,7 @@ type TextItem struct {
 	renderRect fract.Rect
 	hovered    bool
 	Text       string
+	Underline  bool
 	Callback   func() bool
 	hidden     bool
 }
@@ -117,6 +118,10 @@ func (t *TextItem) Draw(ctx states.DrawContext) {
 
 	ctx.Text.SetColor(color.NRGBA{0xff, 0xff, 0xff, 0xff})
 	ctx.Text.Draw(ctx.Screen, t.Text, int(t.X), int(t.Y))
+
+	if t.Underline {
+		vector.StrokeLine(ctx.Screen, t.renderRect.Min.X.ToFloat32(), t.renderRect.Max.Y.ToFloat32(), t.renderRect.Max.X.ToFloat32(), t.renderRect.Max.Y.ToFloat32(), 1, color.NRGBA{0xff, 0xff, 0xff, 0xff}, false)
+	}
 }
 
 type ButtonItem struct {

@@ -54,7 +54,7 @@ func (m *Menu) Init(ctx states.Context) error {
 		Y:    y,
 		Callback: func() bool {
 			m.click.Play(1.0)
-			//ctx.StateMachine.PushState(&Credits{})
+			ctx.StateMachine.PushState(&Credits{})
 			return true
 		},
 	}
@@ -132,7 +132,7 @@ func (m *Menu) Draw(ctx states.DrawContext) {
 	}
 
 	x := 40
-	y := m.bg2logo.Height() + 20
+	y := m.bg2logo.Height() + 25
 	for _, button := range m.buttons {
 		button.X = float64(x)
 		button.Y = y
