@@ -344,11 +344,13 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						case "item-life":
 							if pc.Lives < playerMaxLives {
 								sn.destroyed = true
+								ctx.Manager.GetAs("sounds", "item", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
 								pc.Lives++
 							}
 						case "item-book":
 							pc.HasDeflect = true
 							sn.destroyed = true
+							ctx.Manager.GetAs("sounds", "book", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
 							for _, p := range s.Players {
 								if pl, ok := p.(*LocalPlayer); ok {
 									if _, ok := pl.actor.(*PC); ok {
@@ -365,6 +367,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						case "item-shield":
 							pc.HasShield = true
 							sn.destroyed = true
+							ctx.Manager.GetAs("sounds", "book", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
 							for _, p := range s.Players {
 								if pl, ok := p.(*LocalPlayer); ok {
 									if _, ok := pl.actor.(*PC); ok {
