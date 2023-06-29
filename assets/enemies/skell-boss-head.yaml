@@ -1,6 +1,6 @@
 sprite: skell-boss-head
 framerate: 4
-health: 200
+health: 100
 speed: 8
 behavior: random
 wander: true
