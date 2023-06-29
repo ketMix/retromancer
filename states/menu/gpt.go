@@ -131,7 +131,7 @@ func (s *GPTOptions) Draw(ctx states.DrawContext) {
 	for _, m := range s.inputs {
 		m.Draw(ctx)
 	}
-	x, y := ebiten.WindowSize()
+	x, y := 640, 360
 
 	if !s.gptKeyIsValid {
 		ctx.Text.SetScale(1.0)

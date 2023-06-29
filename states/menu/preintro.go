@@ -18,7 +18,7 @@ func (p *PreIntro) Init(ctx states.Context) error {
 	if !ctx.CheckGPTKey() {
 		ctx.StateMachine.PopState(nil)
 	}
-	x, y := ebiten.WindowSize()
+	x, y := 640, 360
 	centerX := x / 4
 	centerY := y / 4
 	p.buttons = append(p.buttons,
