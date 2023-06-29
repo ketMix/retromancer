@@ -8,6 +8,7 @@ type Enemy struct {
 	Behavior     string         `yaml:"behavior"`
 	Wander       bool           `yaml:"wander"`
 	AlwaysShoot  bool           `yaml:"alwaysShoot"`
+	Friendly     bool           `yaml:"friendly"`
 	Bullets      []*BulletGroup `yaml:"bullets"`
 	NextPhase    string         `yaml:"nextPhase"`
 	SpawnOnDeath []string       `yaml:"spawnOnDeath"`

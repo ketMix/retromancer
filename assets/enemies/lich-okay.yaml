@@ -1,0 +1,7 @@
+sprite: lich-okay
+framerate: 10
+health: 9999
+speed: 4
+behavior: random
+wander: true
+friendly: true

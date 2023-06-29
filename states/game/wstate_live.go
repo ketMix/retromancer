@@ -163,6 +163,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				})
 				for _, bullet := range bullets {
 					bullet.holdFor = 30
+					bullet.TargetActor = nil
+					bullet.aimTime = 0
 				}
 			case ActionSpawnBullets:
 				s.activeMap.bullets = append(s.activeMap.bullets, action.Bullets...)
@@ -244,6 +246,10 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				if p, ok := actor.(*PC); ok {
 					// Prevent taking damage while shielding and while having invuln ticks.
 					if p.InvulnerableTicks > 0 || p.shielding {
+						if bullet.Shape.Collides(actor.Shape()) {
+							bullet.TargetActor = nil
+							bullet.aimTime = 0
+						}
 						continue
 					}
 					if bullet.Shape.Collides(actor.Shape()) {
@@ -398,7 +404,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				// Check enemy collisions.
 				if pc.InvulnerableTicks <= 0 && !pc.shielding {
 					if e, ok := actor.(*Enemy); ok {
-						if e.IsAlive() && e.Shape().Collides(pl.Actor().Shape()) {
+						if !e.friendly && e.IsAlive() && e.Shape().Collides(pl.Actor().Shape()) {
 							pc.Hurtie()
 						}
 					}
