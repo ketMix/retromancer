@@ -24,7 +24,7 @@ func (s *GPTOptions) Init(ctx states.Context) error {
 	s.gptKeyIsValid = ctx.CheckGPTKey()
 	s.click = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
-	x, y := ebiten.WindowSize()
+	x, y := 640, 360
 	centerX := float64(x / 4)
 
 	s.style = &resources.InputItem{
