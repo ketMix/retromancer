@@ -50,6 +50,171 @@ runes:
   "S":
     sprite: empty
     id: lich-boss
+  "!":
+    sprite: empty
+    id: wall0
+    blockMove: true
+    blockView: true
+  "[":
+    sprite: empty
+    id: wall1
+    blockMove: true
+    blockView: true
+  "$":
+    sprite: empty
+    id: wall2
+    blockMove: true
+    blockView: true
+  "%":
+    sprite: empty
+    id: wall3
+    blockMove: true
+    blockView: true
+  "&":
+    sprite: empty
+    id: wall4
+    blockMove: true
+    blockView: true
+  "(":
+    sprite: empty
+    id: wall5
+    blockMove: true
+    blockView: true
+  ")":
+    sprite: empty
+    id: wall6
+    blockMove: true
+    blockView: true
+  "Q":
+    sprite: empty
+    id: wall7
+    blockMove: true
+    blockView: true
+  "W":
+    sprite: empty
+    id: wall8
+    blockMove: true
+    blockView: true
+  "R":
+    sprite: empty
+    id: wall9
+    blockMove: true
+    blockView: true
+  "T":
+    sprite: empty
+    id: wall10
+    blockMove: true
+    blockView: true
+  "Y":
+    sprite: empty
+    id: wall11
+    blockMove: true
+    blockView: true
+  "U":
+    sprite: empty
+    id: wall12
+    blockMove: true
+    blockView: true
+  "O":
+    sprite: empty
+    id: wall13
+    blockMove: true
+    blockView: true
+  "P":
+    sprite: empty
+    id: wall14
+    blockMove: true
+    blockView: true
+  "J":
+    sprite: empty
+    id: wall15
+    blockMove: true
+    blockView: true
+  "K":
+    sprite: empty
+    id: wall16
+    blockMove: true
+    blockView: true
+  "z":
+    sprite: empty
+    id: wall17
+    blockMove: true
+    blockView: true
+  ";":
+    sprite: empty
+    id: wall18
+    blockMove: true
+    blockView: true
+  "]":
+    sprite: empty
+    id: wall19
+    blockMove: true
+    blockView: true
+  "'":
+    sprite: empty
+    id: wall20
+    blockMove: true
+    blockView: true
+  "-":
+    sprite: empty
+    id: wall21
+    blockMove: true
+    blockView: true
+  "Z":
+    sprite: empty
+    id: wall22
+    blockMove: true
+    blockView: true
+  "V":
+    sprite: empty
+    id: wall23
+    blockMove: true
+    blockView: true
+  "N":
+    sprite: empty
+    id: wall24
+    blockMove: true
+    blockView: true
+  "M":
+    sprite: empty
+    id: wall25
+    blockMove: true
+    blockView: true
+  "0":
+    sprite: empty
+    id: wall26
+    blockMove: true
+    blockView: true
+  "1":
+    sprite: empty
+    id: wall27
+    blockMove: true
+    blockView: true
+  "2":
+    sprite: empty
+    id: wall28
+    blockMove: true
+    blockView: true
+  "3":
+    sprite: empty
+    id: wall29
+    blockMove: true
+    blockView: true
+  "4":
+    sprite: empty
+    id: wall30
+    blockMove: true
+    blockView: true
+  "5":
+    sprite: empty
+    id: wall31
+    blockMove: true
+    blockView: true
+  "6":
+    sprite: empty
+    id: wall32
+    blockMove: true
+    blockView: true
 
 actors:
   # Door
@@ -117,24 +282,294 @@ actors:
     interactive:
       reversable: true
 
+# WALLS
+  - id: wall0
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - candle1
+            - candle2
+  - id: wall1
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall0
+  - id: wall2
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall1
+  - id: wall3
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall2
+  - id: wall4
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall3
+  - id: wall5
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall4
+  - id: wall6
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall5
+  - id: wall7
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall6
+  - id: wall8
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall7
+  - id: wall9
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall8
+  - id: wall10
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall9
+  - id: wall11
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall10
+  - id: wall12
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall11
+  - id: wall13
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall12
+  - id: wall14
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall13
+  - id: wall15
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall14
+  - id: wall16
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall15
+  - id: wall17
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall16
+  - id: wall18
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall17
+  - id: wall19
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall18
+  - id: wall20
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall19
+  - id: wall21
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall20
+  - id: wall22
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall21
+  - id: wall23
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall22
+  - id: wall24
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall23
+  - id: wall25
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall24
+  - id: wall26
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall25
+  - id: wall27
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall26
+  - id: wall28
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall27
+  - id: wall29
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall28
+  - id: wall30
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall29
+  - id: wall31
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall30
+  - id: wall32
+    type: interactive
+    sprite: wall1
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - wall31
+  
 layers:
   - |
 
-    E    ^*************D*************^
-    E   ^*LLLLLLLLLLLb...BLLLLLLLLLLL*^
-    E  ^*LL.........................LL*^
-    E ^*LL...........................LL*^
-    E^*LL           X  S  x           LL*^
-    E^LL                               LL^
-    E^L            .........            L^
-    E^            .         .            ^
-    E^           .           .           ^
-    E^           .  c  @  C  .           ^
-    E^           .           .           ^
-    E^            .         .            ^
-    E^             .........             ^
-    E^                                   ^
-    E^                                   ^
-    E^                                   ^
-    E^                                   ^
-    E^***********************************^
+    E
+    E
+    E
+    E     ^*************D*************^
+    E    ^*LLLLLLLLLLLb...BLLLLLLLLLLL*^
+    E   ^*LL.........................LL*^
+    E  ^*LL...........................LL*^
+    E ^*LL           X  S  x           LL*^
+    E ^LL            ![$%&()QW          LL^
+    E ^L            0.........R          L^
+    E ^            1.         .T          ^
+    E ^           2.           .Y         ^
+    E ^           3.  c  @  C  .U         ^
+    E ^           4.           .O         ^
+    E ^            5.         .P          ^
+    E ^             6.........J           ^
+    E ^              Kz;]'-ZVN            ^
+    E ^                                   ^
+    E ^                                   ^
+    E ^                                   ^
+    E ^***********************************^
