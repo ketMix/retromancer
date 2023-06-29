@@ -395,9 +395,11 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				}
 
 				// Check enemy collisions.
-				if e, ok := actor.(*Enemy); ok {
-					if e.IsAlive() && e.Shape().Collides(pl.Actor().Shape()) {
-						pc.Hurtie()
+				if pc.InvulnerableTicks <= 0 && !pc.shielding {
+					if e, ok := actor.(*Enemy); ok {
+						if e.IsAlive() && e.Shape().Collides(pl.Actor().Shape()) {
+							pc.Hurtie()
+						}
 					}
 				}
 			}
