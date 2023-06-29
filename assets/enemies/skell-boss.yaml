@@ -1,0 +1,23 @@
+sprite: skell-boss
+framerate: 3
+health: 250
+speed: 3
+behavior: random
+wander: true
+alwaysShoot: true
+bullets:
+  - alias: echo
+    spawnRate: 100
+    lastSpawnedAt: 20
+  - alias: echo
+    spawnRate: 100
+    lastSpawnedAt: 0
+  - alias: echo
+    spawnRate: 100
+    lastSpawnedAt: 40
+  - alias: echo
+    spawnRate: 100
+    lastSpawnedAt: 60
+nextPhase: skell-boss-body
+spawnOnDeath:
+  - skell-boss-head

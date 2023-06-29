@@ -168,6 +168,10 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				s.activeMap.bullets = append(s.activeMap.bullets, action.Bullets...)
 			case ActionSpawnParticle:
 				s.SpawnParticle(ctx, action.Img, action.X, action.Y, action.Angle, action.Speed, action.Life)
+			case ActionSpawnEnemy:
+				e := CreateEnemy(ctx, action.ID, action.Name)
+				e.SetXY(action.X, action.Y)
+				s.activeMap.actors = append(s.activeMap.actors, e)
 			case ActionFindNearestActor:
 				if e, ok := actor.(*Enemy); ok {
 					target := s.FindNearestActor(&e.shape, action.Actor)

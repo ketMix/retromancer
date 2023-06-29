@@ -44,3 +44,9 @@ type ActionSpawnParticle struct {
 	Speed float64
 	Life  int
 }
+
+type ActionSpawnEnemy struct {
+	Name string
+	ID   string
+	X, Y float64
+}
