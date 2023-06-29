@@ -50,7 +50,7 @@ func (o *Overlay) Sync(ctx states.Context) {
 
 	if ctx.MusicPlayer.Volume() == 0.0 {
 		o.musicButton.SetImage(ctx.Manager.GetAs("images", "music-none", (*ebiten.Image)(nil)).(*ebiten.Image))
-	} else if ctx.MusicPlayer.Volume() == 0.5 {
+	} else if ctx.MusicPlayer.Volume() == 0.25 {
 		o.musicButton.SetImage(ctx.Manager.GetAs("images", "music-low", (*ebiten.Image)(nil)).(*ebiten.Image))
 	} else {
 		o.musicButton.SetImage(ctx.Manager.GetAs("images", "music-high", (*ebiten.Image)(nil)).(*ebiten.Image))
