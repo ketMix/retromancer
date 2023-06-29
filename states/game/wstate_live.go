@@ -435,6 +435,18 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				actor.IncreaseActivation(nil)
 			}
 		} else {
+			for _, v := range actor.removeVFX {
+				if v == "darkness" {
+					for _, vfx := range s.activeMap.vfx.Items() {
+						if v2, ok := vfx.(*resources.Darkness); ok {
+							v2.Fade = true
+						}
+					}
+				} else {
+					s.activeMap.vfx.RemoveByID(v)
+				}
+			}
+
 			cell := s.activeMap.FindCellById(actor.ID())
 			if cell != nil {
 				cell.blockMove = false // No
