@@ -1,5 +1,5 @@
 sprite: lich-boss-big
-framerate: 3
+framerate: 20
 health: 1000
 speed: 2
 behavior: random
