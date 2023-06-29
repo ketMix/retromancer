@@ -1,5 +1,5 @@
 title: Slime Party
-music: outside
+music: slime
 conditions:
   - type: active
     args:
@@ -151,7 +151,7 @@ runes:
     id: wall0
     blockMove: true
     blockView: true
-  "#":
+  "[":
     sprite: empty
     id: wall1
     blockMove: true
@@ -241,7 +241,7 @@ runes:
     id: wall18
     blockMove: true
     blockView: true
-  ":":
+  "]":
     sprite: empty
     id: wall19
     blockMove: true
@@ -282,7 +282,7 @@ actors:
     type: interactive
     sprite: door
     interactive:
-      map: end
+      map: 2-4
       conditions:
         - type: active
           args:
@@ -628,18 +628,18 @@ layers:
 
 
 
-    E          ^********D********^
-    E          ^0!,,,,B...H,,,,Oc^
-    E          ^1#,,,,,,.,,,,,,Pd^
-    E          ^2$.............Je^
-    E          ^3%.............Kf^
-    E          ^4&,,,,     ,,,,Lg^
-    E          ^5(,,,       ,,,;h^
-    E          ^6),,  C    G ,,:i^
-    E          ^7Q,,    X    ,,'j^
-    E          ^8W,,         ,,-k^
-    E          ^9R,,         ,,Zl^
-    E          ^aT,,  I    F ,,Vm^
-    E          ^bY,,,       ,,,Nn^
-    E          ^pU,,,,  @  ,,,,Mo^
-    E          ^********A********^
+    E       ^**********D**********^
+    E       ^.0.!,,,,B...H,,,,O.c.^
+    E       ^.1.[,,,,,,.,,,,,,P.d.^
+    E       ^.2.$.............J.e.^
+    E       ^.3.%.............K.f.^
+    E       ^.4.&,,,,     ,,,,L.g.^
+    E       ^.5.(,,,       ,,,;.h.^
+    E       ^.6.),,  C    G ,,].i.^
+    E       ^.7.Q,,    X    ,,'.j.^
+    E       ^.8.W,,         ,,-.k.^  
+    E       ^.9.R,,         ,,Z.l.^
+    E       ^.a.T,,  I    F ,,V.m.^
+    E       ^.b.Y,,,       ,,,N.n.^
+    E       ^.p.U,,,,  @  ,,,,M.o.^
+    E       ^**********A**********^
