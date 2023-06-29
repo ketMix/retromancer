@@ -1,0 +1,239 @@
+title: Feeble Fortress
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "d":
+    sprite: empty
+    id: door2
+    blockMove: true
+    isometric: true
+    blockView: true
+  "0":
+    sprite: empty
+    id: slime1
+  "1":
+    sprite: empty
+    id: slime2
+  "2":
+    sprite: empty
+    id: bat1
+  "3": 
+    sprite: empty
+    id: bat2
+  "b":
+    sprite: empty
+    id: brazier1
+  "B":
+    sprite: empty
+    id: brazier2
+  "S":
+    sprite: empty
+    id: sign
+  "Q":
+    sprite: empty
+    id: wall0
+    blockMove: true
+    blockView: true
+    wall: true
+    isometric: true
+    wall: true
+  "W":
+    sprite: empty
+    id: wall1
+    blockMove: true
+    blockView: true
+    isometric: true
+    wall: true
+  "R":
+    sprite: empty
+    id: wall2
+    blockMove: true
+    blockView: true
+    isometric: true
+    wall: true
+  "T":
+    sprite: empty
+    id: wall3
+    blockMove: true
+    blockView: true
+    isometric: true
+    wall: true
+  "Y":
+    sprite: empty
+    id: wall4
+    blockMove: true
+    blockView: true
+    isometric: true
+    wall: true
+  "s":
+    sprite: empty
+    id: shooter1
+  "f":
+    sprite: empty
+    id: shooter2
+
+actors:
+# Door
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 2-5
+      conditions:
+        - type: killedEnemies
+  - id: door2
+    type: interactive
+    sprite: door
+
+# Enemies
+  - id: slime1
+    type: enemy
+    sprite: slime
+  - id: slime2
+    type: enemy
+    sprite: slime
+  - id: bat1
+    type: enemy
+    sprite: bat
+  - id: bat2
+    type: enemy
+    sprite: bat
+
+  - id: shooter1
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 180
+  - id: shooter2
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 180
+
+# Interactives
+  # - id: life1
+  #   type: snaggable
+  #   sprite: item-life
+
+  # - id: life2
+  #   type: snaggable
+  #   sprite: item-life
+
+  # - id: life3
+  #   type: snaggable
+  #   sprite: item-life
+
+  # - id: life4
+  #   type: snaggable
+  #   sprite: item-life
+
+  - id: brazier1
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+
+  - id: brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+
+  - id: sign
+    type: interactive
+    sprite: npc
+    interactive:
+      npc: true
+      text: npc-2-4
+      reversable: true
+      degrade: true
+        
+# THE WALLS
+  - id: wall0
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+  - id: wall1
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+  - id: wall2
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+  - id: wall3
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+  - id: wall4
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+
+layers:
+  - |
+
+
+
+    E         ^*********D*********^
+    E         ^ ,,,   B...b,,,,,,,^
+    E         ^,,s,,   ...    ,f,,^
+    E         ^............ 3    ,^
+    E         ^__ 0 .........     ^
+    E         ^       .....  _____^
+    E         ^~~~~~~~QWRTY~~~~~~~^
+    E         ^_______.....  _____^
+    E         ^__   1  ... 2    __^
+    E         ^_               ...^
+    E         ^_....^^^^^^^^^.....^
+    E         ^....^*********^....^
+    E         ^..   ,,           ^^
+    E         ^.   ,,,,,   S    ^*^
+    E         ^,,,,,,,,,@      ^**^
+    E         ^*********d*********^
