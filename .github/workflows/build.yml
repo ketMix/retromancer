@@ -17,7 +17,7 @@ jobs:
         go-version: '1.20'
     - name: Build Windows exe
       env:
-        GPTKEY: ${{ secrets.GPT_KEY }}
+        GPT_KEY: ${{ secrets.GPT_KEY }}
       shell: bash
       run: go build -ldflags "-X ebijam23/resources.gptKey=$GPT_KEY" -o retromancer.exe
     - name: Upload Windows exe
@@ -43,6 +43,8 @@ jobs:
         go-version: '1.20'
     - name: Build Mac exe
       shell: bash
+      env:
+        GPT_KEY: ${{ secrets.GPT_KEY }}
       run: go build -ldflags "-X ebijam23/resources.gptKey=$GPT_KEY" -o retromancer
     - name: Tar it up
       shell: bash
@@ -71,6 +73,8 @@ jobs:
       run: sudo apt-get update && sudo apt-get -y install libgl1-mesa-dev xorg-dev libasound2-dev
     - name: Build Linux exe
       shell: bash
+      env:
+        GPT_KEY: ${{ secrets.GPT_KEY }}
       run: go build -ldflags "-X ebijam23/resources.gptKey=$GPT_KEY" -v -o retromancer
     - name: Tar it up
       shell: bash
@@ -96,6 +100,8 @@ jobs:
         go-version: '1.20'
     - name: Build Web binary
       shell: bash
+      env:
+        GPT_KEY: ${{ secrets.GPT_KEY }}
       run: GOOS=js GOARCH=wasm go build -v -ldflags "-X ebijam23/resources.gptKey=$GPT_KEY -w -s" -o dist/web/retromancer.wasm
     - name: Copy WASM exec script
       shell: bash
