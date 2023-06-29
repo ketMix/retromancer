@@ -39,6 +39,8 @@ actors:
       map: 1-post
       conditions:
         - type: killedEnemies
+          args:
+            - bat-boss-red
   - id: door2
     type: interactive
     sprite: door

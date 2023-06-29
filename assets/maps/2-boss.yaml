@@ -39,6 +39,9 @@ actors:
       map: 2-post
       conditions:
         - type: killedEnemies
+          args:
+            - skell-boss-head
+            - skell-boss-body
   - id: door2
     type: interactive
     sprite: door
