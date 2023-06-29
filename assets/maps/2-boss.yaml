@@ -36,7 +36,7 @@ actors:
     type: interactive
     sprite: door
     interactive:
-      map: 1-post
+      map: 2-post
       conditions:
         - type: killedEnemies
   - id: door2

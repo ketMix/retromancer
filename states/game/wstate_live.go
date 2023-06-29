@@ -185,6 +185,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			}
 		}
 		if a, ok := actor.(*PC); ok {
+			a.shielding = shielding
 			// FIXME: Probably only SetImage if image is not the expected one.
 			if deflecting {
 				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-deflect", (*ebiten.Image)(nil)).(*ebiten.Image))
@@ -240,7 +241,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			// Check player collisions.
 			if !bullet.friendly {
 				if p, ok := actor.(*PC); ok {
-					if p.InvulnerableTicks > 0 {
+					// Prevent taking damage while shielding and while having invuln ticks.
+					if p.InvulnerableTicks > 0 || p.shielding {
 						continue
 					}
 					if bullet.Shape.Collides(actor.Shape()) {
@@ -393,9 +395,11 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				}
 
 				// Check enemy collisions.
-				if e, ok := actor.(*Enemy); ok {
-					if e.IsAlive() && e.Shape().Collides(pl.Actor().Shape()) {
-						pc.Hurtie()
+				if pc.InvulnerableTicks <= 0 && !pc.shielding {
+					if e, ok := actor.(*Enemy); ok {
+						if e.IsAlive() && e.Shape().Collides(pl.Actor().Shape()) {
+							pc.Hurtie()
+						}
 					}
 				}
 			}

@@ -143,7 +143,7 @@ actors:
     sprite: sign
     interactive:
       reversable: true
-      text: sign-deflect
+      text: sign-shield
   - id: npc1
     type: interactive
     sprite: npc
