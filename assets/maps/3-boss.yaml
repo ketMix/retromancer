@@ -1,0 +1,137 @@
+title: Lich
+music: final-boss
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "L":
+    sprite: lava
+    blockMove: true
+  ".":
+    sprite: floor
+    floor: true
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "b":
+    sprite: empty
+    id: brazier1
+  "B":
+    sprite: empty
+    id: brazier2
+  "X":
+    sprite: empty
+    id: boss-brazier1
+  "x":
+    sprite: empty
+    id: boss-brazier2
+  "c":
+    sprite: empty
+    id: candle1
+  "C":
+    sprite: empty
+    id: candle2
+  "S":
+    sprite: empty
+    id: lich-boss
+
+actors:
+  # Door
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: end
+      conditions:
+        - type: killedEnemies
+          args:
+            - lich-boss-big
+  
+  # Enemy
+  - id: lich-boss
+    type: enemy
+    sprite: lich-boss
+
+  - id: brazier1
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+
+  - id: brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+
+  - id: boss-brazier1
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - candle1
+            - candle2
+  - id: boss-brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - candle1
+            - candle2
+
+  - id: candle1
+    type: interactive
+    sprite: candle
+    interactive:
+      reversable: true
+  - id: candle2
+    type: interactive
+    sprite: candle
+    interactive:
+      reversable: true
+
+layers:
+  - |
+
+         ^*************D*************^
+        ^*LLLLLLLLLLLb...BLLLLLLLLLLL*^
+       ^*LL.........................LL*^
+      ^*LL...........................LL*^
+     ^*LL           X  S  x           LL*^
+     ^LL                               LL^
+     ^             .........             ^
+     ^            .         .            ^
+     ^           .           .           ^
+     ^           .  c  @  C  .           ^
+     ^           .           .           ^
+     ^            .         .            ^
+     ^             .........             ^
+     ^                                   ^
+     ^                                   ^
+     ^                                   ^
+     ^                                   ^
+     ^***********************************^
