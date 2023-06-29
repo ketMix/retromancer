@@ -93,8 +93,10 @@ func (s *World) Init(ctx states.Context) error {
 	// TODO: Read these from a hints file.
 	s.hints.hintGroup = make(map[string]HintGroup)
 	prefix := ""
+	offset := 0.0
 	if len(s.Players) > 1 {
 		prefix = ctx.L("Player 1:")
+		offset = 20
 	}
 	s.hints.AddHintGroup("p1-controller-start", HintGroup{
 		Prefix: prefix,
@@ -106,12 +108,12 @@ func (s *World) Init(ctx states.Context) error {
 	})
 	s.hints.AddHintGroup("p2-controller-start", HintGroup{
 		Prefix:  ctx.L("Player 2:"),
-		OffsetY: 32,
+		OffsetY: offset,
 		Items:   []string{"p2-controller-hint-1", "p2-controller-hint-2", "p2-controller-hint-3", "p2-controller-hint-4"},
 	})
 	s.hints.AddHintGroup("p2-keyboard-start", HintGroup{
 		Prefix:  ctx.L("Player 2:"),
-		OffsetY: 32,
+		OffsetY: offset,
 		Items:   []string{"p2-keyboard-hint-1", "p2-keyboard-hint-2"},
 	})
 	s.hints.AddHintGroup("p1-controller-deflect", HintGroup{
