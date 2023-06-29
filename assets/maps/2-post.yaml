@@ -151,7 +151,7 @@ actors:
 
   - id: item-shield
     type: snaggable
-    sprite: item-book
+    sprite: item-shield
 
 layers:
   - |

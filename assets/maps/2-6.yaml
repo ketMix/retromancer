@@ -73,7 +73,7 @@ runes:
     id: campfire
   "1":
     sprite: empty
-    id: npc-1-6-1
+    id: npc-2-6-1
 
 actors:
   # Doors
