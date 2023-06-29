@@ -6,18 +6,13 @@ behavior: random
 wander: true
 alwaysShoot: true
 bullets:
-  - alias: echo
-    spawnRate: 100
-    lastSpawnedAt: 40
-  - alias: echo
-    spawnRate: 100
-    lastSpawnedAt: 20
-  - alias: chakra
-    spawnRate: 100
+  - alias: daggers
+    bulletCount: 4
+    spawnRate: 25
     lastSpawnedAt: 0
-    bulletCount: 50
-  - alias: chakra
-    spawnRate: 100
-    lastSpawnedAt: 20
     bullet:
-      color: [255, 0, 0, 255]
+      speed: 0.05
+      accelAccel: 0.005
+      color: [255, 0, 0, 0]
+      aimDelay: 15
+      aimTime: 25

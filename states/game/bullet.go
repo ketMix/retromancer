@@ -70,6 +70,7 @@ func CreateBullet(
 		aimDelay:        aimDelay,
 		timeLine:        make([]*Bullet, 0),
 		Damage:          5,
+		Deathtime:       500,
 	}
 	b.sprite = resources.NewSprite(ebiten.NewImage(int(radius*2), int(radius*2)))
 	return b
@@ -187,7 +188,8 @@ func (b *Bullet) SetXY(x, y float64) {
 
 // Update the bullet's position and speed
 func (b *Bullet) Update() (actions []Action) {
-	if b.Deathtime > 0 {
+	// Only do this if the bullet is not deflected
+	if !b.deflected && b.Deathtime > 0 {
 		b.Lifetime++
 		if b.Lifetime > b.Deathtime {
 			b.Destroyed = true
@@ -297,6 +299,9 @@ func (b *Bullet) Reflect() {
 	if b.reflected {
 		return
 	}
+
+	// Reset lifetime
+	b.Lifetime = 0
 
 	// If the bullet is friendly, empower it.
 	if b.friendly {
