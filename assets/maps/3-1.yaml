@@ -1,0 +1,371 @@
+title: The Hero's Journey
+music: start
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "A":
+    sprite: empty
+    id: door2
+    blockMove: true
+    isometric: true
+    blockView: true
+  "0":
+    sprite: empty
+    id: shooter0
+  "1":
+    sprite: empty
+    id: shooter1
+  "2":
+    sprite: empty
+    id: shooter2
+  "3":
+    sprite: empty
+    id: shooter3
+  "4":
+    sprite: empty
+    id: shooter4
+  "5":
+    sprite: empty
+    id: shooter5
+  "6":
+    sprite: empty
+    id: shooter6
+  "7":
+    sprite: empty
+    id: shooter7
+  "8":
+    sprite: empty
+    id: shooter8
+  "9":
+    sprite: empty
+    id: shooter9
+  "a":
+    sprite: empty
+    id: shooter10
+  "b":
+    sprite: empty
+    id: shooter11
+  "c":
+    sprite: empty
+    id: shooter12
+  "d":
+    sprite: empty
+    id: shooter26
+  "e":
+    sprite: empty
+    id: shooter27
+  "f":
+    sprite: empty
+    id: shooter15
+  "g":
+    sprite: empty
+    id: shooter16
+  "h":
+    sprite: empty
+    id: shooter17
+  "i":
+    sprite: empty
+    id: shooter18
+  "j":
+    sprite: empty
+    id: shooter19
+  "k":
+    sprite: empty
+    id: shooter20
+  "l":
+    sprite: empty
+    id: shooter21
+  "m":
+    sprite: empty
+    id: shooter22
+  "n":
+    sprite: empty
+    id: shooter23
+  "o":
+    sprite: empty
+    id: shooter24
+  "p":
+    sprite: empty
+    id: shooter25
+  "q":
+    sprite: empty
+    id: shooter13
+  "r":
+    sprite: empty
+    id: shooter14
+  "s":
+    sprite: empty
+    id: shooter28
+  "t":
+    sprite: empty
+    id: shooter29
+  "B":
+    sprite: empty
+    id: brazier1
+  "H":
+    sprite: empty
+    id: brazier2
+
+actors:
+# Door
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 3-boss
+      conditions:
+        - type: active
+          args:
+            - campfire
+  - id: door2
+    type: interactive
+    sprite: door
+
+# Enemies
+  - id: shooter0
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter1
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter2
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter3
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter4
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter5
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter6
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter7
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter8
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter9
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter10
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter11
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter12
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter13
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter14
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 90
+        spawnRate: 5
+  - id: shooter15
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter16
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter17
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter18
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter19
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter20
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter21
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter22
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter23
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter24
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter25
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter26
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter27
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter28
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  - id: shooter29
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 270
+        spawnRate: 5
+  
+  - id: brazier1
+    type: interactive
+    sprite: brazier
+    interactive:
+      active: true
+  - id: brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      active: true
+layers:
+  - |
+
+
+    E       ^**********D**********^
+    E       ^.0.~~~~*B...H*~~~~.d.^
+    E       ^.1.~~~~^  .  ^~~~~.e.^
+    E       ^.2.~~~~~  .  ~~~~~.f.^
+    E       ^.3.~~~~~  .  ~~~~~.g.^
+    E       ^.4.~~~~~  .  ~~~~~.h.^
+    E       ^.5.~~~~~  .  ~~~~~.i.^
+    E       ^.6.~~~~~  .  ~~~~~.j.^
+    E       ^.7.~~~~~  .  ~~~~~.k.^
+    E       ^.8.~~~~~  .  ~~~~~.l.^  
+    E       ^.9.~~~~~  .  ~~~~~.m.^
+    E       ^.a.~~~~~  .  ~~~~~.n.^
+    E       ^.b.~~~~~  .  ~~~~~.o.^
+    E       ^.c.~~~~~  .  ~~~~~.p.^
+    E       ^.q.~~~~~^ . ^~~~~~.s.^
+    E       ^.r.~~~~~* @ *~~~~~.t.^
+    E       ^**********A**********^

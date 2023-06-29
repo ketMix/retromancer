@@ -76,6 +76,12 @@
 "2-2": "Greedy Goo Grotto"
 "2-3": "Slime Soiree"
 "2-4": "Feeble Fortress"
+"2-5": "Masoleum"
+"2-6": "Reprised Reprieve"
+"2-boss": "Skelly Boss"
+"2-post": "Scroll of Shielding"
+"3-1": "The Hero's Journey"
+"3-boss": "Lich"
 
 # NPCs
 "sign-intro-npc1": "Ugh... I'm alive... Thank you,\n Retromancer..."
@@ -87,6 +93,8 @@
 "npc-1-post-1": "*cough* *cough* I managed to keep that book safe from the Lich's minions..."
 "npc-1-6-1": "The great bat protects an ancient power... my greed has doomed me..."
 "npc-2-4": "Some walls are not as sturdy as they seem... some are as weak as I was..."
+"npc-2-6": "There's a SPOOKY SKELETON in the next room! I got scared to death!"
+"npc-2-post-1": "This scroll should help you complete your task... I proved too weak to use it..."
 
 # Signs
 "sign-intro-reverse": "Your hand will glow yellow on reversable objects"

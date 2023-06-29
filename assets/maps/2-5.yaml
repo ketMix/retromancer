@@ -1,0 +1,409 @@
+title: Mausoleum
+conditions:
+  - type: active
+    args:
+      - door
+runes:
+  "@":
+    sprite: empty
+  " ":
+    sprite: empty
+  "E":
+    sprite: empty
+  "*":
+    sprite: wall
+    blockMove: true
+    blockView: true
+    wall: true
+  "^":
+    sprite: wall2
+    blockMove: true
+    blockView: true
+    wall: true
+  ".":
+    sprite: floor
+    floor: true
+  "_":
+    sprite: dirt
+    floor: true
+  "~":
+    sprite: water
+    blockMove: true
+  ",":
+    sprite: dead-grass
+  "D":
+    sprite: empty
+    id: door
+    isometric: true
+    blockMove: true
+    blockView: true
+  "d":
+    sprite: empty
+    id: door2
+    blockMove: true
+    isometric: true
+    blockView: true
+  "f":
+    sprite: empty
+    id: door3
+    blockMove: true
+    isometric: true
+    blockView: true
+  "F":
+    sprite: empty
+    id: door4
+    blockMove: true
+    isometric: true
+    blockView: true
+  "0":
+    sprite: empty
+    id: slime1
+  "1":
+    sprite: empty
+    id: slime2
+  "2":
+    sprite: empty
+    id: bat1
+  "3": 
+    sprite: empty
+    id: bat2
+  "4":
+    sprite: empty
+    id: skell1
+  "5":
+    sprite: empty
+    id: skell2
+  "7":
+    sprite: empty
+    id: skell4
+  "8":
+    sprite: empty
+    id: skell5
+  "b":
+    sprite: empty
+    id: brazier1
+  "B":
+    sprite: empty
+    id: brazier2
+  "Q":
+    sprite: empty
+    id: wall0
+    blockMove: true
+    blockView: true
+    wall: true
+    isometric: true
+    wall: true
+  "H":
+    sprite: empty
+    id: wall1
+    blockMove: true
+    blockView: true
+    isometric: true
+    wall: true
+  "R":
+    sprite: empty
+    id: wall2
+    blockMove: true
+    blockView: true
+    isometric: true
+    wall: true
+  "T":
+    sprite: empty
+    id: wall3
+    blockMove: true
+    blockView: true
+    isometric: true
+    wall: true
+  "U":
+    sprite: empty
+    id: wall4
+    blockMove: true
+    blockView: true
+    isometric: true
+    wall: true
+  "I":
+    sprite: empty
+    id: wall5
+    blockMove: true
+    blockView: true
+    isometric: true
+    wall: true
+  "O":
+    sprite: empty
+    id: wall6
+    blockMove: true
+    blockView: true
+    isometric: true
+    wall: true
+  "s":
+    sprite: empty
+    id: shooter1
+  "S":
+    sprite: empty
+    id: shooter2
+  "G":
+    sprite: empty
+    id: drawbridge
+  "L":
+    sprite: empty
+    id: life1
+  "M":
+    sprite: empty
+    id: life2
+  "N":
+    sprite: empty
+    id: life3
+  "c":
+    sprite: empty
+    id: candle1
+  "C":
+    sprite: empty
+    id: candle2
+  "g":
+    sprite: empty
+    id: candle3
+  "X":
+    sprite: empty
+    id: campfire
+  "W":
+    sprite: empty
+    id: wheel
+  "Y":
+    sprite: empty
+    id: crystal
+  "k":
+    sprite: empty
+    id: brazier3
+  "j":
+    sprite: empty
+    id: brazier4
+  "J":
+    sprite: empty
+    id: brazier5
+
+actors:
+# Door
+  - id: door
+    type: interactive
+    sprite: door
+    interactive:
+      map: 2-6
+      conditions:
+        - type: killedEnemies
+  - id: door2
+    type: interactive
+    sprite: door
+  - id: door3
+    type: interactive
+    sprite: door
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - crystal
+  - id: door4
+    type: interactive
+    sprite: door
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - candle1
+            - candle2
+            - candle3
+# Enemies
+  - id: slime1
+    type: enemy
+    sprite: slime
+  - id: slime2
+    type: enemy
+    sprite: slime
+  - id: bat1
+    type: enemy
+    sprite: bat
+  - id: bat2
+    type: enemy
+    sprite: bat
+  - id: skell1
+    type: enemy
+    sprite: skell
+  - id: skell2
+    type: enemy
+    sprite: skell
+  - id: skell4
+    type: enemy
+    sprite: skell
+  - id: skell5
+    type: enemy
+    sprite: skell
+  - id: shooter1
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 180
+  - id: shooter2
+    type: spawner
+    bullets: 
+      - alias: simple
+        fixedAngle: 180
+        spawnRate: 5
+# Interactives
+  - id: life1
+    type: snaggable
+    sprite: item-life
+
+  - id: life2
+    type: snaggable
+    sprite: item-life
+
+  - id: life3
+    type: snaggable
+    sprite: item-life
+
+  - id: crystal
+    type: interactive
+    sprite: crystal
+    interactive:
+      health: 1
+
+  - id: candle1
+    type: interactive
+    sprite: candle
+    interactive:
+      reversable: true
+      degrade: true
+  - id: candle2
+    type: interactive
+    sprite: candle
+    interactive:
+      reversable: true
+      degrade: true
+  - id: candle3
+    type: interactive
+    sprite: candle
+    interactive:
+      reversable: true
+      degrade: true
+  - id: brazier1
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+
+  - id: brazier2
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door
+  - id: brazier3
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door3
+  - id: brazier4
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door4
+  - id: brazier5
+    type: interactive
+    sprite: brazier
+    interactive:
+      conditions:
+        - type: active
+          args:
+            - door4
+  - id: campfire
+    type: interactive
+    sprite: campfire
+    interactive:
+      active: true
+  
+  - id: drawbridge
+    type: interactive
+    sprite: drawbridge
+  
+  - id: wheel
+    type: interactive
+    sprite: wheel
+    interactive:
+      touchable: true
+      reversable: true
+      linked:
+        - drawbridge
+  
+
+# THE WALLS
+  - id: wall0
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+  - id: wall1
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+  - id: wall2
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+  - id: wall3
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+  - id: wall4
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+  - id: wall5
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+  - id: wall6
+    type: interactive
+    sprite: wall1
+    interactive:
+      health: 5
+
+layers:
+  - |
+
+
+    E         
+    E                          ^***D***^
+    E                          ^ b...B *
+    E      ^**************^    ^  8.7  *
+    E      ^      ..... 0 ^    ^   .   *
+    E      ^ Y     1   ...^    ^   .   *
+    E      ^ s     ..   g ^    ^   .  *^
+    E      ^~~~~~~~~~~~~~~^****^***F**^
+    E      ^                     j   J^
+    E      ^              S   4       ^
+    E      ^           N          M   ^
+    E      ^      __       X   TUIO^**^
+    E      ^            5      R   ^
+    E      ^ G            __   H C ^
+    E      ^~~~^*****^         Q   ^
+    E      ^         **************^
+    E      ^,       k*   3        ^
+    E      ^,,       f       2 W  ^
+    E      ^,,,      *   c        ^
+    E      ^,,,, @   *         L  ^
+    E      ^*****d****************^
