@@ -28,7 +28,7 @@ runes:
     sprite: dirt
     floor: true
   "~":
-    sprite: water
+    sprite: lava
     blockMove: true
   ",":
     sprite: dead-grass
@@ -44,9 +44,6 @@ runes:
     isometric: true
     blockMove: true
     blockView: true
-  "s":
-    sprite: empty
-    id: sign
   "L":
     sprite: empty
     id: life
@@ -68,18 +65,12 @@ runes:
   "x":
     sprite: empty
     id: item-shield
-  "s":
+  "W":
     sprite: empty
-    id: shooter
+    id: wheel
   "G":
     sprite: empty
     id: drawbridge
-  "C":
-    sprite: empty
-    id: crystal
-  "S":
-    sprite: empty
-    id: sign
   "1":
     sprite: empty
     id: npc1
@@ -90,7 +81,7 @@ actors:
     type: interactive
     sprite: door
     interactive:
-      map: outside
+      map: 3-1
       conditions:
         - type: active
           args:
@@ -99,13 +90,6 @@ actors:
     type: interactive
     sprite: door
   
-  # Spawner
-  - id: shooter
-    type: spawner
-    bullets: 
-      - alias: simple
-        fixedAngle: 90
-
   # Interactives
   - id: brazier
     type: interactive
@@ -125,25 +109,20 @@ actors:
           args:
             - drawbridge
 
-  - id: crystal
-    type: interactive
-    sprite: crystal
-    interactive:
-      health: 1
   - id: drawbridge
     type: interactive
     sprite: drawbridge
-    interactive:
-      conditions:
-        - type: active
-          args:
-            - crystal
-  - id: sign
+
+  - id: wheel
     type: interactive
-    sprite: sign
+    sprite: wheel
     interactive:
       reversable: true
-      text: sign-shield
+      touchable: true
+      degrade: true
+      linked:
+        - drawbridge
+
   - id: npc1
     type: interactive
     sprite: npc
@@ -180,18 +159,18 @@ layers:
 
 
 
-    E            ^*****D*****^
-    E            ^   b...B C ^
-    E            ^   .....   ^
-    E            ^ s .....   ^
-    E            ^   .....   ^
-    E            ^    G      ^
-    E            ^~~~~~~~~~~~^
-    E            ^~ S       ~^
-    E            ^~         ~^
-    E            ^~ m      M~^
-    E            ^~ l  x   L~^
-    E            ^~     1   ~^
-    E            ^~,       ,~^ 
-    E            ^~,,  @  ,,~^
-    E            ^*****d*****^
+    E            ^******D******^
+    E            ^~   b...B   ~^
+    E            ^~   .....   ~^
+    E            ^~   .....   ~^
+    E            ^~   .....   ~^
+    E            ^~    G      ~^
+    E            ^~~~~~~~~~~~~~^
+    E            **^         ^**
+    E              ^     W   ^
+    E              ^ m      M^
+    E              ^ l  x   L^
+    E              ^     1   ^
+    E              ^,       ,^ 
+    E              ^,,  @  ,,^
+    E              ^*****d***^
