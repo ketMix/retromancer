@@ -14,6 +14,7 @@ const (
 	EnemyStateHunt EnemyState = iota
 	EnemyStateWander
 	EnemyStateChase
+	EnemyStateFriendly
 )
 
 type Enemy struct {
@@ -31,6 +32,7 @@ type Enemy struct {
 	rethinkTime       int
 	health            int
 	speed             int
+	friendly          bool
 	behavior          string
 	nextPhase         string
 	hasDied           bool // Set to true during Update when health < 0
@@ -75,7 +77,9 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 	}
 
 	firstState := EnemyStateHunt
-	if enemyDef.Wander {
+	if enemyDef.Friendly {
+		//
+	} else if enemyDef.Wander {
 		firstState = EnemyStateWander
 	}
 
@@ -91,6 +95,7 @@ func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 			Width:  aliveSprite.Width(),
 			Height: aliveSprite.Height(),
 		},
+		friendly:     enemyDef.Friendly,
 		health:       enemyDef.Health,
 		speed:        enemyDef.Speed,
 		behavior:     enemyDef.Behavior,
@@ -108,7 +113,9 @@ func (e *Enemy) ID() string {
 func (e *Enemy) SetXY(x, y float64) {
 	e.sprite.SetXY(x, y)
 	e.deadSprite.SetXY(x, y)
-	e.spawner.SetXY(x+e.sprite.Width()/2, y+e.sprite.Height()/2)
+	if e.spawner != nil {
+		e.spawner.SetXY(x+e.sprite.Width()/2, y+e.sprite.Height()/2)
+	}
 	e.shape.X = x
 	e.shape.Y = y
 }
@@ -129,7 +136,11 @@ func (e *Enemy) SetTarget(a Actor) {
 	if a == nil {
 		e.state = EnemyStateWander
 	} else {
-		e.state = EnemyStateChase
+		if e.friendly {
+			e.state = EnemyStateFriendly
+		} else {
+			e.state = EnemyStateChase
+		}
 	}
 }
 
@@ -174,6 +185,17 @@ func (e *Enemy) Update() (a []Action) {
 		switch e.state {
 		case EnemyStateHunt:
 			a = append(a, ActionFindNearestActor{Actor: (*PC)(nil)})
+		case EnemyStateFriendly:
+			if e.target == nil {
+				e.state = EnemyStateHunt
+			} else {
+				tx, ty, _, _ := e.target.Shape().Bounds()
+				d := math.Sqrt(math.Pow(tx-e.shape.X, 2) + math.Pow(ty-e.shape.Y, 2))
+				r := math.Atan2(ty-e.shape.Y, tx-e.shape.X)
+				if d > 5 {
+					a = append(a, ActionMove{X: e.shape.X + math.Cos(r)*float64(e.speed)*0.5, Y: e.shape.Y + math.Sin(r)*float64(e.speed)*0.25})
+				}
+			}
 		case EnemyStateWander:
 			e.rethinkTime++
 			if e.rethinkTime > 0 {
