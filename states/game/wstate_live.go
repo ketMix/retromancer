@@ -50,7 +50,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 	for _, actorAction := range actorActions {
 		actor := actorAction.Actor
 		deflecting := false
-		reflecting := false
+		reversing := false
 		shielding := false
 		for _, action := range actorAction.Actions {
 			switch action := action.(type) {
@@ -76,8 +76,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						s.SpawnParticle(ctx, "puff", action.X, action.Y+pc.Sprite.Height()/2-2, 0, 0, 10)
 					}
 				}
-			case ActionReflect:
-				reflecting = true
+			case ActionReverse:
+				reversing = true
 				x, y, _, _ := actor.Bounds()
 				// Adjust x and y by the direction the actor wishes to shoot.
 				a := math.Atan2(action.Y-y, action.X-x)
@@ -85,14 +85,14 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				y += math.Sin(a) * 6
 				if !s.activeMap.DoesLineCollide(x, y, action.X, action.Y, s.activeMap.currentZ) {
 
-					// Reflect bullets
+					// Reverse bullets
 					bullets := s.IntersectingBullets(&CircleShape{
 						X:      action.X,
 						Y:      action.Y,
 						Radius: 20,
 					})
 					for _, b := range bullets {
-						b.Reflect()
+						b.Reverse()
 					}
 
 					// Reverse actors
@@ -192,15 +192,15 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			// FIXME: Probably only SetImage if image is not the expected one.
 			if deflecting {
 				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-deflect", (*ebiten.Image)(nil)).(*ebiten.Image))
-			} else if reflecting {
-				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-reflect", (*ebiten.Image)(nil)).(*ebiten.Image))
+			} else if reversing {
+				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-reverse", (*ebiten.Image)(nil)).(*ebiten.Image))
 			} else if shielding {
 				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-shield", (*ebiten.Image)(nil)).(*ebiten.Image))
 			} else {
 				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
 			}
 			// Play the associated audio
-			a.PlayAudio(deflecting, reflecting, shielding)
+			a.PlayAudio(deflecting, reversing, shielding)
 		}
 	}
 	// Even more overkill for the bullets.
@@ -266,8 +266,8 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			}
 
 			// Check interactive and enemy collisions.
-			// Only applicable to reflected or deflected bullets
-			if bullet.reflected || bullet.deflected || bullet.friendly {
+			// Only applicable to reversed or deflected bullets
+			if bullet.reversed || bullet.deflected || bullet.friendly {
 				// If the interactive is shootable, hit the interactive.
 				if i, ok := actor.(*Interactive); ok {
 					if i.Shootable() && bullet.Shape.Collides(i.Shape()) {

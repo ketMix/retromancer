@@ -17,7 +17,7 @@ type ActionMove struct {
 	X, Y float64
 }
 
-type ActionReflect struct {
+type ActionReverse struct {
 	X, Y float64
 }
 

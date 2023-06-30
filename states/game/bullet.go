@@ -34,7 +34,7 @@ type Bullet struct {
 	borderColor     color.Color // Color of the border
 	aimDelay        int         // How long the bullet should wait before aiming at player
 	aimTime         int         // How long the bullet should aim at player
-	reflected       bool        // If the bullet has been reflected
+	reversed        bool        // If the bullet has been reversed.
 	deflected       bool        // If the bullet has been deflected.
 	friendly        bool
 	holdFor         int       // An amount of time to hold the bullet in place.
@@ -197,7 +197,7 @@ func (b *Bullet) Update() (actions []Action) {
 		}
 	}
 
-	if len(b.timeLine) == 1 && b.reflected {
+	if len(b.timeLine) == 1 && b.reversed {
 		// if we're at the first point in timeLine, use the bullet as current bullet
 		prevBullet := b.timeLine[0]
 		b.timeLine = b.timeLine[:0]
@@ -206,7 +206,7 @@ func (b *Bullet) Update() (actions []Action) {
 		b.Angle = prevBullet.Angle
 		b.Acceleration = prevBullet.Acceleration
 		b.AngularVelocity = prevBullet.AngularVelocity
-		b.reflected = false
+		b.reversed = false
 	}
 
 	if b.holdFor > 0 {
@@ -214,7 +214,7 @@ func (b *Bullet) Update() (actions []Action) {
 		return actions
 	}
 
-	if b.reflected && len(b.timeLine) > 0 {
+	if b.reversed && len(b.timeLine) > 0 {
 		// Get previous bullet and remove it from the timeline
 		prevBullet := b.timeLine[len(b.timeLine)-1]
 		b.timeLine = b.timeLine[:len(b.timeLine)-1]
@@ -295,8 +295,8 @@ func (b *Bullet) Update() (actions []Action) {
 	return actions
 }
 
-func (b *Bullet) Reflect() {
-	if b.reflected {
+func (b *Bullet) Reverse() {
+	if b.reversed {
 		return
 	}
 
@@ -309,11 +309,11 @@ func (b *Bullet) Reflect() {
 		b.Shape.Radius = 2
 	}
 
-	// Turn the bullet border REFLECT color
+	// Turn the bullet border REVERSE color
 	b.borderColor = color.NRGBA{0x66, 0x99, 0xff, 0xff}
 
 	// Stop aiming the bullet if it was aimed. Perhaps this should deflect the bullet towards the spawner that created it.
-	b.reflected = true
+	b.reversed = true
 }
 
 func (b *Bullet) Deflect(angle float64) {

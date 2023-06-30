@@ -50,7 +50,7 @@ type PC struct {
 	//
 	audioPlayer *audio.Player
 	currentSfx  *resources.Sound
-	reflectSfx  *resources.Sound
+	reverseSfx  *resources.Sound
 	deflectSfx  *resources.Sound
 	shieldSfx   *resources.Sound
 	hurtSfx     *resources.Sound
@@ -67,7 +67,7 @@ func (s *World) NewPC(ctx states.Context) *PC {
 		MaxEnergy:         100,
 		EnergyRestoreRate: 2,
 		Lives:             playerStartLives,
-		reflectSfx:        ctx.Manager.GetAs("sounds", "reflect-sfx", (*resources.Sound)(nil)).(*resources.Sound),
+		reverseSfx:        ctx.Manager.GetAs("sounds", "reverse-sfx", (*resources.Sound)(nil)).(*resources.Sound),
 		deflectSfx:        ctx.Manager.GetAs("sounds", "deflect-sfx", (*resources.Sound)(nil)).(*resources.Sound),
 		shieldSfx:         ctx.Manager.GetAs("sounds", "shield-sfx", (*resources.Sound)(nil)).(*resources.Sound),
 		hurtSfx:           ctx.Manager.GetAs("sounds", "hurt-sfx", (*resources.Sound)(nil)).(*resources.Sound),
@@ -165,15 +165,15 @@ func (p *PC) Update() (actions []Action) {
 	p.previousInteraction = nil
 	if p.impulses.Interaction != nil {
 		switch imp := p.impulses.Interaction.(type) {
-		case ImpulseReflect:
+		case ImpulseReverse:
 			if p.HasEnergyFor(imp) {
 				p.Energy -= imp.Cost()
 				p.TicksSinceLastInteraction = 0
-				actions = append(actions, ActionReflect{
+				actions = append(actions, ActionReverse{
 					X: imp.X,
 					Y: imp.Y,
 				})
-				p.previousInteraction = ActionReflect{}
+				p.previousInteraction = ActionReverse{}
 			}
 		case ImpulseDeflect:
 			if p.HasDeflect && p.HasEnergyFor(imp) {
@@ -254,7 +254,7 @@ func (p *PC) Draw(ctx states.DrawContext) {
 
 	if _, ok := p.previousInteraction.(ActionDeflect); ok {
 		vector.DrawFilledCircle(ctx.Screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0xff, 0x66, 0x99, 0x33}, false)
-	} else if _, ok := p.previousInteraction.(ActionReflect); ok {
+	} else if _, ok := p.previousInteraction.(ActionReverse); ok {
 		vector.DrawFilledCircle(ctx.Screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0x66, 0x99, 0xff, 0x33}, false)
 	} else if _, ok := p.previousInteraction.(ActionShield); ok {
 		vector.DrawFilledCircle(ctx.Screen, float32(p.shape.X), float32(p.shape.Y), 20, color.NRGBA{0x66, 0xff, 0x99, 0x33}, false)
@@ -291,7 +291,7 @@ func (p *PC) Draw(ctx states.DrawContext) {
 
 	r := math.Atan2(p.shape.Y-p.Hand.Shape.Y, p.shape.X-p.Hand.Shape.X)
 
-	// TODO: The arrow image should change based on if we're reflecting or deflecting.
+	// TODO: The arrow image should change based on if we're reversing or deflecting.
 	// Draw direction arrow
 	opts = &ebiten.DrawImageOptions{}
 	// Rotate about its center.
@@ -336,9 +336,9 @@ func (p *PC) Hurtie() {
 	}
 }
 
-func (p *PC) PlayAudio(deflecting, reflecting, shielding bool) {
+func (p *PC) PlayAudio(deflecting, reversing, shielding bool) {
 	// Stop playing sfx
-	if !deflecting && !reflecting && !shielding {
+	if !deflecting && !reversing && !shielding {
 		if p.audioPlayer != nil {
 			p.audioPlayer.Pause()
 			p.audioPlayer.Close()
@@ -348,14 +348,14 @@ func (p *PC) PlayAudio(deflecting, reflecting, shielding bool) {
 		return
 	}
 
-	// Set reflect sfx
-	if reflecting && p.currentSfx != p.reflectSfx {
+	// Set reverse sfx
+	if reversing && p.currentSfx != p.reverseSfx {
 		if p.audioPlayer != nil {
 			p.audioPlayer.Pause()
 			p.audioPlayer.Close()
 		}
-		p.audioPlayer = p.reflectSfx.Play(1.0)
-		p.currentSfx = p.reflectSfx
+		p.audioPlayer = p.reverseSfx.Play(1.0)
+		p.currentSfx = p.reverseSfx
 	}
 
 	// Set deflect sfx

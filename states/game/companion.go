@@ -195,7 +195,7 @@ func (p *Companion) DrawHand(ctx states.DrawContext) {
 func (p *Companion) Draw(ctx states.DrawContext) {
 	if _, ok := p.previousInteraction.(ActionDeflect); ok {
 		vector.DrawFilledCircle(ctx.Screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0xff, 0x66, 0x99, 0x33}, false)
-	} else if _, ok := p.previousInteraction.(ActionReflect); ok {
+	} else if _, ok := p.previousInteraction.(ActionReverse); ok {
 		vector.DrawFilledCircle(ctx.Screen, float32(p.Hand.Shape.X), float32(p.Hand.Shape.Y), 20, color.NRGBA{0x66, 0x99, 0xff, 0x33}, false)
 	} else if _, ok := p.previousInteraction.(ActionShield); ok {
 		vector.DrawFilledCircle(ctx.Screen, float32(p.shape.X), float32(p.shape.Y), 20, color.NRGBA{0x66, 0xff, 0x99, 0x33}, false)
@@ -209,7 +209,6 @@ func (p *Companion) Draw(ctx states.DrawContext) {
 
 	r := math.Atan2(p.shape.Y-p.Hand.Shape.Y, p.shape.X-p.Hand.Shape.X)
 
-	// TODO: The arrow image should change based on if we're reflecting or deflecting.
 	// Draw direction arrow
 	opts = &ebiten.DrawImageOptions{}
 	// Rotate about its center.

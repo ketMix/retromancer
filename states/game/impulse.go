@@ -9,7 +9,7 @@ import (
 func init() {
 	net.RegisterMessage(ImpulseMove{})
 	net.RegisterMessage(ImpulseSet{})
-	net.RegisterMessage(ImpulseReflect{})
+	net.RegisterMessage(ImpulseReverse{})
 	net.RegisterMessage(ImpulseDeflect{})
 	net.RegisterMessage(ImpulseShield{})
 	net.RegisterMessage(ImpulseShoot{})
@@ -31,11 +31,11 @@ type ImpulseMove struct {
 	Direction float64
 }
 
-type ImpulseReflect struct {
+type ImpulseReverse struct {
 	X, Y float64 // X and Y are the current cursor coordinates.
 }
 
-func (i ImpulseReflect) Cost() int {
+func (i ImpulseReverse) Cost() int {
 	return 1
 }
 
@@ -79,18 +79,18 @@ func (i ImpulseMove) FromBytes(b []byte) (net.Message, int) {
 	return i, 9
 }
 
-func (i ImpulseReflect) Ident() uint8 {
+func (i ImpulseReverse) Ident() uint8 {
 	return 31
 }
 
-func (i ImpulseReflect) ToBytes() (b []byte) {
+func (i ImpulseReverse) ToBytes() (b []byte) {
 	b = append(b, i.Ident())
 	b = binary.LittleEndian.AppendUint64(b, uint64(math.Float64bits(i.X)))
 	b = binary.LittleEndian.AppendUint64(b, uint64(math.Float64bits(i.Y)))
 	return
 }
 
-func (i ImpulseReflect) FromBytes(b []byte) (net.Message, int) {
+func (i ImpulseReverse) FromBytes(b []byte) (net.Message, int) {
 	i.X = math.Float64frombits(binary.LittleEndian.Uint64(b[1:]))
 	i.Y = math.Float64frombits(binary.LittleEndian.Uint64(b[9:]))
 	return i, 17
@@ -181,8 +181,8 @@ func (i ImpulseSet) FromBytes(b []byte) (net.Message, int) {
 	if b[offset] == 1 {
 		offset++
 		switch b[offset] {
-		case (ImpulseReflect{}).Ident():
-			m, n := (ImpulseReflect{}).FromBytes(b[offset:])
+		case (ImpulseReverse{}).Ident():
+			m, n := (ImpulseReverse{}).FromBytes(b[offset:])
 			i.Interaction = m.(Impulse)
 			offset += n
 		case (ImpulseDeflect{}).Ident():

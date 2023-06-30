@@ -108,7 +108,7 @@ func (p *LocalPlayer) Update() {
 			if resources.GetButton(p.GamepadMap, p.GamepadID, resources.ButtonB) {
 				p.impulses.Interaction = ImpulseShield{}
 			} else if resources.GetButton(p.GamepadMap, p.GamepadID, resources.ButtonTriggerRight) {
-				p.impulses.Interaction = ImpulseReflect{
+				p.impulses.Interaction = ImpulseReverse{
 					X: float64(p.cx),
 					Y: float64(p.cy),
 				}
@@ -167,7 +167,7 @@ func (p *LocalPlayer) Update() {
 			if ebiten.IsKeyPressed(ebiten.KeySpace) {
 				p.impulses.Interaction = ImpulseShield{}
 			} else if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
-				p.impulses.Interaction = ImpulseReflect{
+				p.impulses.Interaction = ImpulseReverse{
 					X: float64(x),
 					Y: float64(y),
 				}
