@@ -59,13 +59,14 @@ func (s *SpriteItem) Draw(ctx states.DrawContext) {
 }
 
 type TextItem struct {
-	X, Y       float64
-	renderRect fract.Rect
-	hovered    bool
-	Text       string
-	Underline  bool
-	Callback   func() bool
-	hidden     bool
+	X, Y            float64
+	renderRect      fract.Rect
+	hovered         bool
+	Text            string
+	Underline       bool
+	Callback        func() bool
+	SelfRefCallback *func(*TextItem) bool
+	hidden          bool
 }
 
 func (t *TextItem) Hidden() bool {
@@ -97,6 +98,9 @@ func (t *TextItem) Hovered() bool {
 }
 
 func (t *TextItem) Activate() bool {
+	if t.SelfRefCallback != nil {
+		return (*t.SelfRefCallback)(t)
+	}
 	return t.Callback()
 }
 
