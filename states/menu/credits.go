@@ -82,6 +82,10 @@ func (c *Credits) Init(ctx states.Context) error {
 			Text: ctx.L("Programming, Music, SFX, Levels, Lore"),
 			X:    x,
 			Y:    y,
+			Callback: func() bool {
+				ctx.StateMachine.PushState(&Jukebox{})
+				return true
+			},
 		},
 		Person: &resources.TextItem{
 			Text:      "liqMix",
@@ -146,6 +150,7 @@ func (c *Credits) Update(ctx states.Context) error {
 	}
 	for _, s := range c.sections {
 		s.Person.CheckState(float64(x), float64(y))
+		s.Title.CheckState(float64(x), float64(y))
 	}
 
 	if inpututil.IsMouseButtonJustReleased(ebiten.MouseButton0) {
@@ -164,6 +169,11 @@ func (c *Credits) Update(ctx states.Context) error {
 		for _, s := range c.sections {
 			if s.Person.Hovered() {
 				if s.Person.Activate() {
+					return nil
+				}
+			}
+			if s.Title.Hovered() {
+				if s.Title.Activate() {
 					return nil
 				}
 			}
