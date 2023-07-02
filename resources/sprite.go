@@ -218,3 +218,18 @@ func NewAnimatedSprite(images []*ebiten.Image) *Sprite {
 		images: images,
 	}
 }
+
+func NewAnimatedSpriteFromName(resources states.ResourceManager, name string) *Sprite {
+	names := resources.GetNamesWithPrefix("images", name)
+	if len(names) == 0 {
+		return nil
+	}
+	images := make([]*ebiten.Image, len(names))
+	for i, n := range names {
+		images[i] = resources.Get("images", n).(*ebiten.Image)
+	}
+	return &Sprite{
+		image:  images[0],
+		images: images,
+	}
+}
