@@ -101,7 +101,10 @@ func (t *TextItem) Activate() bool {
 	if t.SelfRefCallback != nil {
 		return (*t.SelfRefCallback)(t)
 	}
-	return t.Callback()
+	if t.Callback != nil {
+		return t.Callback()
+	}
+	return false
 }
 
 func (t *TextItem) Draw(ctx states.DrawContext) {
