@@ -10,12 +10,14 @@
 "MenuIntro1": "They say time heals all wounds..."
 "MenuIntro2": "but some injuries are eternal..."
 "MenuIntro3": "only mendable by..."
+
 # Intro
 "Intro1": "Beneath the whispers of time..."
 "Intro2": "...a long forgotten echo has started to ripple..."
 "Intro3": "...a dear friend now corrupted claims dominion over this doomed land..."
 "Intro4": "...you awaken."
 "SkipIntro": "Press <Enter> or <Escape> to skip"
+
 # Outro
 "Outro1": "You have defeated the Lich..."
 "Outro2": "...and reversed them to a time before their corruption..."
@@ -24,6 +26,7 @@
 "Outro5": "Is the world worth saving if you lose the only one you ever loved?"
 "Outro6": "Perhaps if you return... and try once more..."
 "Outro7": "An echo reverbates back through time..."
+
 # Good Outro
 "Good1": "You have saved the Lich..."
 "Good2": "...by reversing them to a time before their corruption..."
@@ -32,6 +35,7 @@
 "Good5": "There is hope for the future."
 "SavedNPCs": "Pals Saved: "
 "SkipOutro": "Press <Enter> or <Escape> to return home"
+
 #
 "SignExit": "Press <Enter> to return"
 "Generate": "Generate"
