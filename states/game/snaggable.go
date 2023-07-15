@@ -33,10 +33,11 @@ func CreateSnaggable(ctx states.Context, id, spriteName string) *Snaggable {
 	return &Snaggable{
 		id:         id,
 		spriteName: spriteName,
-		shape:      CircleShape{Radius: 3}, // FIXME: don't hardcode radius
+		shape:      CircleShape{Radius: 6}, // FIXME: don't hardcode radius
 		sprite:     sprite,
 	}
 }
+
 func (s *Snaggable) SetXY(x, y float64) {
 	s.shape.X = x
 	s.shape.Y = y
