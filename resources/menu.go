@@ -216,6 +216,7 @@ type InputItem struct {
 	hovered     bool
 	hidden      bool
 	active      bool
+	deleteHeld  int
 	Text        string
 	Callback    func() bool
 }
@@ -266,10 +267,20 @@ func (t *InputItem) Update() {
 		return
 	}
 	if t.active {
-		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+		if t.deleteHeld > 0 {
 			if len(t.Text) > 0 {
-				t.Text = t.Text[:len(t.Text)-1]
+				if t.deleteHeld > 30 || t.deleteHeld == 1 {
+					t.Text = t.Text[:len(t.Text)-1]
+				}
+				t.deleteHeld++
+			} else {
+				t.deleteHeld = 0
 			}
+		}
+		if inpututil.IsKeyJustPressed(ebiten.KeyBackspace) {
+			t.deleteHeld = 1
+		} else if inpututil.IsKeyJustReleased(ebiten.KeyBackspace) {
+			t.deleteHeld = 0
 		} else if inpututil.IsKeyJustPressed(ebiten.KeyEnter) {
 			t.active = false
 		} else if ebiten.IsKeyPressed(ebiten.KeyControl) && inpututil.IsKeyJustPressed(ebiten.KeyV) {
