@@ -59,7 +59,7 @@ func (s *GPTOptions) Init(ctx states.Context) error {
 	}
 
 	s.checkKey = &resources.ButtonItem{
-		X:    centerX - width/2,
+		X:    centerX - width/4,
 		Y:    335,
 		Text: ctx.L.Get("Check Key"),
 		Callback: func() bool {
@@ -77,7 +77,7 @@ func (s *GPTOptions) Init(ctx states.Context) error {
 	}
 
 	s.generate = &resources.ButtonItem{
-		X:    centerX + width/2,
+		X:    centerX + width/4,
 		Y:    335,
 		Text: ctx.L.Get("Generate"),
 		Callback: func() bool {

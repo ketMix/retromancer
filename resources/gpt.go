@@ -34,8 +34,8 @@ type GPT struct {
 	Key          string
 	IsInitKey    bool   // If true, the key was from initialization
 	SystemPrompt string // The prompt to use for the system
-	MaxTokens    int    // 1-2048
-	Model        string // "gpt-3.5-turbo" or "gpt-4"
+	MaxTokens    int    // 1-8192
+	Model        string // "gpt-3.5-turbo-16k", "gpt-3.5-turbo" or "gpt-4"
 	Style        string // the style of the translation
 }
 
@@ -60,27 +60,24 @@ func InitGPT(fs multipath.FS) *GPT {
 
 	return &GPT{
 		Key:       k,
-		Model:     "gpt-3.5-turbo",
+		Model:     "gpt-3.5-turbo-16k",
 		Style:     "an old mumbling sage",
-		MaxTokens: 4096,
+		MaxTokens: 8192,
 		SystemPrompt: `
-			You are assisting with writing the story and text for a game.
-			
-			The game is set in a fantasy world and the player is a wizard
-			who can reverse items and spells.
+			You are an assistant who has been asked to translate the values of a YAML object into a different style.
+			You must emulate the style or personality of the user-requested style.
 
-			- You will receive a prompt with a JSON object containing the key value pairs of the original text.
-			- For each key you should create a new phrase that is different from the original.
-			- A style will be requested that you should use for creating the new phrase.
-			- You will adhere your responses to the style and create a new phrase that is different from the original.
-			- All values should have length less than or equal to the length of their original value.
-			- After creating the phrase you will translate the new phrase into the requested language.
-			- There should be no escape characters in the translated phrase.
-			- The value for the key should be the translated phrase only.
-			- All keys must be present in the output.
+			You must abide by the following rules:
+			- Do not modify the keys
+			- You will receive a query with a YAML object containing the key value pairs of the original text.
+			- For each key you should create a new value that must be different from the original.
+			- A style will be requested that you should use for creating the new value.
+			- You will adhere your responses to the style and apply the given writing style or personality to it.
+			- There should be no escape characters in the new values.
+			- All key value pairs in the input must be present in the output.
 			- If the value is one word, the phrase should be one word.
-
-			Your response must be YAML unmarshalable.
+			- Your response must be YAML unmarshalable.
+			- Only respond with the new YAML object.
 		`,
 	}
 }
@@ -121,16 +118,15 @@ func (g *GPT) Fetch(method, url string, requestBody *[]byte) ([]byte, error) {
 
 // Creates the prompt
 func (gpt *GPT) createPrompt(inputLocale *Locale, locale string) string {
-	str := "{"
-	for k, v := range *inputLocale {
-		str += fmt.Sprintf(`"%s": "%s",`, k, v)
+	prompt := fmt.Sprintf(`You must strictly apply the style/personality of "%s" to the values.`, gpt.Style)
+	if locale != "en" {
+		prompt += fmt.Sprintf(`You must translate the values into the "%s" language using the appropriate character set.`, locale)
 	}
-	str += "}"
-	return fmt.Sprintf(`
-		It should be in the similar spelling, case sensitivity, grammar, and phrasing of a %s style.
-		Translate to the %s language in YAML format:
-		%s
-	`, gpt.Style, locale, str)
+	prompt += "The YAML object to be modified. All of the keys in this object must be present in the output:\n"
+	for k, v := range *inputLocale {
+		prompt += fmt.Sprintf(`"%s": "%s"\n`, k, v)
+	}
+	return prompt
 }
 
 func (gpt *GPT) GetResponse(inputLocale *Locale, locale string) (Locale, error) {
