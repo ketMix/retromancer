@@ -40,7 +40,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 
 	s.overlay.Init(ctx)
 	//
-	s.clickSound = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
+	s.clickSound = ctx.R.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
 	s.playerEntries = append(s.playerEntries, &PlayerEntry{
 		player: game.NewLocalPlayer(),
@@ -51,7 +51,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 	}
 
 	s.multiplayerItem = &resources.ButtonItem{
-		Text: ctx.L("Multiplayer"),
+		Text: ctx.L.Get("Multiplayer"),
 		X:    500,
 		Y:    20,
 		Callback: func() bool {
@@ -75,7 +75,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 		X:           350,
 		Y:           20,
 		Width:       150,
-		Placeholder: ctx.L("Address"),
+		Placeholder: ctx.L.Get("Address"),
 		Callback: func() bool {
 			return false
 		},
@@ -83,7 +83,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 	s.lobbyItem.SetHidden(true)
 
 	s.joinItem = &resources.ButtonItem{
-		Text: ctx.L("Join"),
+		Text: ctx.L.Get("Join"),
 		X:    450 + 50,
 		Y:    20,
 		Callback: func() bool {
@@ -99,7 +99,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 	s.joinItem.SetHidden(true)
 
 	s.hostItem = &resources.ButtonItem{
-		Text: ctx.L("Host"),
+		Text: ctx.L.Get("Host"),
 		X:    450,
 		Y:    20,
 		Callback: func() bool {
@@ -115,7 +115,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 	s.hostItem.SetHidden(true)
 
 	s.cancelItem = &resources.ButtonItem{
-		Text: ctx.L("Cancel"),
+		Text: ctx.L.Get("Cancel"),
 		X:    450,
 		Y:    20,
 		Callback: func() bool {
@@ -127,7 +127,7 @@ func (s *Lobby) Init(ctx states.Context) error {
 	s.cancelItem.SetHidden(true)
 
 	s.backItem = &resources.TextItem{
-		Text: ctx.L("Back"),
+		Text: ctx.L.Get("Back"),
 		X:    30,
 		Y:    335,
 		Callback: func() bool {
@@ -353,7 +353,7 @@ func (s *Lobby) AddNetPlayer(ctx states.Context, peer *rnet.Peer) {
 	s.playerEntries[1].hatRight.SetHidden(true)
 	s.playerEntries[1].controllerLeft.SetHidden(true)
 	s.playerEntries[1].controllerRight.SetHidden(true)
-	s.playerEntries[1].controllerItem.Sprite = resources.NewSprite(ctx.Manager.Get("images", "network").(*ebiten.Image))
+	s.playerEntries[1].controllerItem.Sprite = resources.NewSprite(ctx.R.Get("images", "network").(*ebiten.Image))
 	s.playerEntries[1].controllerItem.Sprite.Centered = true
 	s.playerEntries[1].waitingText.SetHidden(true)
 	s.playerEntries[1].startText.SetHidden(true)

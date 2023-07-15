@@ -47,22 +47,22 @@ func (w *WorldStateDead) Draw(s *World, ctx states.DrawContext) {
 	{
 		ctx.Text.SetScale(2.0)
 		ctx.Text.SetColor(color.RGBA{0x00, 0x00, 0x00, 0xff})
-		resources.DrawTextOutline(ctx.Text, ctx.Screen, ctx.L("Morte"), x, int(y), 2)
+		resources.DrawTextOutline(ctx.Text, ctx.Screen, ctx.L.Get("Morte"), x, int(y), 2)
 		ctx.Text.SetColor(color.RGBA{0xff, 0x00, 0x00, 0xff})
-		ctx.Text.Draw(ctx.Screen, ctx.L("Morte"), x, int(y))
+		ctx.Text.Draw(ctx.Screen, ctx.L.Get("Morte"), x, int(y))
 	}
 	y += ctx.Text.Utils().GetLineHeight()
 	// Subtitles
 	{
 		ctx.Text.SetScale(1.0)
 		ctx.Text.SetColor(color.Black)
-		resources.DrawTextOutline(ctx.Text, ctx.Screen, ctx.L("ResetRoom"), x, int(y), 1)
+		resources.DrawTextOutline(ctx.Text, ctx.Screen, ctx.L.Get("ResetRoom"), x, int(y), 1)
 		ctx.Text.SetColor(color.White)
-		ctx.Text.Draw(ctx.Screen, ctx.L("ResetRoom"), x, int(y))
+		ctx.Text.Draw(ctx.Screen, ctx.L.Get("ResetRoom"), x, int(y))
 		y += ctx.Text.Utils().GetLineHeight()
 		ctx.Text.SetColor(color.Black)
-		resources.DrawTextOutline(ctx.Text, ctx.Screen, ctx.L("Quit"), x, int(y), 1)
+		resources.DrawTextOutline(ctx.Text, ctx.Screen, ctx.L.Get("Quit"), x, int(y), 1)
 		ctx.Text.SetColor(color.White)
-		ctx.Text.Draw(ctx.Screen, ctx.L("Quit"), ctx.Screen.Bounds().Max.X/2, int(y))
+		ctx.Text.Draw(ctx.Screen, ctx.L.Get("Quit"), ctx.Screen.Bounds().Max.X/2, int(y))
 	}
 }

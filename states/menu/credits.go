@@ -27,15 +27,15 @@ type CreditSection struct {
 
 func (c *Credits) Init(ctx states.Context) error {
 	c.overlay.Init(ctx)
-	c.clickSound = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
+	c.clickSound = ctx.R.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
-	c.logo = resources.NewSprite(ctx.Manager.GetAs("images", "logo", (*ebiten.Image)(nil)).(*ebiten.Image))
+	c.logo = resources.NewSprite(ctx.R.GetAs("images", "logo", (*ebiten.Image)(nil)).(*ebiten.Image))
 	c.logo.Centered = true
 	c.logo.X = 320
 	c.logo.Y = c.logo.Height()/2 - 30
 
 	c.backItem = &resources.TextItem{
-		Text: ctx.L("Back"),
+		Text: ctx.L.Get("Back"),
 		X:    30,
 		Y:    335,
 		Callback: func() bool {
@@ -46,7 +46,7 @@ func (c *Credits) Init(ctx states.Context) error {
 	}
 	c.items = append(c.items, c.backItem)
 
-	c.jam = resources.NewSprite(ctx.Manager.GetAs("images", "jam", (*ebiten.Image)(nil)).(*ebiten.Image))
+	c.jam = resources.NewSprite(ctx.R.GetAs("images", "jam", (*ebiten.Image)(nil)).(*ebiten.Image))
 	c.jam.X = 80
 	c.jam.Y = c.logo.Y + c.logo.Height()/2 + 20
 
@@ -54,7 +54,7 @@ func (c *Credits) Init(ctx states.Context) error {
 	y := c.logo.Y + c.logo.Height()/2
 	section := CreditSection{
 		Title: &resources.TextItem{
-			Text: ctx.L("Engine, Programming, Art, Lore"),
+			Text: ctx.L.Get("Engine, Programming, Art, Lore"),
 			X:    x,
 			Y:    y,
 		},
@@ -68,7 +68,7 @@ func (c *Credits) Init(ctx states.Context) error {
 				return true
 			},
 		},
-		Hat: resources.NewSprite(ctx.Manager.GetAs("images", "hat-coffee", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Hat: resources.NewSprite(ctx.R.GetAs("images", "hat-coffee", (*ebiten.Image)(nil)).(*ebiten.Image)),
 	}
 	section.Hat.Scale = 2.0
 	section.Hat.Centered = true
@@ -79,7 +79,7 @@ func (c *Credits) Init(ctx states.Context) error {
 
 	section = CreditSection{
 		Title: &resources.TextItem{
-			Text: ctx.L("Programming, Music, SFX, Levels, Lore"),
+			Text: ctx.L.Get("Programming, Music, SFX, Levels, Lore"),
 			X:    x,
 			Y:    y,
 			Callback: func() bool {
@@ -97,7 +97,7 @@ func (c *Credits) Init(ctx states.Context) error {
 				return true
 			},
 		},
-		Hat: resources.NewSprite(ctx.Manager.GetAs("images", "hat-pep", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Hat: resources.NewSprite(ctx.R.GetAs("images", "hat-pep", (*ebiten.Image)(nil)).(*ebiten.Image)),
 	}
 	section.Hat.Scale = 2.0
 	section.Hat.Centered = true
@@ -108,7 +108,7 @@ func (c *Credits) Init(ctx states.Context) error {
 
 	section = CreditSection{
 		Title: &resources.TextItem{
-			Text: ctx.L("Menu Art & Logo"),
+			Text: ctx.L.Get("Menu Art & Logo"),
 			X:    x,
 			Y:    y,
 		},
@@ -122,7 +122,7 @@ func (c *Credits) Init(ctx states.Context) error {
 				return true
 			},
 		},
-		Hat: resources.NewSprite(ctx.Manager.GetAs("images", "hat-egg", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Hat: resources.NewSprite(ctx.R.GetAs("images", "hat-egg", (*ebiten.Image)(nil)).(*ebiten.Image)),
 	}
 	section.Hat.Scale = 2.0
 	section.Hat.Centered = true

@@ -39,10 +39,10 @@ func CreateInteractive(ctx states.Context, actorDef resources.ActorSpawn) *Inter
 	spritePrefix := actorDef.Sprite
 
 	// Create the active sprite
-	activeImageNames := ctx.Manager.GetNamesWithPrefix("images", spritePrefix+"-active")
+	activeImageNames := ctx.R.GetNamesWithPrefix("images", spritePrefix+"-active")
 	activeImages := make([]*ebiten.Image, 0)
 	for _, s := range activeImageNames {
-		activeImages = append(activeImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+		activeImages = append(activeImages, ctx.R.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 	activeSprite := resources.NewAnimatedSprite(activeImages)
 	if activeSprite != nil {
@@ -51,10 +51,10 @@ func CreateInteractive(ctx states.Context, actorDef resources.ActorSpawn) *Inter
 	}
 
 	// Create the inactive sprite
-	inactiveImageNames := ctx.Manager.GetNamesWithPrefix("images", spritePrefix+"-inactive")
+	inactiveImageNames := ctx.R.GetNamesWithPrefix("images", spritePrefix+"-inactive")
 	inactiveImages := make([]*ebiten.Image, 0)
 	for _, s := range inactiveImageNames {
-		inactiveImages = append(inactiveImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+		inactiveImages = append(inactiveImages, ctx.R.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 	inactiveSprite := resources.NewAnimatedSprite(inactiveImages)
 

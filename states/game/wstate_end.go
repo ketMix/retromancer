@@ -17,10 +17,10 @@ type WorldStateEnd struct {
 
 func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 	w.npcSprite = resources.NewAnimatedSprite([]*ebiten.Image{
-		ctx.Manager.GetAs("images", "npc-saved1", (*ebiten.Image)(nil)).(*ebiten.Image),
-		ctx.Manager.GetAs("images", "npc-saved2", (*ebiten.Image)(nil)).(*ebiten.Image),
-		ctx.Manager.GetAs("images", "npc-saved3", (*ebiten.Image)(nil)).(*ebiten.Image),
-		ctx.Manager.GetAs("images", "npc-saved4", (*ebiten.Image)(nil)).(*ebiten.Image),
+		ctx.R.GetAs("images", "npc-saved1", (*ebiten.Image)(nil)).(*ebiten.Image),
+		ctx.R.GetAs("images", "npc-saved2", (*ebiten.Image)(nil)).(*ebiten.Image),
+		ctx.R.GetAs("images", "npc-saved3", (*ebiten.Image)(nil)).(*ebiten.Image),
+		ctx.R.GetAs("images", "npc-saved4", (*ebiten.Image)(nil)).(*ebiten.Image),
 	})
 	w.npcSprite.Loop = true
 	w.npcSprite.Centered = true
@@ -36,7 +36,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 	if len(s.savedNPCs) < 14 {
 		// Bad ending
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Outro1"),
+			Text:         ctx.L.Get("Outro1"),
 			Scale:        1.0,
 			InDuration:   1 * time.Second,
 			HoldDuration: 2 * time.Second,
@@ -45,7 +45,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 			Y:            y,
 		})
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Outro2"),
+			Text:         ctx.L.Get("Outro2"),
 			Scale:        1.0,
 			InDuration:   1 * time.Second,
 			HoldDuration: 2 * time.Second,
@@ -54,7 +54,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 			Y:            y,
 		})
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Outro3"),
+			Text:         ctx.L.Get("Outro3"),
 			Scale:        1.0,
 			InDuration:   1 * time.Second,
 			HoldDuration: 2 * time.Second,
@@ -63,7 +63,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 			Y:            y,
 		})
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Outro4"),
+			Text:         ctx.L.Get("Outro4"),
 			Scale:        1.0,
 			InDuration:   1 * time.Second,
 			HoldDuration: 2 * time.Second,
@@ -72,7 +72,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 			Y:            y,
 		})
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Outro5"),
+			Text:         ctx.L.Get("Outro5"),
 			InDuration:   1 * time.Second,
 			HoldDuration: 3 * time.Second,
 			OutDuration:  1 * time.Second,
@@ -80,7 +80,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 			Y:            y,
 		})
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Outro6"),
+			Text:         ctx.L.Get("Outro6"),
 			InDuration:   1 * time.Second,
 			HoldDuration: 3 * time.Second,
 			OutDuration:  1 * time.Second,
@@ -88,7 +88,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 			Y:            y,
 		})
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Outro7"),
+			Text:         ctx.L.Get("Outro7"),
 			InDuration:   3 * time.Second,
 			HoldDuration: 2 * time.Second,
 			OutDuration:  4 * time.Second,
@@ -99,7 +99,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 	} else {
 		// Good ending
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Good1"),
+			Text:         ctx.L.Get("Good1"),
 			Scale:        1.0,
 			InDuration:   1 * time.Second,
 			HoldDuration: 2 * time.Second,
@@ -108,7 +108,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 			Y:            y,
 		})
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Good2"),
+			Text:         ctx.L.Get("Good2"),
 			Scale:        1.0,
 			InDuration:   1 * time.Second,
 			HoldDuration: 3 * time.Second,
@@ -117,7 +117,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 			Y:            y,
 		})
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Good3"),
+			Text:         ctx.L.Get("Good3"),
 			Scale:        1.0,
 			InDuration:   1 * time.Second,
 			HoldDuration: 2 * time.Second,
@@ -126,7 +126,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 			Y:            y,
 		})
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Good4"),
+			Text:         ctx.L.Get("Good4"),
 			Scale:        1.0,
 			InDuration:   1 * time.Second,
 			HoldDuration: 2 * time.Second,
@@ -135,7 +135,7 @@ func (w *WorldStateEnd) Enter(s *World, ctx states.Context) {
 			Y:            y,
 		})
 		w.vfx.Add(&resources.Text{
-			Text:         ctx.L("Good5"),
+			Text:         ctx.L.Get("Good5"),
 			Scale:        1.0,
 			InDuration:   1 * time.Second,
 			HoldDuration: 2 * time.Second,
@@ -175,7 +175,7 @@ func (w *WorldStateEnd) Draw(s *World, ctx states.DrawContext) {
 		ctx.Text.SetScale(1.0)
 		ctx.Text.SetColor(color.White)
 		ctx.Text.SetAlign(etxt.XCenter | etxt.YCenter)
-		ctx.Text.Draw(ctx.Screen, ctx.L("SavedNPCs"), ctx.Screen.Bounds().Dx()/2, 100)
+		ctx.Text.Draw(ctx.Screen, ctx.L.Get("SavedNPCs"), ctx.Screen.Bounds().Dx()/2, 100)
 		for i := 0; i < len(s.savedNPCs); i++ {
 			x := (i % 13) * 20
 			y := (i / 13) * 20
@@ -185,7 +185,7 @@ func (w *WorldStateEnd) Draw(s *World, ctx states.DrawContext) {
 		}
 
 		ctx.Text.SetColor(color.NRGBA{0xff, 0xff, 0xff, 0x66})
-		ctx.Text.Draw(ctx.Screen, ctx.L("SkipOutro"), ctx.Screen.Bounds().Max.X/2, ctx.Screen.Bounds().Max.Y-int(ctx.Text.Utils().GetLineHeight()))
+		ctx.Text.Draw(ctx.Screen, ctx.L.Get("SkipOutro"), ctx.Screen.Bounds().Max.X/2, ctx.Screen.Bounds().Max.Y-int(ctx.Text.Utils().GetLineHeight()))
 
 		return
 	}

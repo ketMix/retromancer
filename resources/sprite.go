@@ -219,7 +219,7 @@ func NewAnimatedSprite(images []*ebiten.Image) *Sprite {
 	}
 }
 
-func NewAnimatedSpriteFromName(resources states.ResourceManager, name string) *Sprite {
+func NewAnimatedSpriteFromName(resources states.Resource, name string) *Sprite {
 	names := resources.GetNamesWithPrefix("images", name)
 	if len(names) == 0 {
 		return nil

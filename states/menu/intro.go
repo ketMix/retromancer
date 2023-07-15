@@ -18,7 +18,7 @@ func (i *Intro) Init(ctx states.Context) error {
 }
 
 func (i *Intro) Enter(ctx states.Context, v interface{}) error {
-	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "title-intro", (*resources.Song)(nil)).(states.Song))
+	ctx.MusicPlayer.Play(ctx.R.GetAs("songs", "title-intro", (*resources.Song)(nil)).(states.Song))
 
 	i.vfx.SetMode(resources.Sequential)
 	i.vfx.Add(&resources.Fade{
@@ -32,7 +32,7 @@ func (i *Intro) Enter(ctx states.Context, v interface{}) error {
 	// There's a little difference in timing if loading intro first
 	// which we do when the key is invalid
 	introHold := 900 * time.Millisecond
-	if !ctx.CheckGPTKey() {
+	if !ctx.L.CheckGPTKey() {
 		introHold = 50 * time.Millisecond
 	}
 
@@ -41,7 +41,7 @@ func (i *Intro) Enter(ctx states.Context, v interface{}) error {
 		HoldDuration: introHold,
 	})
 	i.vfx.Add(&resources.Text{
-		Text:         ctx.L("MenuIntro1"),
+		Text:         ctx.L.Get("MenuIntro1"),
 		InDuration:   1450 * time.Millisecond,
 		HoldDuration: 800 * time.Millisecond,
 		OutDuration:  1350 * time.Millisecond,
@@ -51,7 +51,7 @@ func (i *Intro) Enter(ctx states.Context, v interface{}) error {
 	x += xOffset
 	y += yOffset
 	i.vfx.Add(&resources.Text{
-		Text:         ctx.L("MenuIntro2"),
+		Text:         ctx.L.Get("MenuIntro2"),
 		InDuration:   1450 * time.Millisecond,
 		HoldDuration: 800 * time.Millisecond,
 		OutDuration:  1350 * time.Millisecond,
@@ -61,7 +61,7 @@ func (i *Intro) Enter(ctx states.Context, v interface{}) error {
 	x += xOffset
 	y += yOffset
 	i.vfx.Add(&resources.Text{
-		Text:         ctx.L("MenuIntro3"),
+		Text:         ctx.L.Get("MenuIntro3"),
 		InDuration:   1450 * time.Millisecond,
 		HoldDuration: 1250 * time.Millisecond,
 		OutDuration:  3000 * time.Millisecond,
@@ -87,5 +87,5 @@ func (i *Intro) Draw(ctx states.DrawContext) {
 	i.vfx.Process(ctx, nil)
 
 	ctx.Text.SetColor(color.NRGBA{0xff, 0xff, 0xff, 0x66})
-	ctx.Text.Draw(ctx.Screen, ctx.L("SkipIntro"), ctx.Screen.Bounds().Max.X/2, ctx.Screen.Bounds().Max.Y-int(ctx.Text.Utils().GetLineHeight()))
+	ctx.Text.Draw(ctx.Screen, ctx.L.Get("SkipIntro"), ctx.Screen.Bounds().Max.X/2, ctx.Screen.Bounds().Max.Y-int(ctx.Text.Utils().GetLineHeight()))
 }

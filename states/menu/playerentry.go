@@ -47,7 +47,7 @@ func (e *PlayerEntry) SetPlayer(player game.Player) {
 }
 
 func (e *PlayerEntry) SyncHat(ctx states.Context) {
-	e.hatItem.Sprite.SetImage(ctx.Manager.Get("images", e.hats[e.hatIndex]).(*ebiten.Image))
+	e.hatItem.Sprite.SetImage(ctx.R.Get("images", e.hats[e.hatIndex]).(*ebiten.Image))
 
 	e.hatText.Text = strings.TrimPrefix(e.hats[e.hatIndex], "hat-")
 
@@ -62,12 +62,12 @@ func (e *PlayerEntry) SyncController(ctx states.Context) {
 	if player, ok := e.player.(*game.LocalPlayer); ok {
 		if !e.useController {
 			player.GamepadID = -1
-			e.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "keyboard").(*ebiten.Image))
+			e.controllerItem.Sprite.SetImage(ctx.R.Get("images", "keyboard").(*ebiten.Image))
 			e.controllerIdText.Text = ""
 		} else {
 			player.GamepadID = controllers[e.controllerIndex]
 			player.GamepadMap = resources.GetBestGamemap(player.GamepadID)
-			e.controllerItem.Sprite.SetImage(ctx.Manager.Get("images", "controller").(*ebiten.Image))
+			e.controllerItem.Sprite.SetImage(ctx.R.Get("images", "controller").(*ebiten.Image))
 			e.controllerIdText.Text = fmt.Sprintf("%d", player.GamepadID)
 		}
 	}
@@ -103,20 +103,20 @@ func (e *PlayerEntry) SetController(dir int) {
 }
 
 func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
-	e.clickSound = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
+	e.clickSound = ctx.R.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
-	e.hats = ctx.Manager.GetNamesWithPrefix("images", "hat-")
+	e.hats = ctx.R.GetNamesWithPrefix("images", "hat-")
 	e.hatIndex = int(rand.Int31n(int32(len(e.hats))))
 
 	e.hatTitle = &resources.TextItem{
-		Text: ctx.L("Hat"),
+		Text: ctx.L.Get("Hat"),
 		Callback: func() bool {
 			return false
 		},
 	}
 
 	e.hatLeft = &resources.SpriteItem{
-		Sprite: resources.NewSprite(ctx.Manager.Get("images", "arrow-left").(*ebiten.Image)),
+		Sprite: resources.NewSprite(ctx.R.Get("images", "arrow-left").(*ebiten.Image)),
 		Callback: func() bool {
 			e.hatIndex--
 			if e.hatIndex < 0 {
@@ -131,7 +131,7 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 	e.hatLeft.Sprite.Centered = true
 
 	e.hatItem = &resources.SpriteItem{
-		Sprite: resources.NewSprite(ctx.Manager.Get("images", e.hats[e.hatIndex]).(*ebiten.Image)),
+		Sprite: resources.NewSprite(ctx.R.Get("images", e.hats[e.hatIndex]).(*ebiten.Image)),
 		Callback: func() bool {
 			return false
 		},
@@ -140,7 +140,7 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 	e.hatItem.Sprite.Scale = 2.0
 
 	e.hatRight = &resources.SpriteItem{
-		Sprite: resources.NewSprite(ctx.Manager.Get("images", "arrow-right").(*ebiten.Image)),
+		Sprite: resources.NewSprite(ctx.R.Get("images", "arrow-right").(*ebiten.Image)),
 		Callback: func() bool {
 			e.hatIndex++
 			if e.hatIndex >= len(e.hats) {
@@ -165,13 +165,13 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 
 	// Controller
 	e.controllerTitle = &resources.TextItem{
-		Text: ctx.L("Input"),
+		Text: ctx.L.Get("Input"),
 		Callback: func() bool {
 			return false
 		},
 	}
 	e.controllerLeft = &resources.SpriteItem{
-		Sprite: resources.NewSprite(ctx.Manager.Get("images", "arrow-left").(*ebiten.Image)),
+		Sprite: resources.NewSprite(ctx.R.Get("images", "arrow-left").(*ebiten.Image)),
 		Callback: func() bool {
 			e.clickSound.Play(1.0)
 			e.SetController(-1)
@@ -181,14 +181,14 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 	}
 	e.controllerLeft.Sprite.Centered = true
 	e.controllerItem = &resources.SpriteItem{
-		Sprite: resources.NewSprite(ctx.Manager.Get("images", "keyboard").(*ebiten.Image)),
+		Sprite: resources.NewSprite(ctx.R.Get("images", "keyboard").(*ebiten.Image)),
 		Callback: func() bool {
 			return false
 		},
 	}
 	e.controllerItem.Sprite.Centered = true
 	e.controllerRight = &resources.SpriteItem{
-		Sprite: resources.NewSprite(ctx.Manager.Get("images", "arrow-right").(*ebiten.Image)),
+		Sprite: resources.NewSprite(ctx.R.Get("images", "arrow-right").(*ebiten.Image)),
 		Callback: func() bool {
 			e.clickSound.Play(1.0)
 			e.SetController(1)
@@ -207,7 +207,7 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 
 	// Other controls
 	e.startText = &resources.TextItem{
-		Text: ctx.L("Start"),
+		Text: ctx.L.Get("Start"),
 		Callback: func() bool {
 			e.clickSound.Play(1.0)
 			if !s.net.Running || s.net.Hosting {
@@ -218,7 +218,7 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 	}
 
 	e.waitingText = &resources.TextItem{
-		Text: ctx.L("WaitingPlayer"),
+		Text: ctx.L.Get("WaitingPlayer"),
 		Callback: func() bool {
 			return false
 		},

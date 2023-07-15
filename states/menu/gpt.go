@@ -11,27 +11,38 @@ import (
 )
 
 type GPTOptions struct {
-	generate, back     *resources.ButtonItem
-	style, key, locale *resources.InputItem
-	buttons            []*resources.ButtonItem
-	inputs             []*resources.InputItem
-	click              *resources.Sound
-	gptKeyIsValid      bool
-	gptIsActive        bool
+	back, checkKey, generate *resources.ButtonItem
+	key, locale, style       *resources.InputItem
+	buttons                  []*resources.ButtonItem
+	inputs                   []*resources.InputItem
+	click                    *resources.Sound
+	gptKeyIsValid            bool
+	gptIsActive              bool
 }
 
 func (s *GPTOptions) Init(ctx states.Context) error {
-	s.gptKeyIsValid = ctx.CheckGPTKey()
-	s.click = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
+	s.gptKeyIsValid = ctx.L.CheckGPTKey()
+	s.click = ctx.R.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
 	x, y := 1280, 720
 	centerX := float64(x / 4)
-
+	width := float64(350)
+	s.key = &resources.InputItem{
+		X:           centerX,
+		Y:           float64(y/20) * 6,
+		Width:       width,
+		Text:        ctx.L.GetGPTKey(),
+		Placeholder: ctx.L.Get("OpenAI API Key"),
+		Callback: func() bool {
+			return false
+		},
+	}
 	s.style = &resources.InputItem{
 		X:           centerX,
 		Y:           float64(y/20) * 7,
-		Width:       250,
-		Placeholder: ctx.L("Writing Style"),
+		Width:       width,
+		Placeholder: ctx.L.Get("Writing Style"),
+		Text:        ctx.L.GetGPTStyle(),
 		Callback: func() bool {
 			return false
 		},
@@ -39,24 +50,43 @@ func (s *GPTOptions) Init(ctx states.Context) error {
 	s.locale = &resources.InputItem{
 		X:           centerX,
 		Y:           float64(y/20) * 8,
-		Width:       250,
-		Text:        ctx.Locale(),
-		Placeholder: ctx.L("Language"),
+		Width:       100,
+		Text:        ctx.L.Locale(),
+		Placeholder: ctx.L.Get("Language"),
 		Callback: func() bool {
 			return false
 		},
 	}
 
-	s.generate = &resources.ButtonItem{
-		X:    centerX,
-		Y:    float64(y/20) * 9,
-		Text: ctx.L("Generate"),
+	s.checkKey = &resources.ButtonItem{
+		X:    centerX - width/2,
+		Y:    335,
+		Text: ctx.L.Get("Check Key"),
 		Callback: func() bool {
 			s.click.Play(1.0)
-			if ctx.CheckGPTKey() {
+			if s.key.Text != "" {
+				ctx.L.SetGPTKey(s.key.Text)
+			}
+			if ctx.L.CheckGPTKey() {
 				s.gptKeyIsValid = true
-				ctx.SetGPTStyle(s.style.Text)
-				ctx.SetLocale(s.locale.Text, true)
+			} else {
+				s.gptKeyIsValid = false
+			}
+			return true
+		},
+	}
+
+	s.generate = &resources.ButtonItem{
+		X:    centerX + width/2,
+		Y:    335,
+		Text: ctx.L.Get("Generate"),
+		Callback: func() bool {
+			s.click.Play(1.0)
+			ctx.L.SetGPTKey(s.key.Text)
+			if ctx.L.CheckGPTKey() {
+				s.gptKeyIsValid = true
+				ctx.L.SetGPTStyle(s.style.Text)
+				ctx.L.SetLocale(s.locale.Text, true)
 			} else {
 				s.gptKeyIsValid = false
 			}
@@ -64,7 +94,7 @@ func (s *GPTOptions) Init(ctx states.Context) error {
 		},
 	}
 	s.back = &resources.ButtonItem{
-		Text: ctx.L("Back"),
+		Text: ctx.L.Get("Back"),
 		X:    30,
 		Y:    335,
 		Callback: func() bool {
@@ -73,8 +103,8 @@ func (s *GPTOptions) Init(ctx states.Context) error {
 			return false
 		},
 	}
-	s.inputs = append(s.inputs, s.style, s.locale)
-	s.buttons = append(s.buttons, s.generate, s.back)
+	s.inputs = append(s.inputs, s.key, s.style, s.locale)
+	s.buttons = append(s.buttons, s.checkKey, s.generate, s.back)
 	return nil
 }
 
@@ -87,11 +117,11 @@ func (s *GPTOptions) Enter(ctx states.Context, v interface{}) error {
 }
 
 func (s *GPTOptions) Update(ctx states.Context) error {
-	s.gptIsActive = ctx.GPTIsActive()
-	s.generate.Text = ctx.L("Generate")
-	s.back.Text = ctx.L("Back")
-	s.locale.Placeholder = ctx.L("Language")
-	s.style.Placeholder = ctx.L("Writing Style")
+	s.gptIsActive = ctx.L.GPTIsActive()
+	s.generate.Text = ctx.L.Get("Generate")
+	s.back.Text = ctx.L.Get("Back")
+	s.locale.Placeholder = ctx.L.Get("Language")
+	s.style.Placeholder = ctx.L.Get("Writing Style")
 
 	x, y := ebiten.CursorPosition()
 	for _, m := range s.buttons {
@@ -136,21 +166,21 @@ func (s *GPTOptions) Draw(ctx states.DrawContext) {
 	if !s.gptKeyIsValid {
 		ctx.Text.SetScale(1.0)
 		ctx.Text.SetColor(color.RGBA{255, 0, 0, 255})
-		ctx.Text.Draw(ctx.Screen, ctx.L("GPTKeyNotValid"), x/4, (y / 24))
+		ctx.Text.Draw(ctx.Screen, ctx.L.Get("GPTKeyNotValid"), x/4, (y / 24))
 	} else {
 		ctx.Text.SetScale(1.0)
 		ctx.Text.SetColor(color.RGBA{0, 255, 0, 255})
-		ctx.Text.Draw(ctx.Screen, ctx.L("GPTKeyValid"), x/4, (y / 24))
+		ctx.Text.Draw(ctx.Screen, ctx.L.Get("GPTKeyValid"), x/4, (y / 24))
 	}
 
 	if !s.gptIsActive {
 		ctx.Text.SetScale(1.0)
 		ctx.Text.SetColor(color.RGBA{255, 0, 0, 255})
-		ctx.Text.Draw(ctx.Screen, ctx.L("GPTNotActive"), x/4, (y/24)*2)
+		ctx.Text.Draw(ctx.Screen, ctx.L.Get("GPTNotActive"), x/4, (y/24)*2)
 	}
 
 	// Draw instruction
-	text := strings.Split(ctx.L("GPTInstructions"), "\n")
+	text := strings.Split(ctx.L.Get("GPTInstructions"), "\n")
 	splitText := make([]string, 0)
 	maxLen := 60
 	for _, line := range text {

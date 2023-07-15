@@ -45,30 +45,30 @@ type Enemy struct {
 
 func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
 	// Get the enemy definition using enemy name
-	enemyDef := ctx.Manager.GetAs("enemies", enemyName, (*resources.Enemy)(nil)).(*resources.Enemy)
+	enemyDef := ctx.R.GetAs("enemies", enemyName, (*resources.Enemy)(nil)).(*resources.Enemy)
 
 	// Get the alive and dead sprites
-	aliveImageNames := ctx.Manager.GetNamesWithPrefix("images", enemyDef.Sprite+"-alive")
+	aliveImageNames := ctx.R.GetNamesWithPrefix("images", enemyDef.Sprite+"-alive")
 	aliveImages := make([]*ebiten.Image, 0)
 	for _, s := range aliveImageNames {
-		aliveImages = append(aliveImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+		aliveImages = append(aliveImages, ctx.R.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 	aliveSprite := resources.NewAnimatedSprite(aliveImages)
 	aliveSprite.Framerate = enemyDef.Framerate / 2
 	aliveSprite.Loop = true
 
-	deadImageNames := ctx.Manager.GetNamesWithPrefix("images", enemyDef.Sprite+"-dead")
+	deadImageNames := ctx.R.GetNamesWithPrefix("images", enemyDef.Sprite+"-dead")
 	deadImages := make([]*ebiten.Image, 0)
 	for _, s := range deadImageNames {
-		deadImages = append(deadImages, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+		deadImages = append(deadImages, ctx.R.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 	deadSprite := resources.NewAnimatedSprite(deadImages)
 	deadSprite.Framerate = enemyDef.Framerate
 	deadSprite.Loop = false
 
 	// Get the hit and dead sounds
-	hitSfx := ctx.Manager.GetAs("sounds", enemyDef.Sprite+"-hit", (*resources.Sound)(nil)).(*resources.Sound)
-	deadSfx := ctx.Manager.GetAs("sounds", enemyDef.Sprite+"-dead", (*resources.Sound)(nil)).(*resources.Sound)
+	hitSfx := ctx.R.GetAs("sounds", enemyDef.Sprite+"-hit", (*resources.Sound)(nil)).(*resources.Sound)
+	deadSfx := ctx.R.GetAs("sounds", enemyDef.Sprite+"-dead", (*resources.Sound)(nil)).(*resources.Sound)
 
 	// Create the spawner
 	var spawner *Spawner

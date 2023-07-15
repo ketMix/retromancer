@@ -191,13 +191,13 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 			a.shielding = shielding
 			// FIXME: Probably only SetImage if image is not the expected one.
 			if deflecting {
-				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-deflect", (*ebiten.Image)(nil)).(*ebiten.Image))
+				a.Hand.Sprite.SetImage(ctx.R.GetAs("images", "hand-deflect", (*ebiten.Image)(nil)).(*ebiten.Image))
 			} else if reversing {
-				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-reverse", (*ebiten.Image)(nil)).(*ebiten.Image))
+				a.Hand.Sprite.SetImage(ctx.R.GetAs("images", "hand-reverse", (*ebiten.Image)(nil)).(*ebiten.Image))
 			} else if shielding {
-				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-shield", (*ebiten.Image)(nil)).(*ebiten.Image))
+				a.Hand.Sprite.SetImage(ctx.R.GetAs("images", "hand-shield", (*ebiten.Image)(nil)).(*ebiten.Image))
 			} else {
-				a.Hand.Sprite.SetImage(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
+				a.Hand.Sprite.SetImage(ctx.R.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
 			}
 			// Play the associated audio
 			a.PlayAudio(deflecting, reversing, shielding)
@@ -330,7 +330,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 				if i, ok := actor.(*Interactive); ok {
 					// If the interactive has text and is active, show the text.
 					if !touchingSign && i.text != "" && i.Active() && i.shape.Collides(pl.Actor().Shape()) {
-						localized := ctx.L(i.text)
+						localized := ctx.L.Get(i.text)
 						w.signText = &localized
 						w.isSignNPC = i.npc
 						touchingSign = true
@@ -344,7 +344,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 
 					// If nextMap is defined and active, go to next map.
 					if i.nextMap != nil && i.Active() && i.shape.Collides(pl.Actor().Shape()) {
-						ctx.Manager.GetAs("sounds", "stairs", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
+						ctx.R.GetAs("sounds", "stairs", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
 						s.TravelToMap(ctx, *i.nextMap)
 					}
 				}
@@ -357,13 +357,13 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						case "item-life":
 							if pc.Lives < playerMaxLives {
 								sn.destroyed = true
-								ctx.Manager.GetAs("sounds", "item", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
+								ctx.R.GetAs("sounds", "item", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
 								pc.Lives++
 							}
 						case "item-book":
 							pc.HasDeflect = true
 							sn.destroyed = true
-							ctx.Manager.GetAs("sounds", "book", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
+							ctx.R.GetAs("sounds", "book", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
 							for _, p := range s.Players {
 								if pl, ok := p.(*LocalPlayer); ok {
 									if _, ok := pl.actor.(*PC); ok {
@@ -380,7 +380,7 @@ func (w *WorldStateLive) Tick(s *World, ctx states.Context) {
 						case "item-shield":
 							pc.HasShield = true
 							sn.destroyed = true
-							ctx.Manager.GetAs("sounds", "book", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
+							ctx.R.GetAs("sounds", "book", (*resources.Sound)(nil)).(*resources.Sound).Play(0.5)
 							for _, p := range s.Players {
 								if pl, ok := p.(*LocalPlayer); ok {
 									if _, ok := pl.actor.(*PC); ok {

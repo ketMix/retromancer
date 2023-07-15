@@ -5,7 +5,7 @@ import (
 )
 
 type Localizer struct {
-	manager       *ResourceManager
+	resources     *ResourceManager
 	locale        string
 	currentLocale *resources.Locale
 	backupLocale  *resources.Locale
@@ -17,6 +17,18 @@ func (l *Localizer) SetGPTStyle(style string) {
 	l.GPT.Style = style
 }
 
+func (l *Localizer) GetGPTStyle() string {
+	return l.GPT.Style
+}
+
+func (l *Localizer) SetGPTKey(key string) {
+	l.GPT.SetKey(key)
+}
+
+func (l *Localizer) GetGPTKey() string {
+	return l.GPT.GetKey()
+}
+
 func (l *Localizer) CheckGPTKey() bool {
 	return l.GPT.CheckKey()
 }
@@ -26,7 +38,7 @@ func (l *Localizer) GPTIsActive() bool {
 }
 
 func (l *Localizer) InitGPT() {
-	l.GPT = resources.InitGPT(l.manager.files)
+	l.GPT = resources.InitGPT(l.resources.files)
 }
 
 func (l *Localizer) Locale() string {
@@ -35,15 +47,15 @@ func (l *Localizer) Locale() string {
 
 func (l *Localizer) SetLocale(loc string, gpt bool) {
 	l.locale = loc
-	l.backupLocale = l.manager.GetAs("locales", "en", (*resources.Locale)(nil)).(*resources.Locale)
+	l.backupLocale = l.resources.GetAs("locales", "en", (*resources.Locale)(nil)).(*resources.Locale)
 
 	if !gpt {
-		l.currentLocale = l.manager.GetAs("locales", loc, (*resources.Locale)(nil)).(*resources.Locale)
+		l.currentLocale = l.resources.GetAs("locales", loc, (*resources.Locale)(nil)).(*resources.Locale)
 		return
 	}
 	currentLocale, err := l.GPT.GetLocale(l.backupLocale, loc)
 	if err != nil {
-		l.currentLocale = l.manager.GetAs("locales", loc, (*resources.Locale)(nil)).(*resources.Locale)
+		l.currentLocale = l.resources.GetAs("locales", loc, (*resources.Locale)(nil)).(*resources.Locale)
 		l.gptActive = false
 	} else {
 		l.currentLocale = currentLocale

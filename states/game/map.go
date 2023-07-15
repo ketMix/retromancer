@@ -49,7 +49,7 @@ type Cell struct {
 }
 
 func (s *World) TravelToMap(ctx states.Context, mapName string) error {
-	mapData := ctx.Manager.GetAs("maps", mapName, (*resources.Map)(nil)).(*resources.Map)
+	mapData := ctx.R.GetAs("maps", mapName, (*resources.Map)(nil)).(*resources.Map)
 	if mapData == nil {
 		return ErrMissingMap
 	}
@@ -61,9 +61,9 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 	}
 
 	// Find music for map by filename. Fall back to FUNKY
-	song := ctx.Manager.Get("songs", mapData.Music)
+	song := ctx.R.Get("songs", mapData.Music)
 	if song == nil {
-		song = ctx.Manager.GetAs("songs", "funky", (*resources.Song)(nil))
+		song = ctx.R.GetAs("songs", "funky", (*resources.Song)(nil))
 	}
 	ctx.MusicPlayer.Play(song.(states.Song))
 
@@ -99,7 +99,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 						Width:  cellW,
 						Height: cellH,
 					}
-					c.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", r.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
+					c.Sprite = resources.NewSprite(ctx.R.GetAs("images", r.Sprite, (*ebiten.Image)(nil)).(*ebiten.Image))
 					c.Sprite.SetXY(
 						cellW*float64(k)+xoffset,
 						cellH*float64(j)+yoffset,
@@ -200,7 +200,7 @@ func (s *World) TravelToMap(ctx states.Context, mapName string) error {
 
 	// Only add fade and title VFX if this map is not the same as the previous one.
 	if s.activeMap == nil || s.activeMap.data != m.data {
-		mapTitle := ctx.L(m.filename)
+		mapTitle := ctx.L.Get(m.filename)
 		if mapTitle == m.filename || mapTitle == "" {
 			mapTitle = m.data.Title
 		}

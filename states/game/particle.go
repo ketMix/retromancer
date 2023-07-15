@@ -22,7 +22,7 @@ func (w *World) SpawnParticle(ctx states.Context, img string, x, y float64, angl
 	vy := speed * math.Sin(angle)
 
 	p := Particle{
-		Sprite: resources.NewSprite(ctx.Manager.GetAs("images", fmt.Sprintf("particle-%s", img), (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Sprite: resources.NewSprite(ctx.R.GetAs("images", fmt.Sprintf("particle-%s", img), (*ebiten.Image)(nil)).(*ebiten.Image)),
 		X:      x,
 		Y:      y,
 		VX:     vx,

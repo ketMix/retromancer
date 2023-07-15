@@ -27,18 +27,18 @@ type Menu struct {
 func (m *Menu) Init(ctx states.Context) error {
 	m.overlay.Init(ctx)
 
-	m.bg1 = resources.NewSprite(ctx.Manager.GetAs("images", "bg-1", (*ebiten.Image)(nil)).(*ebiten.Image))
+	m.bg1 = resources.NewSprite(ctx.R.GetAs("images", "bg-1", (*ebiten.Image)(nil)).(*ebiten.Image))
 	m.bg1.Hidden = true
-	m.bg1logo = resources.NewSprite(ctx.Manager.GetAs("images", "bg-logo-1", (*ebiten.Image)(nil)).(*ebiten.Image))
+	m.bg1logo = resources.NewSprite(ctx.R.GetAs("images", "bg-logo-1", (*ebiten.Image)(nil)).(*ebiten.Image))
 	m.bg1logo.Hidden = true
-	m.bg2 = resources.NewSprite(ctx.Manager.GetAs("images", "bg-2", (*ebiten.Image)(nil)).(*ebiten.Image))
-	m.bg2logo = resources.NewSprite(ctx.Manager.GetAs("images", "bg-logo-2", (*ebiten.Image)(nil)).(*ebiten.Image))
+	m.bg2 = resources.NewSprite(ctx.R.GetAs("images", "bg-2", (*ebiten.Image)(nil)).(*ebiten.Image))
+	m.bg2logo = resources.NewSprite(ctx.R.GetAs("images", "bg-logo-2", (*ebiten.Image)(nil)).(*ebiten.Image))
 
 	x := 20.0
 	y := 20.0
 
 	m.play = &resources.TextItem{
-		Text: ctx.L("Play"),
+		Text: ctx.L.Get("Play"),
 		X:    x,
 		Y:    y,
 		Callback: func() bool {
@@ -49,7 +49,7 @@ func (m *Menu) Init(ctx states.Context) error {
 	}
 
 	m.credits = &resources.TextItem{
-		Text: ctx.L("Credits"),
+		Text: ctx.L.Get("Credits"),
 		X:    x,
 		Y:    y,
 		Callback: func() bool {
@@ -72,7 +72,7 @@ func (m *Menu) Init(ctx states.Context) error {
 	m.sprites = append(m.sprites, m.bg1, m.bg2)
 	m.buttons = append(m.buttons, m.play, m.gpt, m.credits)
 
-	m.click = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
+	m.click = ctx.R.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
 	m.firstVfx.Add(&resources.Fade{
 		Alpha:        1.0,
@@ -93,7 +93,7 @@ func (m *Menu) Finalize(ctx states.Context) error {
 }
 
 func (m *Menu) Enter(ctx states.Context, v interface{}) error {
-	ctx.MusicPlayer.Play(ctx.Manager.GetAs("songs", "title-menu", (*resources.Song)(nil)).(states.Song))
+	ctx.MusicPlayer.Play(ctx.R.GetAs("songs", "title-menu", (*resources.Song)(nil)).(states.Song))
 
 	if v, ok := v.(bool); ok && v {
 		m.bg1.Hidden = false

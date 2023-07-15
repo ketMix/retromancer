@@ -20,16 +20,16 @@ type Jukebox struct {
 
 func (j *Jukebox) Init(ctx states.Context) error {
 	j.overlay.Init(ctx)
-	j.click = ctx.Manager.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
+	j.click = ctx.R.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
-	j.logo = resources.NewSprite(ctx.Manager.GetAs("images", "logo", (*ebiten.Image)(nil)).(*ebiten.Image))
+	j.logo = resources.NewSprite(ctx.R.GetAs("images", "logo", (*ebiten.Image)(nil)).(*ebiten.Image))
 	j.logo.Centered = true
 	j.logo.X = 320
 	j.logo.Y = j.logo.Height()/2 - 30
 
 	// Back button
 	j.backItem = &resources.TextItem{
-		Text: ctx.L("Back"),
+		Text: ctx.L.Get("Back"),
 		X:    30,
 		Y:    335,
 		Callback: func() bool {
@@ -45,11 +45,11 @@ func (j *Jukebox) Init(ctx states.Context) error {
 	y := j.logo.Y + j.logo.Height()/2
 
 	// Get all songs
-	songs := ctx.Manager.GetNamesWithPrefix("songs", "")
+	songs := ctx.R.GetNamesWithPrefix("songs", "")
 	for i, song := range songs {
 		playSongFn := func(t *resources.TextItem) bool {
 			j.click.Play(1.0)
-			ctx.MusicPlayer.Play(ctx.Manager.Get("songs", t.Text).(*resources.Song))
+			ctx.MusicPlayer.Play(ctx.R.Get("songs", t.Text).(*resources.Song))
 			return true
 		}
 		item := &resources.TextItem{
@@ -64,22 +64,22 @@ func (j *Jukebox) Init(ctx states.Context) error {
 
 	// Create the sprites
 	y = j.logo.Y + j.logo.Height()/2
-	batBossSprite := resources.NewAnimatedSpriteFromName(ctx.Manager, "bat-boss-alive")
+	batBossSprite := resources.NewAnimatedSpriteFromName(ctx.R, "bat-boss-alive")
 	batBossSprite.Framerate = 5
 	batBossSprite.Loop = true
 	batBossSprite.SetXY(x-250, y)
 
-	skellBossHeadSprite := resources.NewAnimatedSpriteFromName(ctx.Manager, "skell-boss-head-alive")
+	skellBossHeadSprite := resources.NewAnimatedSpriteFromName(ctx.R, "skell-boss-head-alive")
 	skellBossHeadSprite.Framerate = 5
 	skellBossHeadSprite.Loop = true
 	skellBossHeadSprite.SetXY(x-150, y+100)
 
-	batBossRedSprite := resources.NewAnimatedSpriteFromName(ctx.Manager, "bat-boss-red-alive")
+	batBossRedSprite := resources.NewAnimatedSpriteFromName(ctx.R, "bat-boss-red-alive")
 	batBossRedSprite.Framerate = 5
 	batBossRedSprite.Loop = true
 	batBossRedSprite.SetXY(x+200, y)
 
-	skellBossBodySprite := resources.NewAnimatedSpriteFromName(ctx.Manager, "skell-boss-body-alive")
+	skellBossBodySprite := resources.NewAnimatedSpriteFromName(ctx.R, "skell-boss-body-alive")
 	skellBossBodySprite.Framerate = 5
 	skellBossBodySprite.Loop = true
 	skellBossBodySprite.SetXY(x+100, y+65)

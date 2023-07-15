@@ -15,7 +15,7 @@ type PreIntro struct {
 }
 
 func (p *PreIntro) Init(ctx states.Context) error {
-	if !ctx.CheckGPTKey() {
+	if !ctx.L.CheckGPTKey() {
 		ctx.StateMachine.PopState(nil)
 	}
 	x, y := 1280, 720
@@ -23,7 +23,7 @@ func (p *PreIntro) Init(ctx states.Context) error {
 	centerY := y / 4
 	p.buttons = append(p.buttons,
 		&resources.ButtonItem{
-			Text: ctx.L("Yes"),
+			Text: ctx.L.Get("Yes"),
 			X:    float64(centerX) - 25,
 			Y:    float64(centerY) + 100,
 			Callback: func() bool {
@@ -32,7 +32,7 @@ func (p *PreIntro) Init(ctx states.Context) error {
 			},
 		},
 		&resources.ButtonItem{
-			Text: ctx.L("No"),
+			Text: ctx.L.Get("No"),
 			X:    float64(centerX) + 25,
 			Y:    float64(centerY) + 100,
 			Callback: func() bool {

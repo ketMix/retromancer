@@ -6,22 +6,16 @@ import (
 )
 
 type DrawContext struct {
-	Screen    *ebiten.Image
-	Text      *etxt.Renderer
-	L         func(key string) string
-	Locale    func() string
-	SetLocale func(loc string, gpt bool)
+	Screen *ebiten.Image
+	Text   *etxt.Renderer
+	R      Resource
+	L      Localizer
 }
 
 type Context struct {
-	Manager      ResourceManager
 	StateMachine StateMachine
-	L            func(key string) string
-	Locale       func() string
-	SetLocale    func(loc string, gpt bool)
-	SetGPTStyle  func(style string)
-	CheckGPTKey  func() bool
-	GPTIsActive  func() bool
 	Cursor       Cursor
 	MusicPlayer  MusicPlayer
+	R            Resource
+	L            Localizer
 }

@@ -41,26 +41,26 @@ func main() {
 	flag.Parse()
 
 	// Allow loading from filesystem.
-	game.Manager.files.InsertFS(os.DirFS("assets"), multipath.FirstPriority)
+	game.Resources.files.InsertFS(os.DirFS("assets"), multipath.FirstPriority)
 
 	// Also allow loading from embedded filesystem.
 	sub, err := fs.Sub(embedFS, "assets")
 	if err != nil {
 		panic(err)
 	}
-	game.Manager.files.InsertFS(sub, multipath.LastPriority)
+	game.Resources.files.InsertFS(sub, multipath.LastPriority)
 
-	if err := game.Manager.Setup(); err != nil {
+	if err := game.Resources.Setup(); err != nil {
 		panic(err)
 	}
 
 	// Might as well load all assets up front (for now -- might not want to with music later).
-	if err := game.Manager.LoadAll(); err != nil {
+	if err := game.Resources.LoadAll(); err != nil {
 		panic(err)
 	}
 
 	// Load up our gamepad maps.
-	if b, err := game.Manager.files.ReadFile("gamepad.yaml"); err != nil {
+	if b, err := game.Resources.files.ReadFile("gamepad.yaml"); err != nil {
 		panic(err)
 	} else {
 		var m []resources.GamepadDefinition
@@ -73,7 +73,7 @@ func main() {
 	}
 
 	// Set our locale.
-	game.Localizer.manager = &game.Manager
+	game.Localizer.resources = &game.Resources
 	game.Localizer.SetLocale(game.Flags.Locale, false) // Start without GPT
 	game.Localizer.InitGPT()
 
@@ -83,7 +83,7 @@ func main() {
 	}
 
 	// Ensure we have our font.
-	if f := game.Manager.GetAs("fonts", game.Flags.Font, (*sfnt.Font)(nil)).(*sfnt.Font); f == nil {
+	if f := game.Resources.GetAs("fonts", game.Flags.Font, (*sfnt.Font)(nil)).(*sfnt.Font); f == nil {
 		panic("missing font")
 	} else {
 		game.Text.SetFont(f)

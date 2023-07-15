@@ -20,7 +20,7 @@ func (w *WorldStateBegin) Enter(s *World, ctx states.Context) {
 	y := 200.0
 	// TODO: Make this text actually good.
 	w.vfx.Add(&resources.Text{
-		Text:         ctx.L("Intro1"),
+		Text:         ctx.L.Get("Intro1"),
 		InDuration:   1 * time.Second,
 		HoldDuration: 2 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -28,7 +28,7 @@ func (w *WorldStateBegin) Enter(s *World, ctx states.Context) {
 		Y:            y,
 	})
 	w.vfx.Add(&resources.Text{
-		Text:         ctx.L("Intro2"),
+		Text:         ctx.L.Get("Intro2"),
 		InDuration:   1 * time.Second,
 		HoldDuration: 1 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -36,7 +36,7 @@ func (w *WorldStateBegin) Enter(s *World, ctx states.Context) {
 		Y:            y,
 	})
 	w.vfx.Add(&resources.Text{
-		Text:         ctx.L("Intro3"),
+		Text:         ctx.L.Get("Intro3"),
 		InDuration:   1 * time.Second,
 		HoldDuration: 2 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -44,7 +44,7 @@ func (w *WorldStateBegin) Enter(s *World, ctx states.Context) {
 		Y:            y,
 	})
 	w.vfx.Add(&resources.Text{
-		Text:         ctx.L("Intro4"),
+		Text:         ctx.L.Get("Intro4"),
 		InDuration:   1 * time.Second,
 		HoldDuration: 2 * time.Second,
 		OutDuration:  1 * time.Second,
@@ -76,5 +76,5 @@ func (w *WorldStateBegin) Draw(s *World, ctx states.DrawContext) {
 	w.vfx.Process(ctx, nil)
 
 	ctx.Text.SetColor(color.NRGBA{0xff, 0xff, 0xff, 0x66})
-	ctx.Text.Draw(ctx.Screen, ctx.L("SkipIntro"), ctx.Screen.Bounds().Max.X/2, ctx.Screen.Bounds().Max.Y-int(ctx.Text.Utils().GetLineHeight()))
+	ctx.Text.Draw(ctx.Screen, ctx.L.Get("SkipIntro"), ctx.Screen.Bounds().Max.X/2, ctx.Screen.Bounds().Max.Y-int(ctx.Text.Utils().GetLineHeight()))
 }

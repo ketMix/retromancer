@@ -19,7 +19,7 @@ func (l *Loading) Init(ctx states.Context) error {
 	y /= 4
 
 	l.vfx.Add(&resources.Text{
-		Text:         ctx.L("Loading"),
+		Text:         ctx.L.Get("Loading"),
 		InDuration:   0,
 		HoldDuration: 5000 * time.Second,
 		OutDuration:  0,
@@ -40,7 +40,7 @@ func (l *Loading) Finalize(ctx states.Context) error {
 func (l *Loading) Update(ctx states.Context) error {
 	l.ticks++
 	if l.ticks > 20 {
-		ctx.SetLocale(ctx.Locale(), true)
+		ctx.L.SetLocale(ctx.L.Locale(), true)
 
 		// Pop the loading and the GPT question screen
 		ctx.StateMachine.PopState(nil)

@@ -19,7 +19,7 @@ func CreateSpawner(ctx states.Context, bulletGroupDefs []*resources.BulletGroup)
 		for _, bg := range bulletGroupDefs {
 			bulletAlias := (*resources.BulletGroup)(nil)
 			if bg.Alias != nil {
-				bulletAlias = ctx.Manager.GetAs("bullets", *bg.Alias, (*resources.BulletGroup)(nil)).(*resources.BulletGroup)
+				bulletAlias = ctx.R.GetAs("bullets", *bg.Alias, (*resources.BulletGroup)(nil)).(*resources.BulletGroup)
 			}
 			bulletGroups = append(bulletGroups, CreateBulletGroupFromDef(bg, bulletAlias))
 		}

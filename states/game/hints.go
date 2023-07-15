@@ -52,7 +52,7 @@ func (h *Hints) Update(ctx states.Context) error {
 				InDuration:   1 * time.Second,
 				HoldDuration: 5 * time.Second,
 				OutDuration:  1 * time.Second,
-				Text:         h.hintGroup[g].Prefix + ctx.L(hint),
+				Text:         h.hintGroup[g].Prefix + ctx.L.Get(hint),
 				Color:        color.NRGBA{0xff, 0xff, 0x44, 0xff},
 				OutlineColor: color.NRGBA{0x00, 0x00, 0x00, 0xff},
 				Outline:      true,

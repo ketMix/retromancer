@@ -58,34 +58,34 @@ type PC struct {
 
 func (s *World) NewPC(ctx states.Context) *PC {
 	pc := &PC{
-		Sprite:            resources.NewSprite(ctx.Manager.GetAs("images", "player", (*ebiten.Image)(nil)).(*ebiten.Image)),
-		DeathSprite:       resources.NewSprite(ctx.Manager.GetAs("images", "player-dead1", (*ebiten.Image)(nil)).(*ebiten.Image)),
-		Phylactery:        resources.NewSprite(ctx.Manager.GetAs("images", "phylactery", (*ebiten.Image)(nil)).(*ebiten.Image)),
-		Arrow:             resources.NewSprite(ctx.Manager.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
-		Life:              resources.NewSprite(ctx.Manager.GetAs("images", "life", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Sprite:            resources.NewSprite(ctx.R.GetAs("images", "player", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		DeathSprite:       resources.NewSprite(ctx.R.GetAs("images", "player-dead1", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Phylactery:        resources.NewSprite(ctx.R.GetAs("images", "phylactery", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Arrow:             resources.NewSprite(ctx.R.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Life:              resources.NewSprite(ctx.R.GetAs("images", "life", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Energy:            100,
 		MaxEnergy:         100,
 		EnergyRestoreRate: 2,
 		Lives:             playerStartLives,
-		reverseSfx:        ctx.Manager.GetAs("sounds", "reverse-sfx", (*resources.Sound)(nil)).(*resources.Sound),
-		deflectSfx:        ctx.Manager.GetAs("sounds", "deflect-sfx", (*resources.Sound)(nil)).(*resources.Sound),
-		shieldSfx:         ctx.Manager.GetAs("sounds", "shield-sfx", (*resources.Sound)(nil)).(*resources.Sound),
-		hurtSfx:           ctx.Manager.GetAs("sounds", "hurt-sfx", (*resources.Sound)(nil)).(*resources.Sound),
+		reverseSfx:        ctx.R.GetAs("sounds", "reverse-sfx", (*resources.Sound)(nil)).(*resources.Sound),
+		deflectSfx:        ctx.R.GetAs("sounds", "deflect-sfx", (*resources.Sound)(nil)).(*resources.Sound),
+		shieldSfx:         ctx.R.GetAs("sounds", "shield-sfx", (*resources.Sound)(nil)).(*resources.Sound),
+		hurtSfx:           ctx.R.GetAs("sounds", "hurt-sfx", (*resources.Sound)(nil)).(*resources.Sound),
 	}
 
 	// FIXME: This shouldn't be hardcoded.
 	pc.DeathSprite.Framerate = 2
 	pc.DeathSprite.Centered = true
 	for i := 1; i <= 11; i++ {
-		pc.DeathSprite.AddImage(ctx.Manager.GetAs("images", fmt.Sprintf("player-dead%d", i), (*ebiten.Image)(nil)).(*ebiten.Image))
+		pc.DeathSprite.AddImage(ctx.R.GetAs("images", fmt.Sprintf("player-dead%d", i), (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 
 	pc.shape.Radius = 2
 	//pc.Sprite.Interpolate = true
 	pc.Sprite.Centered = true
-	pc.Hand.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
+	pc.Hand.Sprite = resources.NewSprite(ctx.R.GetAs("images", "hand-normal", (*ebiten.Image)(nil)).(*ebiten.Image))
 	pc.Hand.Sprite.Centered = true
-	pc.Hand.HoverSprite = resources.NewSprite(ctx.Manager.GetAs("images", "hand-glow", (*ebiten.Image)(nil)).(*ebiten.Image))
+	pc.Hand.HoverSprite = resources.NewSprite(ctx.R.GetAs("images", "hand-glow", (*ebiten.Image)(nil)).(*ebiten.Image))
 	pc.Hand.HoverSprite.Centered = true
 
 	return pc

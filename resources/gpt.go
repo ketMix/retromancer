@@ -32,9 +32,10 @@ var gptKey string
 
 type GPT struct {
 	Key          string
+	IsInitKey    bool   // If true, the key was from initialization
 	SystemPrompt string // The prompt to use for the system
 	MaxTokens    int    // 1-2048
-	Model        string // "davinci" or "curie"
+	Model        string // "gpt-3.5-turbo" or "gpt-4"
 	Style        string // the style of the translation
 }
 
@@ -44,7 +45,7 @@ type GPT struct {
 //   - sets default values
 func InitGPT(fs multipath.FS) *GPT {
 	var k string
-
+	k = ""
 	if gptKey != "" {
 		k = gptKey
 	} else {
@@ -71,6 +72,7 @@ func InitGPT(fs multipath.FS) *GPT {
 			- You will receive a prompt with a JSON object containing the key value pairs of the original text.
 			- For each key you should create a new phrase that is different from the original.
 			- A style will be requested that you should use for creating the new phrase.
+			- You will adhere your responses to the style and create a new phrase that is different from the original.
 			- All values should have length less than or equal to the length of their original value.
 			- After creating the phrase you will translate the new phrase into the requested language.
 			- There should be no escape characters in the translated phrase.
@@ -191,4 +193,16 @@ func (g *GPT) CheckKey() bool {
 		return false
 	}
 	return true
+}
+
+func (g *GPT) GetKey() string {
+	if g.IsInitKey {
+		return ""
+	}
+	return g.Key
+}
+
+func (g *GPT) SetKey(key string) {
+	g.Key = key
+	g.IsInitKey = false
 }

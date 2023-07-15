@@ -36,8 +36,8 @@ type Companion struct {
 
 func (s *World) NewCompanion(ctx states.Context) *Companion {
 	pc := &Companion{
-		Sprite:            resources.NewSprite(ctx.Manager.GetAs("images", "companion", (*ebiten.Image)(nil)).(*ebiten.Image)),
-		Arrow:             resources.NewSprite(ctx.Manager.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Sprite:            resources.NewSprite(ctx.R.GetAs("images", "companion", (*ebiten.Image)(nil)).(*ebiten.Image)),
+		Arrow:             resources.NewSprite(ctx.R.GetAs("images", "direction-arrow", (*ebiten.Image)(nil)).(*ebiten.Image)),
 		Energy:            50,
 		MaxEnergy:         50,
 		EnergyRestoreRate: 3,
@@ -46,9 +46,9 @@ func (s *World) NewCompanion(ctx states.Context) *Companion {
 	pc.shape.Radius = 1
 	//pc.Sprite.Interpolate = true
 	pc.Sprite.Centered = true
-	pc.Hand.Sprite = resources.NewSprite(ctx.Manager.GetAs("images", "companion-hand", (*ebiten.Image)(nil)).(*ebiten.Image))
+	pc.Hand.Sprite = resources.NewSprite(ctx.R.GetAs("images", "companion-hand", (*ebiten.Image)(nil)).(*ebiten.Image))
 	pc.Hand.Sprite.Centered = true
-	pc.Hand.HoverSprite = resources.NewSprite(ctx.Manager.GetAs("images", "companion-hand-glow", (*ebiten.Image)(nil)).(*ebiten.Image))
+	pc.Hand.HoverSprite = resources.NewSprite(ctx.R.GetAs("images", "companion-hand-glow", (*ebiten.Image)(nil)).(*ebiten.Image))
 	pc.Hand.HoverSprite.Hidden = true
 	pc.Hand.HoverSprite.Centered = true
 

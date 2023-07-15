@@ -70,7 +70,7 @@ func (s *World) Init(ctx states.Context) error {
 		if (!s.Net.Running && i == 0) || (s.Net.Hosting && i == 0) || (!s.Net.Hosting && s.Net.Running && i == 1) {
 			pc := s.NewPC(ctx)
 
-			pc.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
+			pc.Hat = resources.NewSprite(ctx.R.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
 
 			// If the starting map is not start, then set the player as resurrected.
 			if s.StartingMap != "start" {
@@ -81,7 +81,7 @@ func (s *World) Init(ctx states.Context) error {
 		} else {
 			c := s.NewCompanion(ctx)
 
-			c.Hat = resources.NewSprite(ctx.Manager.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
+			c.Hat = resources.NewSprite(ctx.R.GetAs("images", p.Hat(), (*ebiten.Image)(nil)).(*ebiten.Image))
 
 			p.SetActor(c)
 		}
@@ -95,7 +95,7 @@ func (s *World) Init(ctx states.Context) error {
 	prefix := ""
 	offset := 0.0
 	if len(s.Players) > 1 {
-		prefix = ctx.L("Player 1:")
+		prefix = ctx.L.Get("Player 1:")
 		offset = 20
 	}
 	s.hints.AddHintGroup("p1-controller-start", HintGroup{
@@ -107,12 +107,12 @@ func (s *World) Init(ctx states.Context) error {
 		Items:  []string{"p1-keyboard-hint-1", "p1-keyboard-hint-2", "p1-keyboard-hint-3"},
 	})
 	s.hints.AddHintGroup("p2-controller-start", HintGroup{
-		Prefix:  ctx.L("Player 2:"),
+		Prefix:  ctx.L.Get("Player 2:"),
 		OffsetY: offset,
 		Items:   []string{"p2-controller-hint-1", "p2-controller-hint-2", "p2-controller-hint-3", "p2-controller-hint-4"},
 	})
 	s.hints.AddHintGroup("p2-keyboard-start", HintGroup{
-		Prefix:  ctx.L("Player 2:"),
+		Prefix:  ctx.L.Get("Player 2:"),
 		OffsetY: offset,
 		Items:   []string{"p2-keyboard-hint-1", "p2-keyboard-hint-2"},
 	})

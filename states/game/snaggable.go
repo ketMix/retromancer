@@ -18,10 +18,10 @@ type Snaggable struct {
 }
 
 func CreateSnaggable(ctx states.Context, id, spriteName string) *Snaggable {
-	imageNames := ctx.Manager.GetNamesWithPrefix("images", spriteName)
+	imageNames := ctx.R.GetNamesWithPrefix("images", spriteName)
 	images := make([]*ebiten.Image, 0)
 	for _, s := range imageNames {
-		images = append(images, ctx.Manager.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
+		images = append(images, ctx.R.GetAs("images", s, (*ebiten.Image)(nil)).(*ebiten.Image))
 	}
 	sprite := resources.NewAnimatedSprite(images)
 
