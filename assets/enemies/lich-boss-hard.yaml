@@ -38,6 +38,17 @@ bullets:
       color: [255, 0, 255, 0]
       aimDelay: 30
       aimTime: 50
+  - alias: chakra
+    bulletCount: 25
+    spawnRate: 100
+    lastSpawnedAt: 70
+    bullet:
+      speed: 0.1
+      accelAccel: 0.002
+      angularVelocity: 0.2
+      color: [255, 255, 0, 0]
+      aimDelay: 30
+      aimTime: 50
 # Radial
   - alias: echo
     bulletCount: 100
@@ -46,6 +57,17 @@ bullets:
     bullet:
       bulletType: directional
       speed: 1
+      color: [255, 0, 0, 0]
+      aimDelay: 0
+      aimTime: 0
+  - alias: echo
+    bulletCount: 100
+    spawnRate: 250
+    lastSpawnedAt: 10
+    bullet:
+      bulletType: directional
+      speed: 1
+      accelAccel: 0.005
       color: [255, 0, 0, 0]
       aimDelay: 0
       aimTime: 0

@@ -38,6 +38,7 @@ func main() {
 	flag.IntVar(&net.NetDataShards, "net-data-shards", 5, "network data shards")
 	flag.IntVar(&net.NetParityShards, "net-parity-shards", 2, "network parity shards")
 	flag.IntVar(&net.NetChannelSize, "net-channel-size", 30, "network channel size")
+	flag.StringVar(&game.Flags.Difficulty, "difficulty", string(states.DifficultyNormal), "difficulty to play at")
 	flag.Parse()
 
 	// Allow loading from filesystem.
@@ -116,6 +117,16 @@ func main() {
 
 	// Quick skip for map testing.
 	if game.Flags.Map != "" {
+		var difficulty states.Difficulty
+		if game.Flags.Difficulty == "hard" {
+			difficulty = states.DifficultyHard
+		} else if game.Flags.Difficulty == "easy" {
+			difficulty = states.DifficultyEasy
+		} else {
+			difficulty = states.DifficultyNormal
+		}
+
+		game.Difficulty = difficulty
 		game.PushState(&gaem.World{
 			StartingMap: game.Flags.Map,
 			Players: []gaem.Player{

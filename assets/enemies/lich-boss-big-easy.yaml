@@ -1,8 +1,10 @@
-sprite: lich-boss
+sprite: lich-boss-big
 framerate: 20
-health: 300
-speed: 4
+health: 1000
+speed: 2
 behavior: random
+wander: true
+alwaysShoot: true
 bullets:
 # Chakras
   - alias: chakra
@@ -41,13 +43,15 @@ bullets:
 # Radial
   - alias: echo
     bulletCount: 100
-    spawnRate: 100
-    lastSpawnedAt: 50
+    spawnRate: 200
+    lastSpawnedAt: 140 
     bullet:
       bulletType: directional
       speed: 1
+      accelAccel: 0.005
+      angularVelocity: 0.05
       color: [255, 0, 0, 0]
       aimDelay: 0
       aimTime: 0
 spawnOnDeath:
-  - lich-boss-big
+  - lich-okay

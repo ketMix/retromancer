@@ -12,4 +12,5 @@ type Flags struct {
 	NetBufferSize   int
 	NetDataShards   int
 	NetParityShards int
+	Difficulty      string
 }

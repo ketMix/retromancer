@@ -16,6 +16,7 @@ type Game struct {
 	Localizer   Localizer
 	Cursor      Cursor
 	MusicPlayer MusicPlayer
+	Difficulty  states.Difficulty
 }
 
 func (g *Game) CreateContext() states.Context {
@@ -23,10 +24,12 @@ func (g *Game) CreateContext() states.Context {
 		StateMachine: g,
 		Cursor:       &g.Cursor,
 		MusicPlayer:  &g.MusicPlayer,
+		Difficulty:   g.Difficulty,
 		L:            &g.Localizer,
 		R:            &g.Resources,
 	}
 }
+
 func (g *Game) State() states.State {
 	return g.States[len(g.States)-1]
 }

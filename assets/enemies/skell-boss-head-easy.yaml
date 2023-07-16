@@ -1,0 +1,20 @@
+sprite: skell-boss-head
+framerate: 4
+health: 100
+speed: 4
+behavior: random
+wander: true
+alwaysShoot: true
+bullets:
+  - alias: daggers
+    bulletCount: 3
+    spawnRate: 100
+    lastSpawnedAt: 0 
+    bullet:
+      radius: 5
+      speed: 7
+      accelAccel: 0
+      angularVelocity: -0.5
+      color: [0, 0, 0, 0]
+      aimDelay: 0
+      aimTime: 0

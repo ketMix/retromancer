@@ -10,6 +10,10 @@
 "MenuIntro1": "時間がすべての傷を癒すと言いますが..."
 "MenuIntro2": "しかし、ある傷は永遠です..."
 "MenuIntro3": "それらはただ..."
+"Difficulty": "難易度"
+"easy": "簡単"
+"normal": "普通"
+"hard": "難しい"
 
 #Intro
 "Intro1": "時間のささやきの下で..."

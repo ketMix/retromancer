@@ -34,6 +34,13 @@ type PlayerEntry struct {
 	controllerIndex  int
 	useController    bool
 	//
+	difficulties []states.Difficulty
+	diffIndex    int
+	diffTitle    *resources.TextItem
+	diffLeft     *resources.SpriteItem
+	diffRight    *resources.SpriteItem
+	diffItem     *resources.TextItem
+	//
 	startText *resources.TextItem
 	//
 	waitingText *resources.TextItem
@@ -73,6 +80,10 @@ func (e *PlayerEntry) SyncController(ctx states.Context) {
 	}
 }
 
+func (e *PlayerEntry) SyncDifficulty(ctx states.Context, i int) {
+	e.diffItem.Text = ctx.L.Get(string(e.difficulties[i]))
+}
+
 func (e *PlayerEntry) SetController(dir int) {
 	controllers := resources.GetFunctionalGamepads()
 
@@ -105,6 +116,7 @@ func (e *PlayerEntry) SetController(dir int) {
 func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 	e.clickSound = ctx.R.GetAs("sounds", "click", (*resources.Sound)(nil)).(*resources.Sound)
 
+	// Dem hats
 	e.hats = ctx.R.GetNamesWithPrefix("images", "hat-")
 	e.hatIndex = int(rand.Int31n(int32(len(e.hats))))
 
@@ -161,6 +173,13 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 		},
 	}
 
+	hatItems := []resources.MenuItem{
+		e.hatTitle,
+		e.hatLeft,
+		e.hatItem,
+		e.hatRight,
+		e.hatText,
+	}
 	e.SyncHat(ctx)
 
 	// Controller
@@ -204,6 +223,60 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 			return false
 		},
 	}
+	controllerItems := []resources.MenuItem{
+		e.controllerTitle,
+		e.controllerLeft,
+		e.controllerItem,
+		e.controllerRight,
+		e.controllerIdText,
+	}
+
+	// Difficulty
+	e.difficulties = []states.Difficulty{states.DifficultyEasy, states.DifficultyNormal, states.DifficultyHard}
+	e.diffIndex = 1
+
+	e.diffTitle = &resources.TextItem{
+		Text: ctx.L.Get("Difficulty"),
+	}
+
+	e.diffLeft = &resources.SpriteItem{
+		Sprite: resources.NewSprite(ctx.R.Get("images", "arrow-left").(*ebiten.Image)),
+		Callback: func() bool {
+			e.diffIndex--
+			e.clickSound.Play(1.0)
+			if e.diffIndex < 0 {
+				e.diffIndex = 0
+			}
+			e.SyncDifficulty(ctx, e.diffIndex)
+			return false
+		},
+	}
+	e.diffLeft.Sprite.Centered = true
+
+	e.diffItem = &resources.TextItem{
+		Text: ctx.L.Get(string(e.difficulties[e.diffIndex])),
+	}
+
+	e.diffRight = &resources.SpriteItem{
+		Sprite: resources.NewSprite(ctx.R.Get("images", "arrow-right").(*ebiten.Image)),
+		Callback: func() bool {
+			e.diffIndex++
+			e.clickSound.Play(1.0)
+			if e.diffIndex > len(e.difficulties)-1 {
+				e.diffIndex = len(e.difficulties) - 1
+			}
+			e.SyncDifficulty(ctx, e.diffIndex)
+			return false
+		},
+	}
+	e.diffRight.Sprite.Centered = true
+
+	difficultyItems := []resources.MenuItem{
+		e.diffTitle,
+		e.diffLeft,
+		e.diffRight,
+		e.diffItem,
+	}
 
 	// Other controls
 	e.startText = &resources.TextItem{
@@ -212,6 +285,7 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 			e.clickSound.Play(1.0)
 			if !s.net.Running || s.net.Hosting {
 				s.shouldStart = true
+				s.difficulty = e.difficulties[e.diffIndex]
 			}
 			return false
 		},
@@ -224,8 +298,10 @@ func (e *PlayerEntry) Init(s *Lobby, ctx states.Context) error {
 		},
 	}
 
-	e.items = append(e.items, e.hatTitle, e.hatLeft, e.hatItem, e.hatRight, e.hatText, e.controllerTitle, e.controllerLeft, e.controllerItem, e.controllerRight, e.startText, e.controllerIdText)
-
+	e.items = append(e.items, e.startText)
+	e.items = append(e.items, hatItems...)
+	e.items = append(e.items, controllerItems...)
+	e.items = append(e.items, difficultyItems...)
 	return nil
 }
 
@@ -238,8 +314,9 @@ func (e *PlayerEntry) Update(ctx states.Context, offsetX float64) error {
 	x := centerX
 	y := 60.0
 
-	e.hatText.X = x
-	e.hatText.Y = y
+	// Hats
+	e.hatTitle.X = x
+	e.hatTitle.Y = y
 
 	y += 30.0
 
@@ -253,12 +330,12 @@ func (e *PlayerEntry) Update(ctx states.Context, offsetX float64) error {
 	e.hatRight.Y = y
 
 	y += 30.0
+	e.hatText.X = x
+	e.hatText.Y = y
 
-	e.hatTitle.X = x
-	e.hatTitle.Y = y
+	y += 50.0
 
-	y += 60.0
-
+	// Input
 	e.controllerTitle.X = x
 	e.controllerTitle.Y = y
 
@@ -276,8 +353,24 @@ func (e *PlayerEntry) Update(ctx states.Context, offsetX float64) error {
 	e.controllerRight.X = rightX
 	e.controllerRight.Y = y
 
-	y += 60.0
+	y += 50.0
 
+	// Difficulty
+	e.diffTitle.X = x
+	e.diffTitle.Y = y
+
+	y += 30.0
+	e.diffLeft.X = leftX
+	e.diffLeft.Y = y
+
+	e.diffItem.X = x
+	e.diffItem.Y = y
+
+	e.diffRight.X = rightX
+	e.diffRight.Y = y
+
+	y += 50.0
+	//
 	e.startText.X = x
 	e.startText.Y = y
 

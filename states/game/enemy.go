@@ -44,8 +44,12 @@ type Enemy struct {
 }
 
 func CreateEnemy(ctx states.Context, id, enemyName string) *Enemy {
-	// Get the enemy definition using enemy name
-	enemyDef := ctx.R.GetAs("enemies", enemyName, (*resources.Enemy)(nil)).(*resources.Enemy)
+	// Get the enemy definition using enemy name and difficulty
+	// If difficulty definition doesn't exist, use base definition
+	enemyDef := ctx.R.GetAs("enemies", enemyName+"-"+string(ctx.Difficulty), (*resources.Enemy)(nil)).(*resources.Enemy)
+	if enemyDef.Sprite == "" {
+		enemyDef = ctx.R.GetAs("enemies", enemyName, (*resources.Enemy)(nil)).(*resources.Enemy)
+	}
 
 	// Get the alive and dead sprites
 	aliveImageNames := ctx.R.GetNamesWithPrefix("images", enemyDef.Sprite+"-alive")

@@ -1,0 +1,31 @@
+sprite: skell-boss
+framerate: 3
+health: 250
+speed: 3
+behavior: random
+wander: true
+alwaysShoot: true
+bullets:
+  - alias: daggers
+    bulletCount: 5
+    spawnRate: 50
+    lastSpawnedAt: 0
+    bullet:
+      speed: 0.05
+      accelAccel: 0.005
+      color: [255, 0, 0, 0]
+      aimDelay: 15
+      aimTime: 5
+  - alias: daggers
+    bulletCount: 5
+    spawnRate: 50
+    lastSpawnedAt: 25
+    bullet:
+      speed: 0.05
+      accelAccel: 0.005
+      color: [255, 0, 0, 0]
+      aimDelay: 15
+      aimTime: 5
+nextPhase: skell-boss-body
+spawnOnDeath:
+  - skell-boss-head

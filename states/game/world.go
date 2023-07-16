@@ -28,6 +28,7 @@ type World struct {
 	Net         net.ServerClient
 	Seed        int64
 	savedNPCs   map[string]bool
+	Difficulty  *states.Difficulty
 }
 
 var (
@@ -35,6 +36,10 @@ var (
 )
 
 func (s *World) PushState(state WorldState, ctx states.Context) {
+	// Mmmmm
+	if s.Difficulty != nil {
+		ctx.Difficulty = *s.Difficulty
+	}
 	s.states = append(s.states, state)
 	state.Enter(s, ctx)
 }
@@ -155,6 +160,9 @@ func (s *World) Enter(ctx states.Context, v interface{}) error {
 }
 
 func (s *World) Update(ctx states.Context) error {
+	if s.Difficulty != nil {
+		ctx.Difficulty = *s.Difficulty
+	}
 	s.overlay.Update(ctx)
 
 	if s.Net.Running {

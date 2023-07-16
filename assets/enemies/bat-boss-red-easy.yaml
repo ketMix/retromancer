@@ -1,0 +1,19 @@
+sprite: bat-boss-red
+framerate: 4
+health: 500
+speed: 5
+behavior: random
+wander: true
+alwaysShoot: true
+bullets:
+  - alias: echo
+    spawnRate: 100
+    lastSpawnedAt: 40
+  - alias: echo
+    spawnRate: 100
+    lastSpawnedAt: 20
+  - alias: chakra
+    spawnRate: 100
+    lastSpawnedAt: 20
+    bullet:
+      color: [255, 0, 0, 255]

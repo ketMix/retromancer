@@ -27,6 +27,7 @@ type Lobby struct {
 	playerEntries   []*PlayerEntry
 	overlay         game.Overlay
 	shouldStart     bool
+	difficulty      states.Difficulty
 	net             rnet.ServerClient
 }
 
@@ -258,6 +259,7 @@ func (s *Lobby) Update(ctx states.Context) error {
 			Players:     players,
 			Net:         s.net,
 			Seed:        seed,
+			Difficulty:  &s.difficulty,
 		})
 	}
 

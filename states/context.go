@@ -16,6 +16,7 @@ type Context struct {
 	StateMachine StateMachine
 	Cursor       Cursor
 	MusicPlayer  MusicPlayer
+	Difficulty   Difficulty
 	R            Resource
 	L            Localizer
 }

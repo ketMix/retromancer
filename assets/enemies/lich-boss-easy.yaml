@@ -38,16 +38,5 @@ bullets:
       color: [255, 0, 255, 0]
       aimDelay: 30
       aimTime: 50
-# Radial
-  - alias: echo
-    bulletCount: 100
-    spawnRate: 100
-    lastSpawnedAt: 50
-    bullet:
-      bulletType: directional
-      speed: 1
-      color: [255, 0, 0, 0]
-      aimDelay: 0
-      aimTime: 0
 spawnOnDeath:
   - lich-boss-big
