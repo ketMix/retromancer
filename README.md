@@ -16,8 +16,9 @@ This is a 2D puzzle + bullet hell esque game written for the second [ebitengine 
   * Bullet hell, especially with bosses!
   * 3 total bosses!
   * 2 endings!
-  * Customizable content by editing or overriding the data files that define the levels, bullets, and enemies!
+  * Controller support!
   * HATS!!! ![hats](hats.png)
+  * Customizable content by editing or overriding the data files that define the levels, bullets, and enemies!
 
 ## Customization
 If you want to override anything, create an assets directory next to the executable and the game will prefer the contents of that directory over the built-in ones. An example would be to add your own gamepad to the `gamepad.yaml` files in the event your button and axis keybinds don't work out of the box.
