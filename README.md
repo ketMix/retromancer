@@ -16,6 +16,7 @@ This is a 2D puzzle + bullet hell esque game written for the second [ebitengine 
   * Bullet hell, especially with bosses!
   * 3 total bosses!
   * 2 endings!
+  * Optional GPT generated dialog for all the text in the game!
   * Controller support!
   * HATS!!! ![hats](hats.png)
   * Customizable content by editing or overriding the data files that define the levels, bullets, and enemies!
