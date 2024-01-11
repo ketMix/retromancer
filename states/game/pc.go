@@ -1,11 +1,13 @@
 package game
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
 	"fmt"
 	"image/color"
 	"math"
+
+	"github.com/ketMix/retromancer/resources"
+
+	"github.com/ketMix/retromancer/states"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"

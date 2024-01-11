@@ -1,8 +1,9 @@
 package resources
 
 import (
-	"ebijam23/states"
 	"image/color"
+
+	"github.com/ketMix/retromancer/states"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"

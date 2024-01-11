@@ -1,7 +1,7 @@
 package game
 
 import (
-	"ebijam23/states"
+	"github.com/ketMix/retromancer/states"
 )
 
 type Actor interface {

@@ -1,8 +1,9 @@
 package menu
 
 import (
-	"ebijam23/net"
 	"encoding/binary"
+
+	"github.com/ketMix/retromancer/net"
 )
 
 type HatMessage struct {

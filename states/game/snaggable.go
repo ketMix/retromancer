@@ -1,11 +1,12 @@
 package game
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
 	"math"
 
+	"github.com/ketMix/retromancer/states"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/ketMix/retromancer/resources"
 )
 
 type Snaggable struct {

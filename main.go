@@ -1,22 +1,24 @@
 package main
 
 import (
-	"ebijam23/net"
-	"ebijam23/resources"
-	"ebijam23/states"
-	"ebijam23/states/menu"
 	"embed"
 	"flag"
 	"io/fs"
 	"os"
 
+	"github.com/ketMix/retromancer/net"
+
+	"github.com/ketMix/retromancer/states"
+	"github.com/ketMix/retromancer/states/menu"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/audio"
+	"github.com/ketMix/retromancer/resources"
 	"github.com/kettek/go-multipath/v2"
 	"golang.org/x/image/font/sfnt"
 	"gopkg.in/yaml.v2"
 
-	gaem "ebijam23/states/game"
+	gaem "github.com/ketMix/retromancer/states/game"
 )
 
 //go:embed assets/*

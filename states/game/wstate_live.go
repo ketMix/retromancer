@@ -1,15 +1,16 @@
 package game
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
 	"image/color"
 	"math"
 	"reflect"
 	"strings"
 
+	"github.com/ketMix/retromancer/states"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/vector"
+	"github.com/ketMix/retromancer/resources"
 )
 
 type WorldStateLive struct {

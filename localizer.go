@@ -1,8 +1,6 @@
 package main
 
-import (
-	"ebijam23/resources"
-)
+import "github.com/ketMix/retromancer/resources"
 
 type Localizer struct {
 	resources     *ResourceManager

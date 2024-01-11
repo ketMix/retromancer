@@ -1,4 +1,4 @@
-module ebijam23
+module github.com/ketMix/retromancer
 
 go 1.20
 

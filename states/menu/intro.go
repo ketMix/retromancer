@@ -1,12 +1,13 @@
 package menu
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
 	"image/color"
 	"time"
 
+	"github.com/ketMix/retromancer/states"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/ketMix/retromancer/resources"
 )
 
 type Intro struct {

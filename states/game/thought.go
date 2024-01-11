@@ -1,8 +1,9 @@
 package game
 
 import (
-	"ebijam23/net"
 	"encoding/binary"
+
+	"github.com/ketMix/retromancer/net"
 )
 
 // Thoughts are a poorly named notion that sits above Impulses. These can effectively be viewed as player desires/commands and are sent across the wire between clients.

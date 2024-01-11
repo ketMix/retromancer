@@ -1,9 +1,10 @@
 package game
 
 import (
-	"ebijam23/net"
 	"encoding/binary"
 	"math"
+
+	"github.com/ketMix/retromancer/net"
 )
 
 func init() {

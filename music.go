@@ -1,7 +1,7 @@
 package main
 
 import (
-	"ebijam23/states"
+	"github.com/ketMix/retromancer/states"
 
 	"github.com/hajimehoshi/ebiten/v2/audio"
 )

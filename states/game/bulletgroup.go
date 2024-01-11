@@ -1,8 +1,9 @@
 package game
 
 import (
-	"ebijam23/resources"
 	"math"
+
+	"github.com/ketMix/retromancer/resources"
 )
 
 type GroupAngle string

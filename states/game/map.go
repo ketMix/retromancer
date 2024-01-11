@@ -1,14 +1,15 @@
 package game
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
 	"errors"
 	"image/color"
 	"math"
 	"time"
 
+	"github.com/ketMix/retromancer/states"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/ketMix/retromancer/resources"
 )
 
 var (

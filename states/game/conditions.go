@@ -1,8 +1,6 @@
 package game
 
-import (
-	"ebijam23/resources"
-)
+import "github.com/ketMix/retromancer/resources"
 
 // Check all provided conditions are true
 // If no conditions, return false

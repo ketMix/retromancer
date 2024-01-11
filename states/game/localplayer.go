@@ -1,11 +1,12 @@
 package game
 
 import (
-	"ebijam23/net"
-	"ebijam23/resources"
 	"math"
 
+	"github.com/ketMix/retromancer/net"
+
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/ketMix/retromancer/resources"
 )
 
 // LocalPlayer is a player on the local computer.

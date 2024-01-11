@@ -1,6 +1,6 @@
 package game
 
-import "ebijam23/resources"
+import "github.com/ketMix/retromancer/resources"
 
 type Hand struct {
 	Shape       CircleShape

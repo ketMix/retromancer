@@ -1,8 +1,9 @@
 package resources
 
 import (
-	"ebijam23/states"
 	"math"
+
+	"github.com/ketMix/retromancer/states"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )

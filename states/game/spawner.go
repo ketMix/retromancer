@@ -1,8 +1,9 @@
 package game
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
+	"github.com/ketMix/retromancer/resources"
+
+	"github.com/ketMix/retromancer/states"
 )
 
 // This can probably be attached to an actor instead being its own actor

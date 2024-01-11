@@ -1,13 +1,15 @@
 package game
 
 import (
-	"ebijam23/net"
-	"ebijam23/resources"
-	"ebijam23/states"
 	"fmt"
 	"math"
 	"math/rand"
 	"reflect"
+
+	"github.com/ketMix/retromancer/net"
+	"github.com/ketMix/retromancer/resources"
+
+	"github.com/ketMix/retromancer/states"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )

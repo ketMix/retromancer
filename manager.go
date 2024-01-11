@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"ebijam23/resources"
 	"errors"
 	"fmt"
 	"image/color"
@@ -13,6 +12,7 @@ import (
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
+	"github.com/ketMix/retromancer/resources"
 	"github.com/kettek/go-multipath/v2"
 	"github.com/tinne26/etxt/font"
 	"golang.org/x/image/font/sfnt"

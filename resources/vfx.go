@@ -1,10 +1,11 @@
 package resources
 
 import (
-	"ebijam23/states"
 	"image/color"
 	"math"
 	"time"
+
+	"github.com/ketMix/retromancer/states"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/tinne26/etxt"

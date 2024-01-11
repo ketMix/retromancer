@@ -1,8 +1,8 @@
 package menu
 
 import (
-	"ebijam23/states"
-	"ebijam23/states/game"
+	"github.com/ketMix/retromancer/states"
+	"github.com/ketMix/retromancer/states/game"
 )
 
 type Ballpit struct {

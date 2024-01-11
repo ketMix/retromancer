@@ -1,10 +1,12 @@
 package game
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
 	"image/color"
 	"time"
+
+	"github.com/ketMix/retromancer/resources"
+
+	"github.com/ketMix/retromancer/states"
 )
 
 type WorldStateBegin struct {

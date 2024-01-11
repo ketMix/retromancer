@@ -1,12 +1,13 @@
 package game
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
 	"fmt"
+
+	"github.com/ketMix/retromancer/states"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/ketMix/retromancer/resources"
 )
 
 type Overlay struct {

@@ -1,18 +1,19 @@
 package menu
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
-	"ebijam23/states/game"
 	"fmt"
 	"image/color"
 	"net"
 	"time"
 
-	rnet "ebijam23/net"
+	"github.com/ketMix/retromancer/states"
+	"github.com/ketMix/retromancer/states/game"
+
+	rnet "github.com/ketMix/retromancer/net"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
+	"github.com/ketMix/retromancer/resources"
 )
 
 type Lobby struct {

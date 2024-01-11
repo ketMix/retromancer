@@ -1,7 +1,7 @@
 package game
 
 import (
-	"ebijam23/net"
+	"github.com/ketMix/retromancer/net"
 )
 
 // RemotePlayer is a networked player.

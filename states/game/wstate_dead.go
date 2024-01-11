@@ -1,9 +1,11 @@
 package game
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
 	"image/color"
+
+	"github.com/ketMix/retromancer/resources"
+
+	"github.com/ketMix/retromancer/states"
 
 	"github.com/tinne26/etxt"
 )

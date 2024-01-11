@@ -1,9 +1,10 @@
 package menu
 
 import (
-	"ebijam23/resources"
-	"ebijam23/states"
-	"ebijam23/states/game"
+	"github.com/ketMix/retromancer/resources"
+
+	"github.com/ketMix/retromancer/states"
+	"github.com/ketMix/retromancer/states/game"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
