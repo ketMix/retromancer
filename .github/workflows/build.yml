@@ -15,7 +15,7 @@ jobs:
       env:
         GPT_KEY: ${{ secrets.GPT_KEY }}
       shell: bash
-      run: go build -ldflags "-X ebijam23/resources.gptKey=$GPT_KEY" -o retromancer.exe
+      run: go build -ldflags "-X github.com/ketMix/retromancer/resources.gptKey=$GPT_KEY" -o retromancer.exe
     - name: Upload Windows exe
       uses: actions/upload-artifact@v3
       with:
@@ -37,7 +37,7 @@ jobs:
       shell: bash
       env:
         GPT_KEY: ${{ secrets.GPT_KEY }}
-      run: go build -ldflags "-X ebijam23/resources.gptKey=$GPT_KEY" -o retromancer
+      run: go build -ldflags "-X github.com/ketMix/retromancer/resources.gptKey=$GPT_KEY" -o retromancer
     - name: Tar it up
       shell: bash
       run: tar -zcvf retromancer-mac.tar.gz retromancer LICENSE
@@ -63,7 +63,7 @@ jobs:
       shell: bash
       env:
         GPT_KEY: ${{ secrets.GPT_KEY }}
-      run: go build -ldflags "-X ebijam23/resources.gptKey=$GPT_KEY" -v -o retromancer
+      run: go build -ldflags "-X github.com/ketMix/retromancer/resources.gptKey=$GPT_KEY" -v -o retromancer
     - name: Tar it up
       shell: bash
       run: tar -zcvf retromancer-lin.tar.gz retromancer LICENSE
@@ -86,7 +86,7 @@ jobs:
       shell: bash
       env:
         GPT_KEY: ${{ secrets.GPT_KEY }}
-      run: GOOS=js GOARCH=wasm go build -v -ldflags "-X ebijam23/resources.gptKey=$GPT_KEY -w -s" -o dist/web/retromancer.wasm
+      run: GOOS=js GOARCH=wasm go build -v -ldflags "-X github.com/ketMix/retromancer/resources.gptKey=$GPT_KEY -w -s" -o dist/web/retromancer.wasm
     - name: Copy WASM exec script
       shell: bash
       run: cp $(go env GOROOT)/misc/wasm/wasm_exec.js dist/web/.
